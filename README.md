@@ -6,6 +6,7 @@ This game's a modern version of the classic game werewolf.
 In the middle of somewhere there is a village.
 This village recently heard rumors about a mystic reaction between certain humans from the village and the moon which transform them into werewolf.
 Each night a new villager mysteriously disapear.
+
 Day 2 : 
 The sun is rising. 
 The witch, the fortune teller, the hunter and the farmers wake up... but someone is missing.
@@ -25,5 +26,14 @@ Goal for those who are friendly with the village is to survive and find all the 
 ## Roles in the game
 
 ## How to play ?
+Download the apk by clicking this link : *lien vers l'apk*
 
-## About us 
+Launch the application
+
+## Authors
+Nagi Harjeet
+
+Pothula Anuraag
+
+Almou Samir El Fatmi
+
