@@ -30,6 +30,9 @@ Download the apk by clicking this link : *lien vers l'apk*
 
 Launch the application
 
+## Version
+0.1
+
 ## Authors
 Nagi Harjeet
 
