@@ -3,11 +3,9 @@ package com.example.t_mobop_werewolf
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class MainActivity : AppCompatActivity() {
+class PlayingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_playing)
     }
-
-    // ADD A BUTTON TO OPEN PLAYING ACTIVITY OR WAITING ROOM ACTITICY AT THE STARTUP
 }
