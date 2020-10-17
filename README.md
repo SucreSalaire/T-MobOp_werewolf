@@ -35,11 +35,17 @@ Goal for those who are friendly with the village is to survive and find all the 
 
 - **Fortune teller** : Can see the role of the specified villager. Can be used only once per night
 
-- **Major**          : During the vote he's the one who'll decide who die in the case of a tie
+- **Hunter**         : When he dies he have to kill one person 
+
+- **Thief**          : Can switch the role of 2 people
+
+- **Major**          : His vote counts double. During the vote he's the one who'll decide who die in the case of a tie. 
 
 - **Werewolf**       : Can vote to kill someone during the night
 
-- **ThirdRole**      : To define
+- **Assassin**       : Can kill one person per night 
+
+- **Pyromane**       : Every night he has the choice to put oil on 2 people or light a match to burn people who got oiled 
 
 
 ## How to play ?
