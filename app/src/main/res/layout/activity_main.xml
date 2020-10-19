@@ -7,10 +7,22 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/buttonWaitingRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="Waiting Room"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-
-        >
-    </Button>
-
+    <Button
+        android:id="@+id/buttonPlaying"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Playing Activity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonWaitingRoom" />
 </androidx.constraintlayout.widget.ConstraintLayout>
