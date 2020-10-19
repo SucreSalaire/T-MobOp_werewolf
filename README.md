@@ -12,20 +12,22 @@ Day 2 :
 The sun is rising. 
 
 The witch, the fortune teller, the hunter and the farmers wake up... but someone is missing.
-The major calls a meeting to determine who are the werewolf.
+The mayor calls a meeting to determine who are the werewolves.
 
-If you're a werewolf, will you be a good liar to defend yourself ?
+As a werewolf, will you be deceitful enough to defend yourself and survive ?
 
-If you're friendly with the village, will you find all the werewolf before they eat all of you ?
+As a friendly member of the village, will you find all the werewolves before getting eaten ?
 
-No matter who you are, you'll need to be very convincing.
+No matter who you are, you'll all need to be very convincing.
 
-Are you sure there isn't a third actor ?
+Are you sure there aren't any third party actors ?
 
 ## Goal of the game
-Goal for those who are werewolf is to eat each villagers in the village until they're all dead.
+Goal for those who are werewolves is to kill and eat every single villager to make sure they win.
 
-Goal for those who are friendly with the village is to survive and find all the werewolf in the village.
+Goal for those who are friendly with the village is to survive and find all the werewolves in the village.
+
+The third party characters have to kill everyone else to win the game.
 
 ## Roles in the game
 
@@ -35,11 +37,20 @@ Goal for those who are friendly with the village is to survive and find all the 
 
 - **Fortune teller** : Can see the role of the specified villager. Can be used only once per night
 
-- **Major**          : During the vote he's the one who'll decide who die in the case of a tie
+- **Hunter**         : When he dies he have to kill one person 
+
+- **Thief**          : Can switch the role of 2 people
+
+- **Mayor**          : His vote counts double. During the vote he's the one who'll decide who die in the case of a tie. 
 
 - **Werewolf**       : Can vote to kill someone during the night
 
-- **ThirdRole**      : To define
+- **Assassin**       : Can kill one person per night 
+
+- **Pyromane**       : Every night he has the choice to put oil on 2 people or light a match to burn people who got oiled
+
+- **Little girl**    : Can spy on the Werewolves
+
 
 
 ## How to play ?
