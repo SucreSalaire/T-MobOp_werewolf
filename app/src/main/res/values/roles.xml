@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ThisIsTheID">Here is the text to display</string>
+
+    <string name="villager">Villager</string>
+    <string name="werewolf">Werewolf</string>
+    <string name="witch">Witch</string>
+    <string name="fortuneteller">Fortune Teller</string>
+    <string name="hunter">Hunter</string>
+    <string name="thief">Thief</string>
+    <string name="mayor">Mayor</string>
+    <string name="assassin">Assassin</string>
+    <string name="pyromnan">Pyroman</string>
+    <string name="littlegirl">Little Girl</string>
+
+</resources>

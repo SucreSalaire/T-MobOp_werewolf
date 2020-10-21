@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class Frag_PlayerActions : Fragment() {
+class Frag_PlayersList : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class Frag_PlayerActions : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val v = inflater.inflate(R.layout.fragment_player_actions, container, false)
+        val v = inflater.inflate(R.layout.fragment_players_list, container, false)
         return v
     }
 
