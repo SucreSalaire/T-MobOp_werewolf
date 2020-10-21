@@ -4,4 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlayingActivity"/>
+    tools:context=".PlayingActivity">
+
+    <fragment
+        android:id="@+id/fragment_PlayerRole"
+        android:name="com.example.t_mobop_werewolf.Frag_PlayerRole"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <fragment
+        android:id="@+id/fragment_StoryTelling"
+        android:name="com.example.t_mobop_werewolf.Frag_StoryTelling"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_PlayerRole" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
