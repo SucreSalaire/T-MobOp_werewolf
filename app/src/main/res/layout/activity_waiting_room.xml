@@ -7,12 +7,127 @@
     tools:context=".WaitingRoomActivity">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewRoomName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WaitingRoomActivity"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:text="RoomName : "
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
+
+    </TextView>
+
+
+    <EditText
+        android:id="@+id/editTextRoomName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="text"
+        android:autofillHints="Enter room name"
+        android:text="Name"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewRoomName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewRoomName"
+        app:layout_constraintTop_toTopOf="@+id/textViewRoomName" />
+
+    <TextView
+        android:id="@+id/textViewNumPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Player number : "
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewRoomName"
+        app:layout_constraintTop_toBottomOf="@+id/textViewRoomName">
+    </TextView>
+
+    <EditText
+        android:id="@+id/editTextNumPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:autofillHints="Enter players number"
+        android:text='4'
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/editTextRoomName"
+        app:layout_constraintEnd_toEndOf="@+id/editTextRoomName"
+        app:layout_constraintTop_toTopOf="@+id/textViewNumPlayer"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewNumPlayer">
+    </EditText>
+
+    <TextView
+        android:id="@+id/textViewWaitingRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30sp"
+        android:text="Waiting room"
+        android:textSize="20sp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNumPlayer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutWaitingRoom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20sp"
+        android:layout_marginRight="20sp"
+        android:layout_marginTop="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewWaitingRoom">
+
+        <ListView
+            android:id="@+id/listViewRoomWaiting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textAlignment="center">
+        </ListView>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floattingPointConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+    <FrameLayout
+        android:id="@+id/fFfragmentConfigRoom"
+        android:name="com.example.t_mobop_werewolf.WaitingRoomFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

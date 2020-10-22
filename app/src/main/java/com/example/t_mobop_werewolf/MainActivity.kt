@@ -18,12 +18,12 @@ class MainActivity : AppCompatActivity() {
         val button_Playing = findViewById<Button>(R.id.buttonPlaying)
 
         button_Wait_Room.setOnClickListener{
-            val intent = Intent(this, PlayingActivity::class.java)
+            val intent = Intent(this, WaitingRoomActivity::class.java)
             startActivity(intent)
             Toast.makeText(this, "Lunching: WaitingRoomActivity", Toast.LENGTH_SHORT).show()
         }
         button_Playing.setOnClickListener{
-            val intent = Intent(this, WaitingRoomActivity::class.java)
+            val intent = Intent(this, PlayingActivity::class.java)
             startActivity(intent)
             Toast.makeText(this, "Lunching: PlayingActivity", Toast.LENGTH_SHORT).show()
         }
