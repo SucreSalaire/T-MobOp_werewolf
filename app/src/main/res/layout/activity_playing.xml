@@ -1,53 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".PlayingActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlayingActivity">
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <include
+        layout="@menu/actionbar_playingactivity_dev"/>
 
     <fragment
         android:id="@+id/fragment_PlayerRole"
         android:name="com.example.t_mobop_werewolf.Frag_PlayerRole"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_weight="0.05" />
 
     <fragment
         android:id="@+id/fragment_StoryTelling"
         android:name="com.example.t_mobop_werewolf.Frag_StoryTelling"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_PlayerRole" />
+        android:layout_weight="0.2"/>
 
     <fragment
         android:id="@+id/fragment_PlayersList"
         android:name="com.example.t_mobop_werewolf.Frag_PlayersList"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_PlayerActions"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_StoryTelling"
-        app:layout_constraintVertical_bias="0.514" />
+        android:layout_weight="0.45"/>
 
-    <FrameLayout
-        android:layout_width="409dp"
-        android:layout_height="371dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="231dp">
+    <fragment
+        android:id="@+id/fragment_PlayerActions"
+        android:name="com.example.t_mobop_werewolf.Frag_PlayerActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="0.3"/>
 
-    </FrameLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

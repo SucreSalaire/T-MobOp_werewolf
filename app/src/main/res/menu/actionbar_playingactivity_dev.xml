@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androix.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".PlayingActivity"
+    android:id="@+id/play_actionbar">
+
+    <item
+        android:id="@+id/actionbar_next"
+        android:orderInCategory="100"
+        android:title="Next"
+        app:showAsAction="always"/>
+
+</androix.appcompat.widget.Toolbar>

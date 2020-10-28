@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">T-MobOp_werewolf</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="assassin_role">Assassin is called during night and can kill a pers. He should win alone.</string>
+    <string name="pyromane_role">Pyromane can pour gasoil on 1pers/night. He can light them up only once in the game to kill them all.</string>
+    <string name="littlegirl_role">Little girl can see during the night... Just dont know how yet ...</string>
 </resources>
