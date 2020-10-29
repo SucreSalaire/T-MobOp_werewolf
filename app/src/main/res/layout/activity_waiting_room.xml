@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".WaitingRoomActivity">
 
     <TextView
@@ -29,10 +30,10 @@
         android:id="@+id/editTextRoomName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autofillHints="Enter room name"
         android:ems="10"
         android:gravity="center"
         android:inputType="text"
-        android:autofillHints="Enter room name"
         android:text="Name"
         android:textColor="@android:color/darker_gray"
         android:textSize="20sp"
@@ -49,43 +50,40 @@
         android:text="Player number : "
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/textViewRoomName"
-        app:layout_constraintTop_toBottomOf="@+id/textViewRoomName">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@+id/textViewRoomName"></TextView>
 
     <EditText
         android:id="@+id/editTextNumPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
         android:autofillHints="Enter players number"
+        android:inputType="numberDecimal"
         android:text='4'
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/editTextRoomName"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewNumPlayer"
         app:layout_constraintEnd_toEndOf="@+id/editTextRoomName"
-        app:layout_constraintTop_toTopOf="@+id/textViewNumPlayer"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewNumPlayer">
-    </EditText>
+        app:layout_constraintStart_toStartOf="@+id/editTextRoomName"
+        app:layout_constraintTop_toTopOf="@+id/textViewNumPlayer"></EditText>
 
     <TextView
         android:id="@+id/textViewWaitingRoom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30sp"
+        android:gravity="center"
         android:text="Waiting room"
         android:textSize="20sp"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNumPlayer"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@+id/editTextNumPlayer"></TextView>
 
     <LinearLayout
         android:id="@+id/linearLayoutWaitingRoom"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20sp"
-        android:layout_marginRight="20sp"
         android:layout_marginTop="20sp"
+        android:layout_marginRight="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewWaitingRoom">
@@ -95,8 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textAlignment="center">
-        </ListView>
+            android:textAlignment="center"></ListView>
 
     </LinearLayout>
 

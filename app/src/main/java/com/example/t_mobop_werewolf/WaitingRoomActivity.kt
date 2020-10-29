@@ -27,51 +27,20 @@ class WaitingRoomActivity : AppCompatActivity() {
         val buttonFloatingPointConfig = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.floattingPointConfig)
 
         buttonFloatingPointConfig.setOnClickListener{
-            Toast.makeText(this, "Lunching: ConfigFragment", Toast.LENGTH_SHORT).show()
+
             if(fragmentWaitingRoom.isVisible){
+                Toast.makeText(this, "Closing: ConfigFragment", Toast.LENGTH_SHORT).show()
                 supportFragmentManager.beginTransaction().apply {
                     remove(fragmentWaitingRoom)
                     commit() } }
             else {
+                Toast.makeText(this, "Launching ConfigFragment", Toast.LENGTH_SHORT).show()
                 supportFragmentManager.beginTransaction().apply {
                     add(R.id.fFfragmentConfigRoom, fragmentWaitingRoom)
                     addToBackStack(null)
-                    commit()}
-
-                    val role_list = findViewById<ListView>(R.id.listViewConfigParams)
-                    role_list.adapter = ConfigParamsAdapter(this)}
-        }
-    }
-
-    private class ConfigParamsAdapter(context: Context): BaseAdapter() {
-
-        private val mContext: Context
-
-        // TODO : add dynamic Roles
-        private val names = arrayListOf<String>("Werewolf", "Villager", "Hunter", "Witch")
-
-        init{mContext = context}
-
-        override fun getCount(): Int {
-            return names.size
-        }
-
-        override fun getItemId(position: Int): Long {
-            return  position.toLong()
-        }
-
-        override fun getItem(position: Int): Any {
-            return "TEST STRING"
-        }
-
-        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
-            val layoutInflater = LayoutInflater.from(mContext)
-            val rowMain = layoutInflater.inflate(R.layout.config_frag_waiting_room, viewGroup, false)
-
-            val Role = rowMain.findViewById<TextView>(R.id.textViewRole)
-            Role.text = names[position]
-
-            return rowMain
+                    commit()
+                }
+            }
         }
     }
 
