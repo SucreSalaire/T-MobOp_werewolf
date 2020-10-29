@@ -2,15 +2,15 @@
 <resources>
     <string name="ThisIsTheID">Here is the text to display</string>
 
-    <string name="villager">Villager</string>
-    <string name="werewolf">Werewolf</string>
-    <string name="witch">Witch</string>
-    <string name="fortuneteller">Fortune Teller</string>
-    <string name="hunter">Hunter</string>
-    <string name="thief">Thief</string>
-    <string name="mayor">Mayor</string>
-    <string name="assassin">Assassin</string>
-    <string name="pyromnan">Pyroman</string>
-    <string name="littlegirl">Little Girl</string>
+    <string name="villager">Villager</string>               // Samir
+    <string name="werewolf">Werewolf</string>               // Samir
+    <string name="witch">Witch</string>                     // Samir
+    <string name="fortuneteller">Fortune Teller</string>    // Samir
+    <string name="hunter">Hunter</string>                   // Anou
+    <string name="thief">Thief</string>                     // Anou
+    <string name="mayor">Mayor</string>                     // Anou
+    <string name="assassin">Assassin</string>               // Moi
+    <string name="pyromnan">Pyroman</string>                // Moi
+    <string name="littlegirl">Little Girl</string>          // Moi
 
 </resources>

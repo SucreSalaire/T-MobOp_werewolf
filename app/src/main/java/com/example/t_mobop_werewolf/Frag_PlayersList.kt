@@ -24,6 +24,7 @@ class Frag_PlayersList : Fragment() {
         return v
     }
 
+    // deprecated
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
