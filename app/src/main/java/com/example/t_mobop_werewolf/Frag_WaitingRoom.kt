@@ -11,7 +11,7 @@ import android.widget.ListView
 import android.widget.TextView
 
 
-class WaitingRoomFragment : Fragment(R.layout.fragment_waiting_room) {
+class Frag_WaitingRoom : Fragment(R.layout.fragment_waiting_room) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,7 +47,7 @@ class WaitingRoomFragment : Fragment(R.layout.fragment_waiting_room) {
 
         override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
             val layoutInflater = LayoutInflater.from(mContext)
-            val rowMain = layoutInflater.inflate(R.layout.config_frag_waiting_room, viewGroup, false)
+            val rowMain = layoutInflater.inflate(R.layout.fragment_waiting_room_config, viewGroup, false)
 
             val Role = rowMain.findViewById<TextView>(R.id.textViewRole)
             Role.text = names[position]

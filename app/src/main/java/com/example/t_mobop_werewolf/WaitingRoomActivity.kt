@@ -1,7 +1,6 @@
 package com.example.t_mobop_werewolf
 
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +16,7 @@ class WaitingRoomActivity : AppCompatActivity() {
         val waiting_listView = findViewById<ListView>(R.id.listViewRoomWaiting)
         waiting_listView.adapter = PlayerWaitingAdapter(this)
 
-        val fragmentWaitingRoom = WaitingRoomFragment()
+        val fragmentWaitingRoom = Frag_WaitingRoom()
 
         supportFragmentManager.beginTransaction().apply {
             remove(fragmentWaitingRoom)

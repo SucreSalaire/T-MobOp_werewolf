@@ -1,11 +1,30 @@
 package com.example.t_mobop_werewolf
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 
-class Frag_Actions_Villager : AppCompatActivity() {
+class Frag_Actions_Villager : Fragment () {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_frag__actions__villager)
     }
+
+    // onCreateView is similar to onCreate for an activity
+    // be careful not to refer to an UI element as they are not yet available (return null)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        val v = inflater.inflate(R.layout.fragment_actions_villager, container, false)
+        return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
 }
