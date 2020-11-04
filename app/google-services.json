@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "474402482535",
+    "firebase_url": "https://t-mobop-werewolf.firebaseio.com",
+    "project_id": "t-mobop-werewolf",
+    "storage_bucket": "t-mobop-werewolf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474402482535:android:daae88f5fb758462e1a7c2",
+        "android_client_info": {
+          "package_name": "com.example.t_mobop_werewolf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "474402482535-v3jcdjg59qmu6vh629eilrat1m3rsosf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0XjRcCw0xTxxyDBccRCTaN9KjBcVRlCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "474402482535-v3jcdjg59qmu6vh629eilrat1m3rsosf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -22,4 +22,8 @@ class PlayingActivity : AppCompatActivity() {
 
 
 
+    // FIREBASE WORK TEST
+
+
 }
+

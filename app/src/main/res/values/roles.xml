@@ -6,9 +6,11 @@
     <string name="werewolf">Werewolf</string>               // Samir
     <string name="witch">Witch</string>                     // Samir
     <string name="fortuneteller">Fortune Teller</string>    // Samir
+
     <string name="hunter">Hunter</string>                   // Anou
     <string name="thief">Thief</string>                     // Anou
     <string name="mayor">Mayor</string>                     // Anou
+
     <string name="assassin">Assassin</string>               // Moi
     <string name="pyromnan">Pyroman</string>                // Moi
     <string name="littlegirl">Little Girl</string>          // Moi
