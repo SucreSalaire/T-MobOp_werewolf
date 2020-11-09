@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Frag_Actions_Witch">
+
+    <TextView
+        android:id="@+id/textViewWitchRole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/witch_role"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </TextView>
+
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/witch_action_button_potion1"
+        app:layout_constraintTop_toEndOf="@id/textViewWitchRole"
+        app:layout_constraintBottom_toBottomOf="@id/buttonValidate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textViewWitchRole">
+    </Button>
+
+    <Button
+        android:id="@+id/buttonKill"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/witch_action_button_potion2"
+        app:layout_constraintTop_toEndOf="@id/textViewWitchRole"
+        app:layout_constraintBottom_toBottomOf="@id/buttonValidate"
+        app:layout_constraintStart_toEndOf="@+id/buttonSave"
+        app:layout_constraintEnd_toEndOf="parent">
+    </Button>
+
+    <Button
+        android:id="@+id/buttonValidate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/witch_action_button_valide"
+        app:layout_constraintTop_toBottomOf="@id/buttonSave"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </Button>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
