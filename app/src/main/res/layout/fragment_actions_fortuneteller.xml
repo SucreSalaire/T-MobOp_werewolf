@@ -24,7 +24,7 @@
         android:id="@+id/textViewFortunetellerOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/fortuneteller_action_text"
+        android:text="@string/fortuneteller_order"
         android:textSize="20sp"
         android:gravity="center"
         android:textAlignment="center"

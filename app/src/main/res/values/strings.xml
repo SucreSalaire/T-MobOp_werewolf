@@ -9,9 +9,9 @@
     <string name="villager_order">You\'re not supposed to read this msg, because you\'re sleeping !!!</string>
 
     <string name="werewolf_role">Each werewolf wakes up simultaneously during night, they need to vote the person they\'ll eat </string>
+    <string name="werewolf_order">Choose your prey</string>
     <string name="werewolf_action_button1">Validate my vote</string>
     <string name="werewolf_action_button2">Change my vote</string>
-    <string name="werewolf_action_text">Choose your prey</string>
 
     <string name="hunter_role">When he dies, the hunter can choose to take one person to the grave with him.</string>
     <string name="hunter_action_button1">Shoot someone</string>
@@ -26,13 +26,13 @@
     <string name="mayor_action_button1_alt">Use veto</string>
 
     <string name="witch_role">The witch can choose between 2 potion, one to save and one to kill. Both can be used only one time</string>
-    <string name="witch_action_text">Choose your potion !</string>
+    <string name="witch_order">Choose your potion !</string>
     <string name="witch_action_button_potion1">Save</string>
     <string name="witch_action_button_potion2">Kill</string>
     <string name="witch_action_button_pass">Pass</string>
 
     <string name="fortuneteller_role">Each night, the fortuneteller can see the role of one person</string>
-    <string name="fortuneteller_action_text">Select the character you want to know the role</string>
+    <string name="fortuneteller_order">Select the character you want to know the role</string>
     <string name="fortuneteller_action_button_choose">Validate my choice</string>
     <string name="fortuneteller_action_button_pass">Pass</string>
 

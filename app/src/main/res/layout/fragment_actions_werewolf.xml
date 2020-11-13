@@ -23,7 +23,7 @@
         android:id="@+id/textViewAction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/werewolf_action_text"
+        android:text="@string/werewolf_order"
         android:textAlignment="center"
         android:gravity="center"
         android:textSize="16sp"
