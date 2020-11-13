@@ -11,44 +11,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/witch_role"
+        android:textAlignment="center"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSave"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
     </TextView>
 
-    <Button
-        android:id="@+id/buttonSave"
+    <TextView
+        android:id="@+id/textViewActionWitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/witch_action_button_potion1"
-        app:layout_constraintTop_toEndOf="@id/textViewWitchRole"
-        app:layout_constraintBottom_toBottomOf="@id/buttonValidate"
+        android:text="@string/witch_action_text"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/textViewWitchRole"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSave"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textViewWitchRole">
+        app:layout_constraintEnd_toEndOf="parent">
+    </TextView>
+
+
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/witch_action_button_potion1"
+        app:layout_constraintTop_toBottomOf="@id/textViewWitchRole"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonKill">
     </Button>
 
     <Button
         android:id="@+id/buttonKill"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/witch_action_button_potion2"
-        app:layout_constraintTop_toEndOf="@id/textViewWitchRole"
-        app:layout_constraintBottom_toBottomOf="@id/buttonValidate"
+        app:layout_constraintTop_toBottomOf="@id/textViewWitchRole"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buttonSave"
         app:layout_constraintEnd_toEndOf="parent">
     </Button>
 
     <Button
-        android:id="@+id/buttonValidate"
-        android:layout_width="match_parent"
+        android:id="@+id/buttonPassWitch"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/witch_action_button_valide"
-        app:layout_constraintTop_toBottomOf="@id/buttonSave"
+        android:text="@string/witch_action_button_pass"
+        android:textAlignment="center"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/buttonKill"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
     </Button>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

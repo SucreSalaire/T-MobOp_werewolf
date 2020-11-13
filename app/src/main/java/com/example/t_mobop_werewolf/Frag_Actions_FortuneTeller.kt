@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class Frag_Actions_Witch : Fragment() {
+class Frag_Actions_FortuneTeller : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -19,7 +19,7 @@ class Frag_Actions_Witch : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val v = inflater.inflate(R.layout.fragment_actions_witch, container, false)
+        val v = inflater.inflate(R.layout.fragment_actions_fortuneteller, container, false)
         return v
     }
 

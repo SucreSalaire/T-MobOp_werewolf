@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Frag_Actions_FortuneTeller">
+
+    <TextView
+        android:id="@+id/textViewFortunetellerRole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/fortuneteller_role"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/textViewFortunetellerOrder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+    </TextView>
+
+    <TextView
+        android:id="@+id/textViewFortunetellerOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fortuneteller_action_text"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@+id/textViewFortunetellerRole"
+        app:layout_constraintBottom_toTopOf="@id/buttonChoose"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </TextView>
+
+
+    <Button
+        android:id="@+id/buttonChoose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fortuneteller_action_button_choose"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFortunetellerRole"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonPassFortuneTeller">
+    </Button>
+
+    <Button
+        android:id="@+id/buttonPassFortuneTeller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fortuneteller_action_button_pass"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFortunetellerRole"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buttonChoose"
+        app:layout_constraintEnd_toEndOf="parent">
+    </Button>
+</androidx.constraintlayout.widget.ConstraintLayout>

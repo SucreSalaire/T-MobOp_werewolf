@@ -6,8 +6,9 @@
     <string name="action_description_title">About the character</string>
 
     <string name="villager_role">The villager only has the ability to vote during voting period</string>
+    <string name="villager_order">You\'re not supposed to read this msg, because you\'re sleeping !!!</string>
 
-    <string name="werewolf_role">Each werewolf is called simultaneously during night, they need to vote the person they\'ll kill </string>
+    <string name="werewolf_role">Each werewolf wakes up simultaneously during night, they need to vote the person they\'ll eat </string>
     <string name="werewolf_action_button1">Validate my vote</string>
     <string name="werewolf_action_button2">Change my vote</string>
     <string name="werewolf_action_text">Choose your prey</string>
@@ -23,11 +24,17 @@
     <string name="mayor_role">"The Mayor's vote counts double. During voting period he has the veto if a decision cannot be made"</string>
     <string name="mayor_action_button1">No dilemma</string>
     <string name="mayor_action_button1_alt">Use veto</string>
-    
-    <string name="witch_role">The witch can choose between 2 potion, one to save and one to kill</string>
+
+    <string name="witch_role">The witch can choose between 2 potion, one to save and one to kill. Both can be used only one time</string>
+    <string name="witch_action_text">Choose your potion !</string>
     <string name="witch_action_button_potion1">Save</string>
     <string name="witch_action_button_potion2">Kill</string>
-    <string name="witch_action_button_valide">Valide my choice</string>
+    <string name="witch_action_button_pass">Pass</string>
+
+    <string name="fortuneteller_role">Each night, the fortuneteller can see the role of one person</string>
+    <string name="fortuneteller_action_text">Select the character you want to know the role</string>
+    <string name="fortuneteller_action_button_choose">Validate my choice</string>
+    <string name="fortuneteller_action_button_pass">Pass</string>
 
     <string name="assassin_role">Assassin is called during night and can kill a person. His goal is to be the sole survivor.</string>
     <string name="pyromaniac_role">The pyromaniac can pour gas on one person per night. He can light them up only once in the game to kill them all. His goal is to be the sole survivor.</string>
