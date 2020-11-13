@@ -21,25 +21,26 @@
         android:layout_gravity="center_horizontal"
         android:textSize="20dp" />
 
-    <fragment
-        android:id="@+id/fragment_StoryTelling"
-        android:name="com.example.t_mobop_werewolf.Frag_StoryTelling"
+    <TextView
+        android:id="@+id/textview_storytelling"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Text with the story happening ..."
         android:layout_marginTop="8dp"
-        android:layout_weight="0.2"/>
+        android:layout_weight="0.2"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"/>
 
-    <fragment
-        android:id="@+id/fragment_PlayersList"
-        android:name="com.example.t_mobop_werewolf.Frag_PlayersList"
+    <ListView
+        android:id="@+id/listview_Players"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_weight="0.45"/>
+        android:layout_weight="0.45" />
 
     <fragment
         android:id="@+id/fragment_PlayerActions"
-        android:name="com.example.t_mobop_werewolf.Frag_Actions_Villager"
+        android:name="com.example.t_mobop_werewolf.Frag_Actions_NoActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
