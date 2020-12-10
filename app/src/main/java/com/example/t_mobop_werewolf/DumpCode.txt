@@ -1,0 +1,28 @@
+
+Removed from MainActivity.kt on the 10Dec2020 13h15 (NAGI)
+
+    // Function used to attach a listener to the StoryState value in the database
+    // Should be used by everyone when joining the room or starting the game
+    // Update : not used till GeneralDataModel has been implemented
+    fun AttachListenerStoryState(){
+        ref_StoryState = Firebase.database.reference.child("GeneralData").child("StoryState")
+        ref_StoryState.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val value = snapshot.getValue(String::class.java)
+                    Toast.makeText(applicationContext, "Changed : $value", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(applicationContext, "Error database", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    fun DetachListenerStoryState(){}
+
+    fun AttachSingleEventListener(){}
+____________________________________________________________________________________________________
+
+
+Place here other code pieces you want to keep

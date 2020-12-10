@@ -1,0 +1,61 @@
+
+override fun onCreate()
+        // Code to try to display database values into a list on first screen - NOT WORKING
+        //val dataList: ListView = findViewById(R.id.generalData_list)
+        //val data: ArrayList<GeneralData> = ArrayList()
+        //mGeneralDataObserver = GeneralDataAdapter(this, R.layout.row_general_data, data)
+        //dataList.adapter = mGeneralDataObserver
+
+
+
+package com.example.t_mobop_werewolf.Adapters
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widgetBaseAdapter
+import android.widget.TextView
+import com.example.t_mobop_werewolf.FirebaseData.GeneralData
+import com.example.t_mobop_werewolf.R
+
+
+
+class GeneralDataAdapter(context: Context, resource: Int, list: ArrayList<GeneralData>):
+    ArrayAdapter<GeneralData>(context, resource, list){
+
+    private var mResource: Int = 0
+    private var mList: ArrayList<GeneralData>
+    private var mLayoutInflater: LayoutInflater
+    private var mContext: Context = context
+
+    init{
+        this.mResource = resource
+        this.mList = list
+        this.mLayoutInflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    }
+
+    override fun getView(position: Int, convertView: View, parent: ViewGroup):View {
+        val returnView: View?
+        if (convertView == null)
+        {
+            returnView = try
+            {
+                mLayoutInflater.inflate(mResource, null)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                View(context)
+            }
+            setUI(returnView, position)
+            return convertView
+        }
+        setUI(convertView, position)
+        return convertView
+    }
+
+    private fun setUI(view: View, position: Int)
+    {
+        val item : GeneralData? = if(count > position) getItem(position) else null
+    }
+}

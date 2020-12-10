@@ -37,8 +37,7 @@ class PlayingActivity : AppCompatActivity() {
     // --------------------x-----------------------------------
     // Adapter for the list displaying all the players
     private class PlayersListAdapter(context : Context) : BaseAdapter() {
-        private val mContext : Context
-        init {mContext = context}
+        private val mContext : Context = context
 
         // should be received by Firebase
         private val names = arrayListOf<String>(
@@ -46,22 +45,18 @@ class PlayingActivity : AppCompatActivity() {
 
         override fun getCount(): Int {return names.size}
 
-        override fun getItem(position: Int): Any {return "I don't know thef*ck should go here..."}
+        override fun getItem(position: Int): Any {return "I don't know what should go here..."}
 
         override fun getItemId(position: Int): Long {return position.toLong()}
 
         override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
             val layoutInflater = LayoutInflater.from(mContext)
-            val rowMain = layoutInflater.inflate(R.layout.players_list_row,viewGroup, false)
+            val rowMain = layoutInflater.inflate(R.layout.row_players_list,viewGroup, false)
             val playerName = rowMain.findViewById<TextView>(R.id.playerName)
             playerName.text = names.get(position)
             return rowMain
         }
     }
-
-
-    // FIREBASE WORK TEST
-    // will come here ...
 
 }
 
