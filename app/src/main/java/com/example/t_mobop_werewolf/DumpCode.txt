@@ -22,7 +22,47 @@ Removed from MainActivity.kt on the 10Dec2020 13h15 (NAGI)
     fun DetachListenerStoryState(){}
 
     fun AttachSingleEventListener(){}
+
+
 ____________________________________________________________________________________________________
+GeneralDataModel.kt         on 17Dec2020
+
+mValueDataListener = object: ValueEventListener
+        {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                try
+                {
+                    Log.d("GeneralDataModel", "data updated")
+                    //val dataUpdated: ArrayList<GeneralData> = ArrayList()
+                    val dataHash: HashMap<String,String> = HashMap<String,String>()
+                    val list: ArrayList<String?> = ArrayList()
+
+                    if (snapshot != null)
+                    {
+                        for (items: DataSnapshot in snapshot.children) {
+                            try {
+                                val value = snapshot.getValue(String::class.java)
+                                list.add(value)
+                                //dataUpdated.add(GeneralData(items)) something like that
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                Log.d("GeneralDataModel", "Can't take value from DB")}
+                        }
+                        mDataList = list
+                        Log.d("GeneralDataModel", "data updated, size: " + list!!.size)
+                        setChanged()
+                        notifyObservers()
+                    }
+                } catch (e: Exception) { e.printStackTrace() }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (error != null) {
+                    Log.i("DataModel", "data upload canceled, error = $(error.message)")
+                }
+            }
+        } // mValueDataListener
+
 
 
 Place here other code pieces you want to keep

@@ -1,11 +1,13 @@
 package com.example.t_mobop_werewolf
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.ListView
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 //import com.example.t_mobop_werewolf.Adapters.GeneralDataAdapter
 import com.example.t_mobop_werewolf.FirebaseData.GeneralData
@@ -59,6 +61,7 @@ class MainActivity : AppCompatActivity(), Observer {
         // Buttons at the startup to access the two activities
         val button_Wait_Room = findViewById<Button>(R.id.buttonWaitingRoom)
         val button_Playing = findViewById<Button>(R.id.buttonPlaying)
+        val button_Firebase = findViewById<Button>(R.id.buttonFirebaseTest)
 
         button_Wait_Room.setOnClickListener {
             val intent = Intent(this, WaitingRoomActivity::class.java)
@@ -70,6 +73,16 @@ class MainActivity : AppCompatActivity(), Observer {
             startActivity(intent)
             Toast.makeText(this, "Lunching: PlayingActivity", Toast.LENGTH_SHORT).show()
         }
+        button_Firebase.setOnClickListener {
+            Log.d("MainActivity", "FIREBASE BUTTON CLIKED")
+            setupGeneralDatalist()
+            Toast.makeText(this, GeneralDataModel.getGeneralData("StoryState"), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun setupGeneralDatalist(){
+        val GeneralDataList = findViewById<ListView>(R.id.generalData_list)
+        GeneralDataList.adapter = GeneralDataAdapter(this, GeneralDataModel.getAllData())
     }
 
     override fun update(o: Observable?, arg: Any?) {
@@ -81,11 +94,29 @@ class MainActivity : AppCompatActivity(), Observer {
             // Yes : join it and ask player pseudo
             // No : ask room name, host/player pseudo and take him to setup room
 
+    class GeneralDataAdapter(context: Context, ListItems: ArrayList<String>): BaseAdapter()
+    {
+        private val mContext : Context = context
+        //private val ListItems = arrayListOf<String>("Test1", "ttas")
+        private var mList: ArrayList<String> = ListItems
+
+        override fun getCount(): Int {return mList.size}
+        override fun getItem(position: Int): Any {return "None"}
+        override fun getItemId(position: Int): Long {return position.toLong()}
+
+        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View
+        {
+            val layoutInflater = LayoutInflater.from(mContext)
+            val rowMain = layoutInflater.inflate(R.layout.row_general_data, viewGroup, false)
+            val item = rowMain.findViewById<TextView>(R.id.row_generalData_item)
+            Log.d("GeneralDataAdapter", "issue1")
+            item.text = mList.toString()
+            Log.d("GeneralDataAdapter", "Added item to list displayed")
+            return rowMain
+        }
+    }
+
     fun checkOpenRoom(): Boolean{
-        var GeneralDataList = GeneralDataModel.getData()
-
-
-
 
         return false
     }
@@ -97,13 +128,9 @@ class MainActivity : AppCompatActivity(), Observer {
 
     fun OpenNewRoom(RoomName: String, NbPlayers: Int,HostName: String ): Boolean{
 
-        // Do we limit max players
         return false
     }
 
-
-
-    // Function used to setup Firebase Realtime Database
     fun SetupDatabase(){
         database = Firebase.database.reference
         database.removeValue()              // removes everything at the root

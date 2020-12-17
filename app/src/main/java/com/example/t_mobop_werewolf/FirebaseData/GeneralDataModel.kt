@@ -11,7 +11,10 @@ import kotlin.coroutines.coroutineContext
 object GeneralDataModel: Observable()
 {
     private var mValueDataListener: ValueEventListener? = null
-    private var mDataList: ArrayList<GeneralData>? = ArrayList()
+    private var mDataList: ArrayList<String> = ArrayList()
+    var list: ArrayList<String> = ArrayList()
+    lateinit var item: String
+    lateinit var AllSnap: DataSnapshot
 
     private fun getDatabaseRef() : DatabaseReference? {
         return FirebaseDatabase.getInstance().reference.child("GeneralData")
@@ -19,47 +22,54 @@ object GeneralDataModel: Observable()
 
     init
     {
-        if (mValueDataListener != null) {
-            getDatabaseRef()?.removeEventListener(mValueDataListener!!)
-        }
+        if (mValueDataListener != null) {getDatabaseRef()?.removeEventListener(mValueDataListener!!)}
 
         mValueDataListener = null
-        Log.i("GeneralDataModel", "data init")
 
         mValueDataListener = object: ValueEventListener
         {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try
                 {
-                    Log.i("GeneralDataModel", "data updated")
-                    val dataUpdated: ArrayList<GeneralData> = ArrayList()
-                    val dataHash: HashMap<String,String> = HashMap<String,String>()
-
+                    Log.d("GeneralDataModel", "GeneralData updated")
                     if (snapshot != null)
                     {
+                        AllSnap = snapshot
+                        list.clear()
+                        mDataList.clear()
                         for (items: DataSnapshot in snapshot.children) {
                             try {
-                                dataUpdated.add(GeneralData(items))
-                            } catch (e: Exception) { e.printStackTrace() }
+                                //list.add(GeneralData(snapshot.child("HostName"))) = THIS WORKS
+                                item = items.value as String
+                                list.add(item)
+                                Log.d("GeneralDataModel", "Added value from snapshot")
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                Log.d("GeneralDataModel", "Can't take value from DB")}
                         }
-                        mDataList = dataUpdated
-                        Log.i("GeneralDataModel", "data updated, size: " + dataUpdated!!.size)
+                        mDataList = list
+                        Log.d("GeneralDataModel", "Data updated")
                         setChanged()
                         notifyObservers()
                     }
                 } catch (e: Exception) { e.printStackTrace() }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                if (error != null) {
-                    Log.i("DataModel", "data upload canceled, error = $(error.message)")
-                }
-            }
+            override fun onCancelled(error: DatabaseError) {}
         } // mValueDataListener
 
         getDatabaseRef()?.addValueEventListener(mValueDataListener!!)
 
     } // init
 
-    fun getData(): ArrayList<GeneralData>?{ return mDataList }
+    fun getAllData() : ArrayList<String> { return mDataList }
+
+    fun getGeneralData(Path: String): String{ return AllSnap.child(Path).value as String }
+
+    //fun getGameStarted()
+    //fun getHostName()
+    //fun getRolesDistributed()
+    //fun getRoomName()
+    //fun getStoryState() : String { return AllSnap.child("StoryState").value as String }
+    //fun getWaitRoomOpen()
 }

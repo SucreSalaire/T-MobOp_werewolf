@@ -2,7 +2,7 @@ package com.example.t_mobop_werewolf.FirebaseData
 
 import com.google.firebase.database.DataSnapshot
 
-
+// NOT USED ANYMORE AFTER 17 DEC 2020
 
 class GeneralData (snapshot: DataSnapshot){
     lateinit var id: String
@@ -16,7 +16,7 @@ class GeneralData (snapshot: DataSnapshot){
     init
     {
         try{
-            val data: HashMap<String,Any> = snapshot.value as HashMap<String,Any>
+            val data: HashMap<String,String> = snapshot.value as HashMap<String,String>
             id = snapshot.key ?: ""
             GameStarted         = data["GameStarted"] as String
             HostName            = data["HostName"] as String
@@ -25,8 +25,6 @@ class GeneralData (snapshot: DataSnapshot){
             StoryState          = data["StoryState"] as String
             WaitRoomOpen        = data["WaitRoomOpen"] as String
         } catch (e: Exception) { e.printStackTrace() }
-
-
     }
 
 }

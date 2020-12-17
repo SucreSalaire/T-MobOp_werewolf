@@ -29,9 +29,6 @@ class PlayingActivity : AppCompatActivity() {
         val playersList = findViewById<ListView>(R.id.listview_Players)
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
         playersList.adapter = PlayersListAdapter(this)
-
-
-
     }
 
     // --------------------x-----------------------------------
@@ -45,7 +42,7 @@ class PlayingActivity : AppCompatActivity() {
 
         override fun getCount(): Int {return names.size}
 
-        override fun getItem(position: Int): Any {return "I don't know what should go here..."}
+        override fun getItem(position: Int): Any {return ""}
 
         override fun getItemId(position: Int): Long {return position.toLong()}
 
