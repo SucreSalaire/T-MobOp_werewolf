@@ -9,27 +9,36 @@ import com.google.firebase.ktx.Firebase
 import java.util.*
 import kotlin.coroutines.coroutineContext
 
+/*
+    This object allows to communicate with the Firebase Realtime Database.
+        Data is accessible either in a list or a Snapshot (type from Firebase).
+        In this code, only the local snapshot will be used and accessed whenever a value is needed.
+        The Database has a listener attached to it that allows to automatically update it with
+        the method onDataChange().
 
 
-//  --  This object allows to communicate with the Firebase Realtime Database.
-//          Data is accessible either in a list or a Snapshot (type from Firebase).
-//          In this code, only the Snapshot will be used and accessed whenever a value is needed.
+    The following function are usable anywhere in the project to access a value from the
+    database:
 
-//          The Database has a listener attached to it that allows to automatically update it with
-//          the method onDataChange().
+        GeneralDataModel.openNewRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean
+            Allows to open a new room, returns true if new roomed open
 
-//      The following function are usable anywhere in the project to access a value from the
-//      database:
-//
-//
-//
-//
-//      GeneralDataModel.setupDatabaseAsDefault()
-//          This function allows to setup the database as default.
-//
+        GeneralDataModel.joinRoom(RoomName: String, Pseudo: String): Boolean
+            Adds a player to the room, returns true if added
 
+        GeneralDataModel.getPlayersNumber(RoomName: String): Int
+            Returns the number of players in the room
 
+        GeneralDataModel.getAnyData(Path: String): Any
+            Returns the requested data
 
+        GeneralDataModel.getStoryState(RoomName: String): Double
+            Returns the state of the story
+
+        GeneralDataModel.setupDatabaseAsDefault()
+            Reinitialize database as default
+
+ */
 
 object GeneralDataModel: Observable()
 {
@@ -91,42 +100,47 @@ object GeneralDataModel: Observable()
     // ---------x---------
     // The following functions allow access to the data stored into the Snapshot for the game
 
-    fun openNewRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean {
-        for (item: DataSnapshot in databaseSnapshot.child("Rooms").children){
-            if (item.value as String == RoomName) {
-                Log.d("GeneralDataModel", "Room already exists")
-                return false
+    fun openNewRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean
+    {
+        var flagSucces: Boolean = true
+        try{
+            for (item: DataSnapshot in databaseSnapshot.child("Rooms").children){
+                if (item.value as String == RoomName) {
+                    Log.d("GeneralDataModel", "Room already exists")
+                    flagSucces = false
+                }
             }
-        }
-        database.child("Rooms").setValue(RoomName)
-        database.child("$RoomName/GeneralData/GameStarted").setValue(false)
-        database.child("$RoomName/GeneralData/HostName").setValue(HostName)
-        database.child("$RoomName/GeneralData/RolesDistributed").setValue(false)
-        database.child("$RoomName/GeneralData/RoomName").setValue(RoomName)
-        database.child("$RoomName/GeneralData/StoryState").setValue(0.0)
-        database.child("$RoomName/GeneralData/WaitingRoomOpen").setValue(false)
-
-        return true
+            if (flagSucces){
+                database.child("Rooms").setValue(RoomName)
+                database.child("$RoomName/GeneralData/GameStarted").setValue(false)
+                database.child("$RoomName/GeneralData/HostName").setValue(HostName)
+                database.child("$RoomName/GeneralData/RolesDistributed").setValue(false)
+                database.child("$RoomName/GeneralData/RoomName").setValue(RoomName)
+                database.child("$RoomName/GeneralData/StoryState").setValue(0.0)
+                database.child("$RoomName/GeneralData/WaitingRoomOpen").setValue(false)
+            }
+        } catch (e: Exception) { e.printStackTrace() }
+        return flagSucces
     }
+
 
     fun joinRoom(RoomName: String, Pseudo: String): Boolean {
         return false
     }
 
 
-
-    fun getGeneralData(Path: String): String{ return databaseSnapshot.child(Path).value as String }
-
-
-
-    //fun getStoryState() : String { return AllSnap.child("StoryState").value as String }
-
-    fun checkOpenRoom(): Boolean{
-
-        return false
+    fun getPlayersNumber(RoomName: String): Int{
+        return 0
     }
 
 
+    fun getAnyData(Path: String): Any{ return databaseSnapshot.child(Path).value as Any }
+
+
+    fun getStoryState(RoomName: String) : Double {
+        //return AllSnap.child("StoryState").value as String
+        return 0.0
+    }
 
 
     // Must be used only once !!! Otherwise will reinitialize all the game

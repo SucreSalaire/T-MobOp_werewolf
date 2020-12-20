@@ -9,6 +9,34 @@ Alphonso
         HostName            "false"
         RolesDistributed    "false"
         RoomName            "false"
+        StoryState          1.6
+        WaitingRoomOpen     "false"
+    
+    Players
+        Player1
+            Alive       "true"
+            Pseudo      "Axel"
+            Role        "Eboueur"
+        Player2
+            Alive       "false"
+            Pseudo      "Celia"
+            Role        "Fermier"
+    
+    RolesData
+        VillagerCount   "7"
+        WerewolfCount   "3"
+        WitchRole
+            WitchAlive      "false"
+            SavePotion      "1"
+            KillPotion      "0"
+        
+
+Paris
+    GeneralData
+        GameStarted         "false"
+        HostName            "false"
+        RolesDistributed    "false"
+        RoomName            "false"
         StoryState          "false"
         WaitingRoomOpen     "false"
     
@@ -29,5 +57,3 @@ Alphonso
             WitchAlive      "true"
             SavePotion      "1"
             KillPotion      "0"
-        
-        

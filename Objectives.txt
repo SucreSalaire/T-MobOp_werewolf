@@ -1,0 +1,27 @@
+Graphic layouts
+    Startup page (join/create room)
+    Create room
+    Join room
+    Waiting room
+
+Functionnalities
+    Create/Join room functions
+    Waiting room setup
+    Config the game to start according to the previous setup
+    
+    Gameplay (night -> werewolf -> witch .... day -> vote -> night ...)
+    Text updating with the Gameplay ("The night is falling ... Werewolf are waking up...")
+    Adapt next playing role in the host code
+
+
+
+Samir
+    Gameplay général
+    Waiting room
+    
+Harjeet
+    Firebase (join/create room)
+    
+Anou
+    Graphics for all the players
+    General theme of the game (background, buttons, ...)

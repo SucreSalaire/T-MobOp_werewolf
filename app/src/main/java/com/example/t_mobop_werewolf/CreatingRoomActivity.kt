@@ -18,8 +18,6 @@ class CreatingRoomActivity : AppCompatActivity() {
             val NbPlayers = findViewById<EditText>(R.id.editTextPlayersNumber).text
             val HostName = findViewById<EditText>(R.id.editTextHostName).text
             GeneralDataModel.openNewRoom(RoomName as String, NbPlayers as Int, HostName as String)
-
-            CONTINUE HERE
         }
     }
 }
