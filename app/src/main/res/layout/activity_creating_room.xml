@@ -17,7 +17,7 @@
         android:layout_marginRight="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Room Name"
+        android:hint="Enter the room name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,7 +29,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Host Name"
+        android:hint="Enter the host pseudo"
         app:layout_constraintEnd_toEndOf="@+id/editTextNewRoomName"
         app:layout_constraintStart_toStartOf="@+id/editTextNewRoomName"
         app:layout_constraintTop_toBottomOf="@+id/editTextNewRoomName" />

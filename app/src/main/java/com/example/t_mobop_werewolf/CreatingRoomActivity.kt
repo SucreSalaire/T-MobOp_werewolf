@@ -1,10 +1,12 @@
 package com.example.t_mobop_werewolf
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 
 class CreatingRoomActivity : AppCompatActivity() {
@@ -14,10 +16,22 @@ class CreatingRoomActivity : AppCompatActivity() {
 
         val buttonCreateRoom = findViewById<Button>(R.id.buttonCreateConfirm)
         buttonCreateRoom.setOnClickListener{
-            val RoomName = findViewById<EditText>(R.id.editTextNewRoomName).text
-            val NbPlayers = findViewById<EditText>(R.id.editTextPlayersNumber).text
-            val HostName = findViewById<EditText>(R.id.editTextHostName).text
-            GeneralDataModel.openNewRoom(RoomName as String, NbPlayers as Int, HostName as String)
+            val roomName = findViewById<EditText>(R.id.editTextNewRoomName)
+            val nbPlayers = findViewById<EditText>(R.id.editTextPlayersNumber)
+            val hostName = findViewById<EditText>(R.id.editTextHostName)
+            val valid: Boolean = GeneralDataModel.createRoom(roomName.text.toString(), nbPlayers.inputType, hostName.text.toString())
+            if (valid)
+            {
+                Toast.makeText(applicationContext, "Room created.", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, WaitingRoomActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(applicationContext, "Room creation denied, already open", Toast.LENGTH_LONG).show()
+                val intent = intent
+                finish()
+                startActivity(intent)
+            }
+
         }
     }
 }

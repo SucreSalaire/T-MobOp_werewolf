@@ -7,7 +7,7 @@
     tools:context=".JoiningRoomActivity">
 
     <EditText
-        android:id="@+id/editTextNewRoomName2"
+        android:id="@+id/editTextRoomName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -16,10 +16,32 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:ems="10"
+        android:hint="Room name"
         android:inputType="textPersonName"
-        android:text="Room Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextPlayerPseudo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Player pseudo"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/editTextRoomName"
+        app:layout_constraintStart_toStartOf="@+id/editTextRoomName"
+        app:layout_constraintTop_toBottomOf="@+id/editTextRoomName" />
+
+    <Button
+        android:id="@+id/buttonJoinConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="Join room"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPlayerPseudo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
