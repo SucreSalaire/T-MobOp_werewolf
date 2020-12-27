@@ -23,6 +23,8 @@ class PlayingActivity : AppCompatActivity() {
         val player_role = findViewById<TextView>(R.id.textview_PlayerRole)
         player_role.text = "Villager" // TO BE CHANGED LATER (FIREBASE)
 
+        val player_name = "LaSorciere"
+
         val story = findViewById<TextView>(R.id.textview_storytelling)
         story.text = "The night falls on the quiet village of MonCul" // later controlled by Firebase
 
@@ -30,6 +32,8 @@ class PlayingActivity : AppCompatActivity() {
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
         playersList.adapter = PlayersListAdapter(this)
     }
+
+    // func dataBase changed
 
     // --------------------x-----------------------------------
     // Adapter for the list displaying all the players
