@@ -17,9 +17,9 @@ class CreatingRoomActivity : AppCompatActivity() {
         val buttonCreateRoom = findViewById<Button>(R.id.buttonCreateConfirm)
         buttonCreateRoom.setOnClickListener{
             val roomName = findViewById<EditText>(R.id.editTextNewRoomName)
-            val nbPlayers = findViewById<EditText>(R.id.editTextPlayersNumber)
+            val nbPlayers = findViewById<EditText>(R.id.editTextPlayersNumber).text.toString().toInt()
             val hostName = findViewById<EditText>(R.id.editTextHostName)
-            val valid: Boolean = GeneralDataModel.createRoom(roomName.text.toString(), nbPlayers.inputType, hostName.text.toString())
+            val valid: Boolean = GeneralDataModel.createRoom(roomName.text.toString(), nbPlayers, hostName.text.toString())
             if (valid)
             {
                 Toast.makeText(applicationContext, "Room created.", Toast.LENGTH_LONG).show()

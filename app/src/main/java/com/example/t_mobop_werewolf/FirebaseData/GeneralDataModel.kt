@@ -8,37 +8,53 @@ import java.util.*
 
 /*
     This object allows to communicate with the Firebase Realtime Database.
-        Data is accessible either in a list or a Snapshot (type from Firebase).
-        In this code, only the local snapshot will be used and accessed whenever a value is needed.
-        The Database has a listener attached to it that allows to automatically update it with
-        the method onDataChange().
+        Data is accessible in a local snapshot and is updated on any change (method onDataChange())
+        The Database has a listener attached to it that allows to automatically update it.
 
 
     The following function are usable anywhere in the project to access a value from the
     database:
 
         GeneralDataModel.createRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean
-            Allows to open a new room, returns true if new roomed open
+            > Allows to open a new room, returns true if new roomed open
 
         GeneralDataModel.joinRoom(RoomName: String, Pseudo: String): Boolean
-            Adds a player to the room, returns true if added
+            > Adds a player to the room, returns true if added
 
         GeneralDataModel.getPlayersNumber(RoomName: String): Int
-            Returns the number of players in the room
+            > Returns the number of players in the room
 
         GeneralDataModel.getAnyData(Path: String): Any
-            Returns the requested data
+            > Returns the requested data from the designated path
 
         GeneralDataModel.getStoryState(RoomName: String): Double
-            Returns the state of the story
+            > Returns the current state of the story
+
+        GeneralDataModel.changeStoryState(RoomName: String, NextState: Double) : Boolean
+            > Set the story state of the room
+
+        GeneralDataModel.getPlayerRole(RoomName: String, PlayerPseudo: String): String
+            > Get the role of the player
+
+        GeneralDataModel.killPlayer(RoomName: String, PlayerPseudo: String): Boolean
+            > Kill the player
+
+        GeneralDataModel.
+        GeneralDataModel.
+        GeneralDataModel.
 
         GeneralDataModel.setupDatabaseAsDefault()
-            Reinitialize database as default
+            > Reinitialize the database as default
 
  */
 
 object GeneralDataModel: Observable()
 {
+    //private lateinit var database: DatabaseReference
+    private var database = Firebase.database.reference
+    private fun getDatabaseRef() : DatabaseReference? {
+        return FirebaseDatabase.getInstance().reference}
+
     // Event listener attached to the database
     private var mValueDataListener: ValueEventListener? = null
 
@@ -46,13 +62,8 @@ object GeneralDataModel: Observable()
     lateinit var databaseSnapshot: DataSnapshot
 
     // List containing the values - not used - code is commented to avoid usage
-    //private var mDataList: ArrayList<String> = ArrayList()
-    //lateinit var item: String
-
-    //private lateinit var database: DatabaseReference
-    private var database = Firebase.database.reference
-    private fun getDatabaseRef() : DatabaseReference? {
-        return FirebaseDatabase.getInstance().reference.child("GeneralData")}
+    // private var mDataList: ArrayList<String> = ArrayList()
+    // lateinit var item: String
 
     init
     {
@@ -86,22 +97,25 @@ object GeneralDataModel: Observable()
                 } catch (e: Exception) { e.printStackTrace() }
             }
 
-            override fun onCancelled(error: DatabaseError) { TODO("Handle errors ...") }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("GeneralDataModel", "Updated snapshot download cancelled!")}
 
         } // mValueDataListener
         getDatabaseRef()?.addValueEventListener(mValueDataListener!!)
     } // init
 
 
+
     // ---------x---------
-    // The following functions allow access to the data stored into the Snapshot for the game
+    // Firebase Functions
 
     fun createRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean
     {
+        Log.d("GeneralDataModel", "Fun createRoom() called")
         var roomAlreadyOpen: Boolean = false
         try
         {
-            databaseSnapshot.child("Rooms").children.forEach { item: DataSnapshot ->
+            for (item: DataSnapshot in databaseSnapshot.child("Rooms").children){
                 Log.d("GeneralDataModel", item.value as String)
                 if (item.value.toString() == RoomName) {
                     Log.d("GeneralDataModel", "Room already exists")
@@ -131,34 +145,71 @@ object GeneralDataModel: Observable()
 
     fun joinRoom(RoomName: String, Pseudo: String): Boolean
     {
-        var joignedSuccess: Boolean = false
-        databaseSnapshot.children.forEach { item: DataSnapshot ->
-            Log.d("GeneralDataModel", item.value.toString())
-            if (item.value.toString() == RoomName){
-                // Also check if the same player doesn't exist
-                Log.d("GeneralDataModel", "Room $RoomName joined.")
-                val nbPlayers = databaseSnapshot.child("$RoomName/GeneralData/NbPlayers").value as Int
-                database.child("Rooms/$RoomName/GeneralData/NbPlayers").setValue(nbPlayers + 1)
-                joignedSuccess = true
-            }
+        // Add check if player already exists
+        // Add check for max players
+        Log.d("GeneralDataModel", "Fun joinRoom() called")
+        var joinSuccess: Boolean = false
+        joinSuccess = try {
+            val nbPlayer = getPlayersNumber(RoomName) + 1
+            database.child("$RoomName/Players/Player$nbPlayer/Alive").setValue(true)
+            database.child("$RoomName/Players/Player$nbPlayer/Pseudo").setValue(Pseudo)
+            database.child("$RoomName/Players/Player$nbPlayer/Role").setValue("None")
+            database.child("$RoomName/GeneralData/NbPlayers").setValue(nbPlayer)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("GeneralDataModel", "Fun joinRoom() failed")
+            false
         }
-        return joignedSuccess
+        return joinSuccess
     }
 
 
-    fun getPlayersNumber(RoomName: String): Int{
-        return 0
+    fun getPlayersNumber(RoomName: String): Long {
+        return databaseSnapshot.child("$RoomName/GeneralData/NbPlayers").value as Long
     }
 
-
-    fun getAnyData(Path: String): Any{ return databaseSnapshot.child(Path).value as Any }
-
+    fun getAnyData(Path: String): Any {
+        return databaseSnapshot.child(Path).value as Any
+    }
 
     fun getStoryState(RoomName: String) : Double {
-        //return AllSnap.child("StoryState").value as String
+        databaseSnapshot.child("$RoomName/GeneralData/StoryState").value as Double
         return 0.0
     }
 
+    fun changeStoryState(RoomName: String, NextState: Double) : Boolean {
+        try{
+            database.child("$RoomName/GeneralData/StoryState").setValue(NextState)
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("GeneralDataModel", "fun changeStoryState failed")
+            return false
+        }
+    }
+
+    fun getPlayerRole(RoomName: String, PlayerPseudo: String): String {
+        try{
+            return databaseSnapshot.child("$RoomName/Players/$PlayerPseudo/Role").value as String
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("GeneralDataModel", "fun killPlayer failed")
+            return "Failed"
+        }
+    }
+
+    fun killPlayer(RoomName: String, PlayerPseudo: String): Boolean {
+        // add role dependant kill count in DB
+        try{
+            database.child("$RoomName/GeneralData/Players/$PlayerPseudo/Alive").setValue(false)
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("GeneralDataModel", "fun killPlayer failed")
+            return false
+        }
+    }
 
     // Must be used only once !!! Otherwise will reinitialize all the game
     fun setupDatabaseAsDefault(){
@@ -170,6 +221,18 @@ object GeneralDataModel: Observable()
 
         Log.d("GeneralDataModel", "Database has been set to default.")
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // ---------x--------- DUMP CODE  ---------x---------

@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), Observer {
         }
     }
 
-    fun initializeButtons(){
+    private fun initializeButtons(){
         val buttonJoinRoom = findViewById<Button>(R.id.buttonJoinRoom)
         val buttonCreateRoom= findViewById<Button>(R.id.buttonCreateRoom)
         val buttonWaitRoom = findViewById<Button>(R.id.buttonWaitingRoom)
@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity(), Observer {
         buttonJoinRoom.setOnClickListener{
             val intent = Intent(this, JoiningRoomActivity::class.java)
             startActivity(intent)
+            val nb = GeneralDataModel.getPlayersNumber("a")
             Toast.makeText(this, "Join a room", Toast.LENGTH_LONG).show()
         }
         buttonCreateRoom.setOnClickListener{

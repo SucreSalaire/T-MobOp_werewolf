@@ -18,13 +18,14 @@ class JoiningRoomActivity : AppCompatActivity() {
             val roomName= findViewById<EditText>(R.id.editTextRoomName)
             val playerPseudo = findViewById<EditText>(R.id.editTextPlayerPseudo)
             val valid = GeneralDataModel.joinRoom(roomName.text.toString(), playerPseudo.text.toString())
+
             if (valid)
             {
-                Toast.makeText(applicationContext, "Room joigned.", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Room joined ${roomName.text}.", Toast.LENGTH_LONG).show()
                 val intent = Intent(this, WaitingRoomActivity::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(applicationContext, "Room joining denied", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Room $roomName joining denied", Toast.LENGTH_LONG).show()
                 val intent = intent
                 finish()
                 startActivity(intent)
