@@ -65,6 +65,8 @@ object GeneralDataModel: Observable()
     // private var mDataList: ArrayList<String> = ArrayList()
     // lateinit var item: String
 
+    public var roomName = ""
+
     init
     {
         if (mValueDataListener != null) {getDatabaseRef()?.removeEventListener(mValueDataListener!!)}
@@ -123,6 +125,7 @@ object GeneralDataModel: Observable()
                 }
             }
             if (roomAlreadyOpen.not()){
+                roomName = RoomName
                 Log.d("GeneralDataModel", "Creating new room: $RoomName")
                 database.child("Rooms/$RoomName").setValue("Open")
                 database.child("$RoomName/GeneralData/GameStarted").setValue(false)
@@ -150,6 +153,7 @@ object GeneralDataModel: Observable()
         Log.d("GeneralDataModel", "Fun joinRoom() called")
         var joinSuccess: Boolean = false
         joinSuccess = try {
+            roomName = RoomName
             val nbPlayer = getPlayersNumber(RoomName) + 1
             database.child("$RoomName/Players/Player$nbPlayer/Alive").setValue(true)
             database.child("$RoomName/Players/Player$nbPlayer/Pseudo").setValue(Pseudo)
@@ -163,7 +167,6 @@ object GeneralDataModel: Observable()
         }
         return joinSuccess
     }
-
 
     fun getPlayersNumber(RoomName: String): Long {
         return databaseSnapshot.child("$RoomName/GeneralData/NbPlayers").value as Long
