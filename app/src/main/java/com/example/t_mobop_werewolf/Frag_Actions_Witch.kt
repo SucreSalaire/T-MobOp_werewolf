@@ -37,7 +37,7 @@ class Frag_Actions_Witch : Fragment() {
 
         buttonSave.setOnClickListener{
             Log.d("MainActivity", "witch saved someone")
-            val roomName = GeneralDataModel.roomName
+            val roomName = GeneralDataModel.localRoomName
             val path = "$roomName/Players/Player1/potionSaveLeft"
             // val potionLeft = GeneralDataModel.getAnyData(path)
             // if(potionLeft > 0) {

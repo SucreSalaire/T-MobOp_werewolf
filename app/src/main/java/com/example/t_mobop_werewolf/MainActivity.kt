@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), Observer {
         buttonFirebase.setOnClickListener {
             Log.d("MainActivity", "FIREBASE BUTTON CLICKED")
             Toast.makeText(this, "Database set to default", Toast.LENGTH_SHORT).show()
-            GeneralDataModel.setupDatabaseAsDefault()   // MUST BE CALLED ONLY BY THE FIRST TO OPEN A ROOM
+            GeneralDataModel.resetAllDatabase()   // MUST BE CALLED ONLY BY THE HOST WHEN QUITTING GAME
         }
 
     }

@@ -50,51 +50,35 @@ import java.util.*
 
 object GeneralDataModel: Observable()
 {
-    //private lateinit var database: DatabaseReference
     private var database = Firebase.database.reference
     private fun getDatabaseRef() : DatabaseReference? {
         return FirebaseDatabase.getInstance().reference}
 
-    // Event listener attached to the database
-    private var mValueDataListener: ValueEventListener? = null
+    // Event listener attached to the database root
+    private var mGeneralListener: ValueEventListener? = null
 
-    // Local snapshot containing all the database
-    lateinit var databaseSnapshot: DataSnapshot
-
-    // List containing the values - not used - code is commented to avoid usage
-    // private var mDataList: ArrayList<String> = ArrayList()
-    // lateinit var item: String
-
-    public var roomName = ""
+    // Local variables containing the database values
+    lateinit var localSnapshot: DataSnapshot
+    var localRoomName: String = "None"
+    var localPseudo: String = "None"
+    var localRole: String = "None"
 
     init
     {
-        if (mValueDataListener != null) {getDatabaseRef()?.removeEventListener(mValueDataListener!!)}
-        mValueDataListener = null
+        if (mGeneralListener != null) {getDatabaseRef()?.removeEventListener(mGeneralListener!!)}
+        mGeneralListener = null
 
-        mValueDataListener = object: ValueEventListener
+        mGeneralListener = object: ValueEventListener
         {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try
                 {
                     if (snapshot != null)
                     {
-                        databaseSnapshot = snapshot
+                        localSnapshot = snapshot
                         Log.d("GeneralDataModel", "Data updated")
                         setChanged()
                         notifyObservers()
-
-                        //mDataList.clear()
-                        //for (items: DataSnapshot in snapshot.children) {
-                        //    try {
-                        //
-                        //        item = items.value as String
-                        //        mDataList.add(item)
-                        //        Log.d("GeneralDataModel", "Added value from snapshot")
-                        //    } catch (e: Exception) {
-                        //        e.printStackTrace()
-                        //        Log.d("GeneralDataModel", "Can't take value from DB")}
-                        //}
                     }
                 } catch (e: Exception) { e.printStackTrace() }
             }
@@ -103,7 +87,7 @@ object GeneralDataModel: Observable()
                 Log.d("GeneralDataModel", "Updated snapshot download cancelled!")}
 
         } // mValueDataListener
-        getDatabaseRef()?.addValueEventListener(mValueDataListener!!)
+        getDatabaseRef()?.addValueEventListener(mGeneralListener!!)
     } // init
 
 
@@ -117,7 +101,7 @@ object GeneralDataModel: Observable()
         var roomAlreadyOpen: Boolean = false
         try
         {
-            for (item: DataSnapshot in databaseSnapshot.child("Rooms").children){
+            for (item: DataSnapshot in localSnapshot.child("Rooms").children){
                 Log.d("GeneralDataModel", item.value as String)
                 if (item.value.toString() == RoomName) {
                     Log.d("GeneralDataModel", "Room already exists")
@@ -125,7 +109,6 @@ object GeneralDataModel: Observable()
                 }
             }
             if (roomAlreadyOpen.not()){
-                roomName = RoomName
                 Log.d("GeneralDataModel", "Creating new room: $RoomName")
                 database.child("Rooms/$RoomName").setValue("Open")
                 database.child("$RoomName/GeneralData/GameStarted").setValue(false)
@@ -140,6 +123,9 @@ object GeneralDataModel: Observable()
                 database.child("$RoomName/Players/Player1/Alive").setValue(true)
                 database.child("$RoomName/Players/Player1/Pseudo").setValue(HostName)
                 database.child("$RoomName/Players/Player1/Role").setValue("None")
+
+                localRoomName = RoomName
+                localPseudo = HostName
             }
         } catch (e: Exception) { e.printStackTrace() }
         return roomAlreadyOpen.not()
@@ -153,12 +139,13 @@ object GeneralDataModel: Observable()
         Log.d("GeneralDataModel", "Fun joinRoom() called")
         var joinSuccess: Boolean = false
         joinSuccess = try {
-            roomName = RoomName
             val nbPlayer = getPlayersNumber(RoomName) + 1
             database.child("$RoomName/Players/Player$nbPlayer/Alive").setValue(true)
             database.child("$RoomName/Players/Player$nbPlayer/Pseudo").setValue(Pseudo)
             database.child("$RoomName/Players/Player$nbPlayer/Role").setValue("None")
             database.child("$RoomName/GeneralData/NbPlayers").setValue(nbPlayer)
+            localRoomName = RoomName
+            localPseudo = Pseudo
             true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -168,22 +155,28 @@ object GeneralDataModel: Observable()
         return joinSuccess
     }
 
+
+    fun setupAndStartGame(){
+
+    }
+
+
     fun getPlayersNumber(RoomName: String): Long {
-        return databaseSnapshot.child("$RoomName/GeneralData/NbPlayers").value as Long
+        return localSnapshot.child("$RoomName/GeneralData/NbPlayers").value as Long
     }
 
     fun getAnyData(Path: String): Any {
-        return databaseSnapshot.child(Path).value as Any
+        return localSnapshot.child(Path).value as Any
     }
 
-    fun getStoryState(RoomName: String) : Double {
-        databaseSnapshot.child("$RoomName/GeneralData/StoryState").value as Double
+    fun getStoryState() : Double {
+        localSnapshot.child("$localRoomName/GeneralData/StoryState").value as Double
         return 0.0
     }
 
-    fun changeStoryState(RoomName: String, NextState: Double) : Boolean {
+    fun changeStoryState(NextState: Double) : Boolean {
         try{
-            database.child("$RoomName/GeneralData/StoryState").setValue(NextState)
+            database.child("$localRoomName/GeneralData/StoryState").setValue(NextState)
             return true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -192,9 +185,9 @@ object GeneralDataModel: Observable()
         }
     }
 
-    fun getPlayerRole(RoomName: String, PlayerPseudo: String): String {
+    fun getPlayerRole(PlayerPseudo: String): String {
         try{
-            return databaseSnapshot.child("$RoomName/Players/$PlayerPseudo/Role").value as String
+            return localSnapshot.child("$localRoomName/Players/$PlayerPseudo/Role").value as String
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d("GeneralDataModel", "fun killPlayer failed")
@@ -202,10 +195,10 @@ object GeneralDataModel: Observable()
         }
     }
 
-    fun killPlayer(RoomName: String, PlayerPseudo: String): Boolean {
+    fun killPlayer(PlayerPseudo: String): Boolean {
         // add role dependant kill count in DB
         try{
-            database.child("$RoomName/GeneralData/Players/$PlayerPseudo/Alive").setValue(false)
+            database.child("$localRoomName/GeneralData/Players/$PlayerPseudo/Alive").setValue(false)
             return true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -215,7 +208,7 @@ object GeneralDataModel: Observable()
     }
 
     // Must be used only once !!! Otherwise will reinitialize all the game
-    fun setupDatabaseAsDefault(){
+    fun resetAllDatabase(){
         //database = Firebase.database.reference
         database.removeValue()              // removes everything at the root
         Log.d("GeneralDataModel", "Database has been cleared.")
@@ -226,34 +219,4 @@ object GeneralDataModel: Observable()
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    // ---------x--------- DUMP CODE  ---------x---------
-
-    //database.child("GeneralData").child("RoomName").setValue("None")
-    //database.child("GeneralData").child("StoryState").setValue("0.0")
-    //database.child("GeneralData").child("HostName").setValue("None")
-    //database.child("GeneralData").child("WaitRoomOpen").setValue("false")
-    //database.child("GeneralData").child("RolesDistributed").setValue("false")
-    //database.child("GeneralData").child("GameStarted").setValue("false")
-
-    //database.child("RolesData").child("RevivePotions").setValue("1")
-    //database.child("RolesData").child("KillPotions").setValue("1")
-
-    //database.child("Players").child("Model").child("Pseudo").setValue("Don't touch")
-    //database.child("Players").child("Model").child("Alive").setValue("true")
-    //database.child("Players").child("Model").child("Role").setValue("Villager")
-
-
-    //fun getAllData() : ArrayList<String> { return mDataList }     can be used with ListAdapter
 }
