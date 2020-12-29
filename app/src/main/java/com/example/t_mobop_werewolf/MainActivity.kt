@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity(), Observer {
         setContentView(R.layout.activity_main)
         initializeButtons()     // setup buttons for dev purpose
         GeneralDataModel        // initialisation Firebase database model
+        GeneralDataModel.localSnapshotInit()
     }
 
     override fun onPause() {
@@ -46,6 +47,11 @@ class MainActivity : AppCompatActivity(), Observer {
         if (mGeneralDataObserver != null){
             GeneralDataModel.deleteObserver(mGeneralDataObserver)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 
     private fun initializeButtons(){

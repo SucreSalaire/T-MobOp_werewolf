@@ -24,6 +24,10 @@ import com.google.firebase.ktx.Firebase
 
 class PlayingActivity : AppCompatActivity() {
 
+    var roomName = GeneralDataModel.localRoomName
+    var storyState: Double = 0.0
+    var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
@@ -42,10 +46,8 @@ class PlayingActivity : AppCompatActivity() {
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
         playersList.adapter = PlayersListAdapter(this)
 
+        //---
         // ---x--- Firebase database listener for the StoryState variable ---x---
-        var roomName = GeneralDataModel.localRoomName
-        var storyState: Double = 0.0
-        var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
         storyStateRef.addValueEventListener(object: ValueEventListener
         {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -60,7 +62,13 @@ class PlayingActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Error database for storyState", Toast.LENGTH_SHORT).show()
             }
         })
+        //---
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // add code to remove listener
     }
 
 
