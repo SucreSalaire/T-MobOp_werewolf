@@ -36,21 +36,39 @@ class Frag_Actions_Witch : Fragment() {
         val buttonPass = view.findViewById<Button>(R.id.buttonValidate)
 
         buttonSave.setOnClickListener{
-            Log.d("MainActivity", "witch saved someone")
             val roomName = GeneralDataModel.localRoomName
-            val path = "$roomName/Players/Player1/potionSaveLeft"
-            // val potionLeft = GeneralDataModel.getAnyData(path)
-            // if(potionLeft > 0) {
-            //
-            // }
-            // maj de la database
+            val pseudo = GeneralDataModel.localPseudo
+            val path = "$roomName/Players/$pseudo/potionSave"
+            val potionLeft =  GeneralDataModel.getAnyData(path) as Int
+            if(potionLeft > 0) {
+                Log.d("MainActivity", "witch saved someone")
+                //setAnyData(path, potionLeft-1)
+            }
+            else{
+                Log.d("MainActivity", "you don't have any saving potion left")
+            }
         }
 
         buttonKill.setOnClickListener{
-            Log.d("MainActivity", "witch killed someone")}
+            val roomName = GeneralDataModel.localRoomName
+            val pseudo = GeneralDataModel.localPseudo
+            val path = "$roomName/Players/$pseudo/potionKill"
+            val potionLeft = GeneralDataModel.getAnyData(path) as Int
+            if(potionLeft > 0) {
+                Log.d("MainActivity", "witch killed someone")
+                //setAnyData(path, potionLeft-1)
+            }
+            else{
+                Log.d("MainActivity", "you don't have any killing potion left")
+            }}
 
         buttonPass.setOnClickListener{
-            Log.d("MainActivity", "witch passed")}
+            Log.d("MainActivity", "witch passed")
+            val roomName = GeneralDataModel.localRoomName
+            val pseudo = GeneralDataModel.localPseudo
+            val path = "$roomName/Players/$pseudo/potionSave"
+            // Actualise any data to activat DataChanged function
+        }
 
     }
 

@@ -39,5 +39,7 @@
     <string name="assassin_role">Assassin is called during night and can kill a person. His goal is to be the sole survivor.</string>
     <string name="pyromaniac_role">The pyromaniac can pour gas on one person per night. He can light them up only once in the game to kill them all. His goal is to be the sole survivor.</string>
     <string name="littlegirl_role">"Little girl can see during the night... Just don't know how yet ..."</string>
+    <string name="title">Werewolf !</string>
+    <string name="loading_tagline">Loading...</string>
 
 </resources>

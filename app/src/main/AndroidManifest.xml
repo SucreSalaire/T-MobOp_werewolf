@@ -15,12 +15,15 @@
         <activity android:name=".Frag_Actions_Villager" />
         <activity android:name=".WaitingRoomActivity" />
         <activity android:name=".PlayingActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity">
+
         </activity>
     </application>
 

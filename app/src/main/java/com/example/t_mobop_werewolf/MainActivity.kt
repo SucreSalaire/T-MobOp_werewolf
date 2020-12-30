@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
@@ -23,10 +24,14 @@ class MainActivity : AppCompatActivity(), Observer {
     private var mGeneralDataObserver: Observer? = null
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initializeButtons()     // setup buttons for dev purpose
+
+
+        this.initializeButtons()     // setup buttons for dev purpose
         GeneralDataModel        // initialisation Firebase database model
         GeneralDataModel.localSnapshotInit()
     }
