@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.example.t_mobop_werewolf.FirebaseData.StoryState
 
 class WaitingRoomActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +43,8 @@ class WaitingRoomActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private class PlayerWaitingAdapter(context: Context): BaseAdapter() {
 

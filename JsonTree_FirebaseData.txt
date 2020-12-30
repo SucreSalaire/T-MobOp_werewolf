@@ -5,9 +5,9 @@ Rooms
 
 Alphonso
     GeneralData
-        GameStarted         "false"
-        HostName            "false"
-        RolesDistributed    "false"
+        GameStarted         false
+        HostName            Jackie
+        RolesDistributed    false
         RoomName            "false"
         StoryState          1.6
         WaitingRoomOpen     "false"

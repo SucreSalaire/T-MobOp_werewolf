@@ -3,7 +3,7 @@ Removed from MainActivity.kt on the 10Dec2020 13h15 (NAGI)
 
     // Function used to attach a listener to the StoryState value in the database
     // Should be used by everyone when joining the room or starting the game
-    // Update : not used till GeneralDataModel has been implemented
+    // Update : not used as GeneralDataModel has been implemented
     fun AttachListenerStoryState(){
         ref_StoryState = Firebase.database.reference.child("GeneralData").child("StoryState")
         ref_StoryState.addValueEventListener(object : ValueEventListener {
