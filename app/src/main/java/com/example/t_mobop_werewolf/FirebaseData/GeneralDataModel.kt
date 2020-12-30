@@ -155,9 +155,21 @@ object GeneralDataModel: Observable()
         return localSnapshot.child(Path).value as Any
     }
 
+    fun setAnyData(Path: String, Value: Any): Boolean {
+        Log.d(TAG, "Fun setAnyData() called")
+        var success: Boolean = false
+        success = try{
+            database.child(Path).setValue(Value)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d(TAG, "Fun setAnyData() failed")
+            false
+        }
+    }
+
     fun getStoryState() : Double {
-        localSnapshot.child("$localRoomName/GeneralData/StoryState").value as Double
-        return 0.0
+        return localSnapshot.child("$localRoomName/GeneralData/StoryState").value as Double
     }
 
     fun changeStoryState(NextState: Double) : Boolean {

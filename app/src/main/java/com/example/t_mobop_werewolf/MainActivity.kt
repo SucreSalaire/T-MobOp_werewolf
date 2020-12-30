@@ -99,49 +99,6 @@ class MainActivity : AppCompatActivity(), Observer {
         TODO("Needed ?")
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ---------x--------- DUMP CODE  ---------x---------
-
-
-    // The following code was used to display all the Snapshot (Firebase) data into a list for dev
-    // purpose. It has been removed on 17dec2020.
-    // To use it, user should also uncomment code into the GeneralDataModel
-
-    //fun setupGeneralDatalist(){
-    //    val GeneralDataList = findViewById<ListView>(R.id.generalData_list)
-    //    GeneralDataList.adapter = GeneralDataAdapter(this, GeneralDataModel.getAllData())
-    //}
-    //class GeneralDataAdapter(context: Context, ListItems: ArrayList<String>): BaseAdapter() {
-    //    private val mContext: Context = context
-    //    private var mList: ArrayList<String> = ListItems
-    //
-    //    override fun getCount(): Int { return mList.size }
-    //
-    //    override fun getItem(position: Int): Any { return "None" }
-    //
-    //    override fun getItemId(position: Int): Long { return position.toLong() }
-    //
-    //    override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
-    //        val layoutInflater = LayoutInflater.from(mContext)
-    //        val rowMain = layoutInflater.inflate(R.layout.row_general_data, viewGroup, false)
-    //        val item = rowMain.findViewById<TextView>(R.id.row_generalData_item)
-    //        item.text = mList.toString()
-    //        return rowMain
-    //    }
-    //}
-
 }
 
 
