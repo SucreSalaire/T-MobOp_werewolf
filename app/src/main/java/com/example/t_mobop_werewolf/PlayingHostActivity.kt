@@ -76,6 +76,7 @@ class PlayingHostActivity : AppCompatActivity() {
                     Log.d("StoryState", "Data updated")
                     //Toast.makeText(applicationContext, "data changed: $storyState", Toast.LENGTH_SHORT).show()
                     storyState = chooseActions()   // this function is called every time StoryState is updated
+                    Toast.makeText(applicationContext, "nextStorySt = $storyState", Toast.LENGTH_SHORT).show()
                     changeFragment(storyState)
                 }
             }
@@ -97,14 +98,14 @@ class PlayingHostActivity : AppCompatActivity() {
         Toast.makeText(this, "Function chooseActions() called", Toast.LENGTH_SHORT).show()
         var nextState : Long = 0
 
-        if (storyState == 4 as Long) { // werewolf turn
+        if (storyState == 1 as Long) { // werewolf turn
             val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
             if(voted){
                 nextState = GeneralDataModel.nextState(storyState)
                 Toast.makeText(this, "Werewolf voted", Toast.LENGTH_SHORT).show()
             }
         }
-        else if (storyState == 10 as Long){ // villager voting time
+        else if (storyState == 3 as Long){ // villager voting time
             val voted = GeneralDataModel.validateVote(roomName, "Villager")
             if (voted){
                 nextState = GeneralDataModel.nextState(storyState)
@@ -123,6 +124,7 @@ class PlayingHostActivity : AppCompatActivity() {
         var currentFrag = R.id.frag_actions_noactions
 
         if (getStoryRoleName(story) == GeneralDataModel.localRole){
+            Toast.makeText(this, "your turn", Toast.LENGTH_SHORT).show()
             when(GeneralDataModel.localRole){
                 "werewolf" -> currentFrag = R.id.frag_actions_werewolf
                 "witch" -> currentFrag = R.id.frag_actions_witch
@@ -130,18 +132,18 @@ class PlayingHostActivity : AppCompatActivity() {
             }
         }
         else{
+            Toast.makeText(this, "noactions", Toast.LENGTH_SHORT).show()
             when(story){
                 1.toLong() -> currentFrag = R.id.frag_actions_noactions
                 2.toLong() -> currentFrag = R.id.frag_actions_villager
             }
         }
-
+        var txt = ""
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.FragmentConfigRoom, fragment_actions)
-            addToBackStack(null)
-            commit()
+            txt = "fragChanged"
         }
-
+        Toast.makeText(this, txt, Toast.LENGTH_SHORT).show()
         //val transaction = supportFragmentManager.beginTransaction()
         //transaction.replace(currentFrag, fragment_actions)
         //transaction.commit()
