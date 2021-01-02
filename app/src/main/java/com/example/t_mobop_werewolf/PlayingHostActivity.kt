@@ -12,6 +12,7 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.GeneratedAdapter
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 import com.example.t_mobop_werewolf.FirebaseData.StoryState
 import com.google.firebase.database.DataSnapshot
@@ -35,7 +36,7 @@ class PlayingHostActivity : AppCompatActivity() {
         // These lines will be modified to display from the data received from Firebase
         // This text will be created only at the game start, won't change after
         val player_role = findViewById<TextView>(R.id.textview_PlayerRole)
-        player_role.text = GeneralDataModel.localRole
+        player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
 
         val player_name = GeneralDataModel.localPseudo
 

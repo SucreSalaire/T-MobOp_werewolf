@@ -138,7 +138,7 @@ object GeneralDataModel: Observable()
         // Add check for max players
         Log.d(TAG, "Fun joinRoom() called")
         var joinSuccess : Boolean = false
-        if (localSnapshot.child("Rooms/$RoomName").value.toString() == "Open")
+        if (localSnapshot.child("0_Rooms/$RoomName").value.toString() == "Open")
         {
             try
             {
@@ -250,10 +250,10 @@ object GeneralDataModel: Observable()
         var playersPseudoArray = ArrayList<String>()
         for (i in 1..nbPlayers)
         {
-            if (localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").exists()){
-                playersPseudoArray.add(localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").value as String)
+            if (localSnapshot.child("$RoomName/Players/Player$i/Pseudo").exists()){
+                playersPseudoArray.add(localSnapshot.child("$RoomName/Players/Player$i/Pseudo").value as String)
             } else {
-                Log.d(TAG, "fun getPlayersPseudo() failed")
+                Log.d(TAG, "fun getPlayersPseudo($nbPlayers) failed")
             }
 
         }

@@ -21,7 +21,7 @@ import com.google.firebase.ktx.Firebase
 class PlayingActivity : AppCompatActivity() {
 
     var roomName = GeneralDataModel.localRoomName
-    var storyState: Double = 0.0
+    var storyState: Long = 0
     var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
 
     @SuppressLint("ResourceType") // TODO: What's that ?
@@ -32,7 +32,7 @@ class PlayingActivity : AppCompatActivity() {
         // These lines will be modified to display from the data received from Firebase
         // This text will be created only at the game start, won't change after
         val player_role = findViewById<TextView>(R.id.textview_PlayerRole)
-        player_role.text = GeneralDataModel.localRole
+        player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
 
         val player_name = GeneralDataModel.localPseudo
 
@@ -68,7 +68,7 @@ class PlayingActivity : AppCompatActivity() {
         {
             override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists()) {
-                storyState = snapshot.value as Double
+                storyState = snapshot.value as Long
                 Log.d("StoryState", "Data updated")
                 Toast.makeText(applicationContext, "StoryState changed: $storyState", Toast.LENGTH_SHORT).show()
                 nextActions()   // this function is called every time StoryState is updated
