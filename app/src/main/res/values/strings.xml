@@ -33,7 +33,7 @@
 
     <string name="fortuneteller_role">Each night, the fortuneteller can see the role of one person</string>
     <string name="fortuneteller_order">Select the character you want to know the role</string>
-    <string name="fortuneteller_action_button_choose">Validate my choice</string>
+    <string name="fortuneteller_action_button_choose">Reveal the role!</string>
     <string name="fortuneteller_action_button_pass">Pass</string>
 
     <string name="assassin_role">Assassin is called during night and can kill a person. His goal is to be the sole survivor.</string>

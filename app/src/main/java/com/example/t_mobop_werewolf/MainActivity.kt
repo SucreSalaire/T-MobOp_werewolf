@@ -24,8 +24,6 @@ class MainActivity : AppCompatActivity(), Observer {
     private var mGeneralDataObserver: Observer? = null
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

@@ -1,6 +1,10 @@
 package com.example.t_mobop_werewolf.FirebaseData
 
+import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
+import com.example.t_mobop_werewolf.PlayingActivity
+import com.example.t_mobop_werewolf.WaitingRoomActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
@@ -47,6 +51,7 @@ object GeneralDataModel: Observable()
     var localRoomName: String = "None"
     var localPseudo: String = "None"
     var localRole: String = "None"
+    var iAmtheHost: Boolean = false
 
     init
     {
@@ -111,6 +116,7 @@ object GeneralDataModel: Observable()
 
                 localRoomName = RoomName
                 localPseudo = HostName
+                iAmtheHost = true
             }
         } catch (e: Exception) { e.printStackTrace() }
         return roomAlreadyOpen.not()
@@ -131,6 +137,7 @@ object GeneralDataModel: Observable()
             database.child("$RoomName/GeneralData/NbPlayers").setValue(nbPlayer)
             localRoomName = RoomName
             localPseudo = Pseudo
+            iAmtheHost = false
             Log.d(TAG, "Fun joinRoom() success")
             true
         } catch (e: Exception) {
@@ -142,13 +149,72 @@ object GeneralDataModel: Observable()
     }
 
 
-    fun setupAndStartGame(){
+    fun setupAndStartGame()
+    {
         Log.d(TAG, "Fun setupAndStartGame()")
+        database.child("Rooms/$localRoomName").setValue("Closed")
+        // Here can be added all the code necessary to configure special rules or any other
+        // parameters related to the gameplay
+
+        distributeRoles()
+        changeStoryState(1.0)
     }
 
+    fun distributeRoles()
+    {
+
+        when(getPlayersNumber(localRoomName))
+        {
+            3.toLong() ->
+            {
+                Log.d(TAG, "fun distributeRoles(3)")
+                database.child("$localRoomName/Players/Player1/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player2/Role").setValue("Werewolf")
+                database.child("$localRoomName/Players/Player3/Role").setValue("Witch")
+            }
+            4.toLong() ->
+            {
+                Log.d(TAG, "fun distributeRoles(4)")
+                database.child("$localRoomName/Players/Player1/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player2/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player3/Role").setValue("Werewolf")
+                database.child("$localRoomName/Players/Player4/Role").setValue("Witch")
+            }
+            5.toLong() ->
+            {
+                Log.d(TAG, "fun distributeRoles(5)")
+                database.child("$localRoomName/Players/Player1/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player2/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player3/Role").setValue("Werewolf")
+                database.child("$localRoomName/Players/Player4/Role").setValue("Werewolf")
+                database.child("$localRoomName/Players/Player5/Role").setValue("Witch")
+            }
+            6.toLong() ->
+            {
+                Log.d(TAG, "fun distributeRoles(6)")
+                database.child("$localRoomName/Players/Player1/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player2/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player3/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player4/Role").setValue("Werewolf")
+                database.child("$localRoomName/Players/Player5/Role").setValue("Werewolf")
+                database.child("$localRoomName/Players/Player6/Role").setValue("Witch")
+            }
+            else -> Log.d(TAG, "fun distributeRoles(): too much players")
+        }
+    }
 
     fun getPlayersNumber(RoomName: String): Long {
         return localSnapshot.child("$RoomName/GeneralData/NbPlayers").value as Long
+    }
+
+    fun getPlayersPseudos(RoomName: String): ArrayList<String>{
+        var nbPlayers = getPlayersNumber(RoomName)
+        var playersPseudoArray = ArrayList<String>()
+        for (i in 1..nbPlayers)
+        {
+            playersPseudoArray.add(localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").value as String)
+        }
+        return playersPseudoArray
     }
 
     fun getAnyData(Path: String): Any {
@@ -166,6 +232,7 @@ object GeneralDataModel: Observable()
             Log.d(TAG, "Fun setAnyData() failed")
             false
         }
+        return success
     }
 
     fun getStoryState() : Double {

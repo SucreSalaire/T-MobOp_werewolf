@@ -7,6 +7,16 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.*
 
+
+
+
+// OBJECT NOT USED !!!!
+// NAGI     28 dec 2020
+// SINGLE LISTENER ADDED DIRECTLY TO PLAYING ACTIVITY
+
+
+
+
 object StoryState
 {
 

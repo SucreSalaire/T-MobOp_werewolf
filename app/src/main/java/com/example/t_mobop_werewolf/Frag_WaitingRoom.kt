@@ -20,9 +20,11 @@ class Frag_WaitingRoom : Fragment(R.layout.fragment_waiting_room) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val roleList = view.findViewById<ListView>(R.id.listViewConfigParams)
-        roleList.adapter = ConfigParamsAdapter(requireContext())
+        //val roleList = view.findViewById<ListView>(R.id.listViewConfigParams)
+        //roleList.adapter = ConfigParamsAdapter(requireContext())
     }
+
+
 
     private class ConfigParamsAdapter(context: Context): BaseAdapter() {
 
@@ -34,7 +36,7 @@ class Frag_WaitingRoom : Fragment(R.layout.fragment_waiting_room) {
         init{mContext = context}
 
         override fun getCount(): Int {
-            return names.size
+            return 0 //return names.size
         }
 
         override fun getItemId(position: Int): Long {
