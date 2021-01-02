@@ -129,9 +129,9 @@ class PlayingHostActivity : AppCompatActivity() {
         if (getStoryRoleName(story) == GeneralDataModel.localRole){
             Log.d("MainActivity", "your turn")
             when(GeneralDataModel.localRole){
-                "werewolf" -> currentFrag = R.id.frag_actions_werewolf
-                "witch" -> currentFrag = R.id.frag_actions_witch
-                "fortuneTeller" -> currentFrag = R.id.frag_actions_fortuneteller
+                "Werewolf" -> currentFrag = R.id.frag_actions_werewolf
+                "Witch" -> currentFrag = R.id.frag_actions_witch
+                "FortuneTeller" -> currentFrag = R.id.frag_actions_fortuneteller
             }
         }
         else{
@@ -143,7 +143,7 @@ class PlayingHostActivity : AppCompatActivity() {
         }
         var txt = ""
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.FragmentConfigRoom, fragment_actions)
+            replace(currentFrag, fragment_actions)
             txt = "fragChanged"
         }
         Log.d("MainActivity", txt)
@@ -154,9 +154,9 @@ class PlayingHostActivity : AppCompatActivity() {
 
     private fun getStoryRoleName(story : Long) : String{
         when(story){
-            3.toLong() -> return "werewolf"
-            4.toLong() -> return "witch"
-            5.toLong() -> return "fortuneTeller"
+            1.toLong() -> return "Werewolf"
+            2.toLong() -> return "Witch"
+            3.toLong() -> return "FortuneTeller"
         }
         return "None"
     }
