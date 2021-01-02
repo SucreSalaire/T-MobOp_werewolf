@@ -36,6 +36,7 @@ class PlayingHostActivity : AppCompatActivity() {
 
         // These lines will be modified to display from the data received from Firebase
         // This text will be created only at the game start, won't change after
+
         val player_role = findViewById<TextView>(R.id.textview_PlayerRole)
         player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
         GeneralDataModel.localRole = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
