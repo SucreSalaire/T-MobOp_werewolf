@@ -131,14 +131,20 @@ class PlayingHostActivity : AppCompatActivity() {
         }
         else{
             when(story){
-                1.toLong() -> currentFrag = R.layout.fragment_actions_noactions
-                2.toLong() -> currentFrag = R.layout.fragment_actions_villager
+                1.toLong() -> currentFrag = R.id.frag_actions_noactions
+                2.toLong() -> currentFrag = R.id.frag_actions_villager
             }
         }
 
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(currentFrag, fragment_actions)
-        transaction.commit()
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.FragmentConfigRoom, fragment_actions)
+            addToBackStack(null)
+            commit()
+        }
+
+        //val transaction = supportFragmentManager.beginTransaction()
+        //transaction.replace(currentFrag, fragment_actions)
+        //transaction.commit()
     }
 
     private fun getStoryRoleName(story : Long) : String{
