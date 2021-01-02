@@ -100,6 +100,7 @@ object GeneralDataModel: Observable()
             // 2    update story for the new state
             // 3    update value nextState
 
+        Log.d(TAG, "fun nextState($currentState)")
         var nextState : Long = 0
         var textToShow: String = "Waiting"
 
@@ -290,7 +291,6 @@ object GeneralDataModel: Observable()
             e.printStackTrace()
             Log.d(TAG, "Fun setupAndStartGame()/changeStoryState(1.0) failed")
         }
-
     }
 
     private fun distributeRoles()
