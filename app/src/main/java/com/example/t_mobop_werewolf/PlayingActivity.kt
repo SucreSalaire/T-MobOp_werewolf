@@ -55,9 +55,18 @@ class PlayingActivity : AppCompatActivity() {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT)
             radioButton.setPadding(24,0,0,16)
-            radioButton.setText(players)
-            radioButton.id = k //TODO verifier le type
-            k++
+            radioButton.text = players
+            val nb = GeneralDataModel.localPlayerNb.toString()
+
+            if (radioButton.text == GeneralDataModel.localPseudo
+                && GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") != "Witch") radioButton.isClickable.not()
+
+
+            if(GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") == "Werewolf"
+                && GeneralDataModel.getAnyData("$roomName/Players/Player$k/Role") == "Werewolf") radioButton.isClickable.not()
+
+            radioButton.id = k
+            k += 1
 
             findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)
         }
