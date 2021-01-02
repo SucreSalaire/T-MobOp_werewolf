@@ -50,6 +50,7 @@ object GeneralDataModel: Observable()
     lateinit var localSnapshot: DataSnapshot
     var localRoomName: String = "None"
     var localPseudo: String = "None"
+    var localPlayerNb: Long = 1
     var localRole: String = "None"
     var iAmtheHost: Boolean = false
 
@@ -138,7 +139,7 @@ object GeneralDataModel: Observable()
         // Add check for max players
         Log.d(TAG, "Fun joinRoom() called")
         var joinSuccess : Boolean = false
-        if (localSnapshot.child("Rooms/$RoomName").value.toString() == "Open")
+        if (localSnapshot.child("0_Rooms/$RoomName").value.toString() == "Open")
         {
             try
             {
@@ -153,6 +154,7 @@ object GeneralDataModel: Observable()
                 localRoomName = RoomName
                 localPseudo = Pseudo
                 iAmtheHost = false
+                localPlayerNb = nbPlayer
                 Log.d(TAG, "Fun joinRoom() success")
                 joinSuccess = true
             } catch (e: Exception) {
@@ -250,10 +252,10 @@ object GeneralDataModel: Observable()
         var playersPseudoArray = ArrayList<String>()
         for (i in 1..nbPlayers)
         {
-            if (localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").exists()){
-                playersPseudoArray.add(localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").value as String)
+            if (localSnapshot.child("$RoomName/Players/Player$i/Pseudo").exists()){
+                playersPseudoArray.add(localSnapshot.child("$RoomName/Players/Player$i/Pseudo").value as String)
             } else {
-                Log.d(TAG, "fun getPlayersPseudo() failed")
+                Log.d(TAG, "fun getPlayersPseudo($nbPlayers) failed")
             }
 
         }
@@ -324,7 +326,7 @@ object GeneralDataModel: Observable()
 
     fun getPlayerRole(PlayerPseudo: String): String {
         return try{
-            localSnapshot.child("$localRoomName/Players/$PlayerPseudo/Role").value as String
+            localSnapshot.child("$localRoomName/Players/Player$localPlayerNb/Role").value as String
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "fun getPlayerRole failed")
