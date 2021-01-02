@@ -82,8 +82,11 @@ object GeneralDataModel: Observable()
 
 
 
-    // ---------x---------
-    // Firebase Functions
+
+    //                                      ---------x---------
+    //                                      Firebase Functions
+
+
 
     fun createRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean
     {
@@ -92,8 +95,8 @@ object GeneralDataModel: Observable()
         try
         {
             for (item: DataSnapshot in localSnapshot.child("Rooms").children){
-                Log.d(TAG, item.value as String)
-                if (item.value.toString() == RoomName) {
+                Log.d(TAG, "ExistingRooms: ${item.key.toString()}")
+                if (item.key.toString() == RoomName) {
                     Log.d(TAG, "Room already exists")
                     roomAlreadyOpen = true
                 }
@@ -132,6 +135,7 @@ object GeneralDataModel: Observable()
         // Add check for max players
         Log.d(TAG, "Fun joinRoom() called")
         var joinSuccess: Boolean = false
+
         joinSuccess = try {
             val nbPlayer = getPlayersNumber(RoomName) + 1
             database.child("$RoomName/Players/Player$nbPlayer/Alive").setValue(true)
@@ -150,6 +154,27 @@ object GeneralDataModel: Observable()
             e.printStackTrace()
             Log.d(TAG, "Fun joinRoom() failed")
             false
+
+        if (localSnapshot.child("Rooms/$RoomName").value.toString() == "Open")
+        {
+            joinSuccess = try {
+                val nbPlayer = getPlayersNumber(RoomName) + 1
+                database.child("$RoomName/Players/Player$nbPlayer/Alive").setValue(true)
+                database.child("$RoomName/Players/Player$nbPlayer/Pseudo").setValue(Pseudo)
+                database.child("$RoomName/Players/Player$nbPlayer/Role").setValue("None")
+                database.child("$RoomName/GeneralData/NbPlayers").setValue(nbPlayer)
+                localRoomName = RoomName
+                localPseudo = Pseudo
+                iAmtheHost = false
+                Log.d(TAG, "Fun joinRoom() success")
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.d(TAG, "Fun joinRoom() failed")
+                false
+            }
+        } else{
+            Log.d(TAG, "Room: $RoomName is closed, sorry.")
         }
         return joinSuccess
     }
@@ -158,17 +183,28 @@ object GeneralDataModel: Observable()
     fun setupAndStartGame()
     {
         Log.d(TAG, "Fun setupAndStartGame()")
-        database.child("Rooms/$localRoomName").setValue("Closed")
+        //database.child("Rooms/$localRoomName").setValue("Closed")
+
         // Here can be added all the code necessary to configure special rules or any other
         // parameters related to the gameplay
 
-        distributeRoles()
-        changeStoryState(1.0)
-        // add a branch with only werewolf
+        try{
+            distributeRoles()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d(TAG, "Fun setupAndStartGame()/distributeRoles() failed")
+        }
+        try{
+            changeStoryState(1.0)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d(TAG, "Fun setupAndStartGame()/changeStoryState(1.0) failed")
+        }
     }
 
-    fun distributeRoles()
+    private fun distributeRoles()
     {
+        Log.d(TAG, getPlayersNumber(localRoomName).toString())
         when(getPlayersNumber(localRoomName))
         {
             3.toLong() ->
@@ -275,35 +311,35 @@ object GeneralDataModel: Observable()
     }
 
     fun changeStoryState(NextState: Double) : Boolean {
-        try{
+        return try{
             database.child("$localRoomName/GeneralData/StoryState").setValue(NextState)
-            return true
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "fun changeStoryState failed")
-            return false
+            false
         }
     }
 
     fun getPlayerRole(PlayerPseudo: String): String {
-        try{
-            return localSnapshot.child("$localRoomName/Players/$PlayerPseudo/Role").value as String
+        return try{
+            localSnapshot.child("$localRoomName/Players/$PlayerPseudo/Role").value as String
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "fun getPlayerRole failed")
-            return "Failed"
+            "Failed"
         }
     }
 
     fun killPlayer(PlayerPseudo: String): Boolean {
         // add role dependant kill count in DB
-        try{
+        return try{
             database.child("$localRoomName/GeneralData/Players/$PlayerPseudo/Alive").setValue(false)
-            return true
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "fun killPlayer failed")
-            return false
+            false
         }
     }
 
@@ -330,8 +366,8 @@ object GeneralDataModel: Observable()
         database.removeValue()              // removes everything at the root
         Log.d(TAG, "Database has been cleared.")
 
-        database.child("NbPhoneConnected").setValue(0)
-        database.child("Rooms/Room0").setValue("Open")
+        database.child("0_NbPhoneConnected").setValue(0)
+        database.child("0_Rooms/Room0").setValue("Open")
 
         Log.d(TAG, "Database has been set to default.")
     }

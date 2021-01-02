@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.t_mobop_werewolf">
 
     <application
@@ -12,8 +13,6 @@
         <activity android:name=".PlayingHostActivity"></activity>
         <activity android:name=".CreatingRoomActivity" />
         <activity android:name=".JoiningRoomActivity" />
-        <activity android:name=".Frag_Actions_Werewolf" />
-        <activity android:name=".Frag_Actions_Villager" />
         <activity android:name=".WaitingRoomActivity" />
         <activity android:name=".PlayingActivity" />
         <activity android:name=".SplashScreen"/>

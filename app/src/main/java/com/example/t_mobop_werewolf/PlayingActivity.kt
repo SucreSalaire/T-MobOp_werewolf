@@ -37,7 +37,7 @@ class PlayingActivity : AppCompatActivity() {
         val player_name = GeneralDataModel.localPseudo
 
         val story = findViewById<TextView>(R.id.textview_storytelling)
-        story.text = "The night falls on the quiet village." // TODO later controlled by Firebase
+        story.text = "The night falls on the quiet village." // TODO later controlled by StoryState
 
         val playersList = findViewById<ListView>(R.id.listview_Players)
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
@@ -105,8 +105,7 @@ class PlayingActivity : AppCompatActivity() {
         private val mContext : Context = context
 
         // should be received by Firebase
-        private val names = arrayListOf<String>(
-            "Jean", "Jeanette", "Charles", "Alphonse", "Madeleine", "Clémentine")
+        private val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 
         override fun getCount(): Int {return names.size}
 

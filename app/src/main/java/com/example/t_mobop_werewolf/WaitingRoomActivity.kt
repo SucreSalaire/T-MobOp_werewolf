@@ -30,8 +30,8 @@ class WaitingRoomActivity : AppCompatActivity() {
             }
         }
 
-        val waiting_listView = findViewById<ListView>(R.id.listViewRoomWaiting)
-        waiting_listView.adapter = PlayerWaitingAdapter(this)
+        val waitingListView = findViewById<ListView>(R.id.listViewRoomWaiting)
+        waitingListView.adapter = PlayerWaitingAdapter(this)
 
         val fragmentWaitingRoom = Frag_WaitingRoom()
         supportFragmentManager.beginTransaction().apply {
