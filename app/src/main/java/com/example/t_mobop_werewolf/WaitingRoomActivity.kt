@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,14 +26,27 @@ class WaitingRoomActivity : AppCompatActivity() {
             launchGameButton.visibility = View.VISIBLE
             launchGameButton.setOnClickListener{
                 Toast.makeText(this, "Launching the game", Toast.LENGTH_SHORT).show()
-                GeneralDataModel.setupAndStartGame()
-                Intent(WaitingRoomActivity(), PlayingActivity::class.java)
+                try{
+                    GeneralDataModel.setupAndStartGame()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.d("WaitingRoomActivity", "Fun setupAndStartGame() failed")
+                }
+                try{
+                    val intent = Intent(this, PlayingActivity::class.java)
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.d("WaitingRoomActivity", "PlayingActivity launch failed")
+                }
             }
         }
 
+        // List of the waiting players
         val waitingListView = findViewById<ListView>(R.id.listViewRoomWaiting)
         waitingListView.adapter = PlayerWaitingAdapter(this)
 
+        // PopUp pannel to configure game rules - not used
         val fragmentWaitingRoom = Frag_WaitingRoom()
         supportFragmentManager.beginTransaction().apply {
             remove(fragmentWaitingRoom)
@@ -41,7 +55,6 @@ class WaitingRoomActivity : AppCompatActivity() {
 
         val buttonFloatingPointConfig = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.floattingPointConfig)
         buttonFloatingPointConfig.setOnClickListener{
-
             if(fragmentWaitingRoom.isVisible){
                 Toast.makeText(this, "Closing: ConfigFragment", Toast.LENGTH_SHORT).show()
                 supportFragmentManager.beginTransaction().apply {
@@ -59,6 +72,7 @@ class WaitingRoomActivity : AppCompatActivity() {
     }
 
 
+    // List adapter for display the players in the room
     private class PlayerWaitingAdapter(context: Context): BaseAdapter() {
 
         private val mContext: Context
@@ -78,7 +92,7 @@ class WaitingRoomActivity : AppCompatActivity() {
             val rowMain = layoutInflater.inflate(R.layout.row_waiting_room, viewGroup, false)
 
             val playerWaiting = rowMain.findViewById<TextView>(R.id.textViewPlayerWaiting)
-            playerWaiting.text = names[position] + " is waiting."
+            playerWaiting.text = names[position] + " is ready."
 
             return rowMain
         }

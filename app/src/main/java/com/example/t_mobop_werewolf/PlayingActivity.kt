@@ -24,7 +24,7 @@ class PlayingActivity : AppCompatActivity() {
     var storyState: Double = 0.0
     var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
 
-    @SuppressLint("ResourceType")
+    @SuppressLint("ResourceType") // TODO: What's that ?
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
@@ -37,7 +37,7 @@ class PlayingActivity : AppCompatActivity() {
         val player_name = GeneralDataModel.localPseudo
 
         val story = findViewById<TextView>(R.id.textview_storytelling)
-        story.text = "The night falls on the quiet village." // TODO later controlled by StoryState
+        story.text = "The night falls on the quiet village." // TODO: later controlled by StoryState
 
         val playersList = findViewById<ListView>(R.id.listview_Players)
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))

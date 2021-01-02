@@ -103,7 +103,7 @@ object GeneralDataModel: Observable()
             }
             if (roomAlreadyOpen.not()){
                 Log.d(TAG, "Creating new room: $RoomName")
-                database.child("Rooms/$RoomName").setValue("Open")
+                database.child("0_Rooms/$RoomName").setValue("Open")
                 database.child("$RoomName/GeneralData/GameStarted").setValue(false)
                 database.child("$RoomName/GeneralData/HostName").setValue(HostName)
                 database.child("$RoomName/GeneralData/MaxPlayers").setValue(NbPlayers)
@@ -225,12 +225,18 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/Players/Player5/Role").setValue("Werewolf")
                 database.child("$localRoomName/Players/Player6/Role").setValue("Witch")
             }
-            else -> Log.d(TAG, "fun distributeRoles(): too much players")
+            else -> Log.d(TAG, "fun distributeRoles(): wrong number of players")
         }
     }
 
     fun getPlayersNumber(RoomName: String): Long {
-        return localSnapshot.child("$RoomName/GeneralData/NbPlayers").value as Long
+        val value: Long
+        if (localSnapshot.child("$RoomName/GeneralData/NbPlayers").exists()){
+            value = localSnapshot.child("$RoomName/GeneralData/NbPlayers").value as Long
+        } else {
+            value = 1 //0(testing)
+        }
+        return value
     }
 
     fun getPlayersPseudos(RoomName: String): ArrayList<String>{
@@ -238,7 +244,12 @@ object GeneralDataModel: Observable()
         var playersPseudoArray = ArrayList<String>()
         for (i in 1..nbPlayers)
         {
-            playersPseudoArray.add(localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").value as String)
+            if (localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").exists()){
+                playersPseudoArray.add(localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").value as String)
+            } else {
+                Log.d(TAG, "fun getPlayersPseudo() failed")
+            }
+
         }
         return playersPseudoArray
     }
