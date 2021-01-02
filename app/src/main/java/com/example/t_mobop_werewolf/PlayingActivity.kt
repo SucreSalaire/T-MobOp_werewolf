@@ -44,8 +44,7 @@ class PlayingActivity : AppCompatActivity() {
         //playersList.adapter = PlayersListAdapter(this)
 
         // should be received by Firebase
-        val names = arrayListOf<String>(
-            "Jean", "Jeanette", "Charles", "Alphonse", "Madeleine", "Clémentine")
+        val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 
         fun getCount(): Int {return names.size}
         var k: Int = 1

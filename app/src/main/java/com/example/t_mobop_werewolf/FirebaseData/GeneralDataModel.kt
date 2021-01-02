@@ -113,6 +113,9 @@ object GeneralDataModel: Observable()
                 database.child("$RoomName/Players/Player1/Alive").setValue(true)
                 database.child("$RoomName/Players/Player1/Pseudo").setValue(HostName)
                 database.child("$RoomName/Players/Player1/Role").setValue("None")
+                database.child("$RoomName/Players/Player1/Voted").setValue(false)
+                database.child("$RoomName/Players/Player1/Votes").setValue(0)
+                database.child("$RoomName/Players/Player1/Werewolf").setValue(false)
 
                 localRoomName = RoomName
                 localPseudo = HostName
@@ -134,6 +137,9 @@ object GeneralDataModel: Observable()
             database.child("$RoomName/Players/Player$nbPlayer/Alive").setValue(true)
             database.child("$RoomName/Players/Player$nbPlayer/Pseudo").setValue(Pseudo)
             database.child("$RoomName/Players/Player$nbPlayer/Role").setValue("None")
+            database.child("$RoomName/Players/Player$nbPlayer/Voted").setValue(false)
+            database.child("$RoomName/Players/Player$nbPlayer/Votes").setValue(0)
+            database.child("$RoomName/Players/Player$nbPlayer/Werewolf").setValue(false)
             database.child("$RoomName/GeneralData/NbPlayers").setValue(nbPlayer)
             localRoomName = RoomName
             localPseudo = Pseudo
@@ -217,10 +223,33 @@ object GeneralDataModel: Observable()
         return playersPseudoArray
     }
 
-    fun validateVote(Type: String, ): Boolean{
-        // set le flag a true
-        // check all flags
-            // if all are true (everybody has voted), return true
+    fun getPlayersVotes(RoomName: String): ArrayList<Int>{
+        var nbPlayers = getPlayersNumber(RoomName)
+        var playersVotesArray = ArrayList<Int>()
+        for (i in 1..nbPlayers)
+        {
+            playersVotesArray.add(localSnapshot.child("$RoomName/Players/Player$i/Votes").value as Int)
+        }
+        return playersVotesArray
+    }
+
+    fun validateVote(RoomName: String, voteType: String  ): Boolean{
+        var nbPlayers = getPlayersNumber(RoomName)
+        var voteFlag: Boolean = true// set le flag a true
+        when (voteType){
+            "Villager" ->
+                for (i in 1..nbPlayers) // check all flags
+                {
+                    if (!(localSnapshot.child("$RoomName/Players/Player$i/Voted").value as Boolean)) voteFlag = false
+                }
+            "Werewolf" ->
+                for (i in 1..nbPlayers) // check all flags
+                {
+                    if (!(localSnapshot.child("$RoomName/Players/Player$i/Voted").value as Boolean)
+                        && localSnapshot.child("$RoomName/Players/Player$i/Werewolf").value as Boolean ) voteFlag = false
+                }
+        }
+        return voteFlag
     }
 
     fun getAnyData(Path: String): Any {

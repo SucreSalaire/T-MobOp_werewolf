@@ -33,52 +33,64 @@ class Frag_Actions_Werewolf : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val buttonSave = view.findViewById<Button>(R.id.buttonValidVote)
+        val buttonValidVote = view.findViewById<Button>(R.id.buttonValidVote)
 
-        buttonValidVote.setOnClickListener{
+
+        buttonValidVote.setOnClickListener {
             val roomName = GeneralDataModel.localRoomName
             val pseudo = GeneralDataModel.localPseudo
 
+            // Check if all werewolves have voted
+            if(GeneralDataModel.validateVote(roomName, "Werewolf")) {
+                playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+                    if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
 
-            val path1 = "$roomName/Players/$pseudo/--" //TODO got to find this
-            val path2 = "$roomName/Players/$pseudo/--" //TODO got to find this
+                        val pathRole = "$roomName/Players/Player$checkedId/Role"
+                        val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
+                        val pathSelected = "$roomName/Players/Player$checkedId/Votes"
+                        val votes = GeneralDataModel.getPlayersVotes(GeneralDataModel.localRoomName)
+                        val max: Int? = votes.max()
 
+                        var nMax: Int = 0;
+                        var killed: Int = 0;
+                        var n: Int = 1
+                        var nVotes: Int = GeneralDataModel.getAnyData(pathSelected) as Int
 
-            playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
-                if (checkedId != null) {
+                        // Verify that target isn't a werewolf
+                        if (selectedRole == "Werewolf") {
+                            Toast.makeText(
+                                context,
+                                "Select a villager, not an other werewolf",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            GeneralDataModel.setAnyData(pathSelected, nVotes + 1)
+                        }
 
-                    val pathRole = "$roomName/Players/$checkedId/--" //TODO got to find path to role
-                    val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
-                    val pathSelected = "$roomName/Players/$checkedId/--" //TODO create a path for selected targets
-                    val pathListSelected = "$roomName/Players/$checkedId/--" //TODO create a path for list of selected targets
-
-                    // Verify that target isn't a werewolf
-                    if (selectedRole == "Werewolf") {
-                        Toast.makeText(context,"Select a villager, not an other werewolf",Toast.LENGTH_LONG).show()
+                        // Check if a majority of werewolves have selected a target
+                        for (k in votes) {
+                            if (k == max) {
+                                nMax += 1
+                                killed = n
+                            }
+                            n += 1
+                        }
+                        if (nMax > 1) Toast.makeText(
+                            context,
+                            "Reselect a target, we had a tie",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        else { //kill selected player
+                            val tobkilled: String = "Player$killed"
+                            GeneralDataModel.killPlayer(tobkilled)
+                            Toast.makeText(context, "You've aced the kill !", Toast.LENGTH_LONG)
+                                .show()
+                        }
                     }
-                    else {
-                        var votes: Int = GeneralDataModel.getAnyData(pathSelected) as Int
-                        GeneralDataModel.setAnyData(pathSelected, votes+1)
-                    }
-
-                    //TODO Check if a majority of werewolves have selected a target
-                    val voted = arrayListOf<Int>(GeneralDataModel.getAnyData(pathListSelected) as Int)
-                    val max: Int? = voted.max()
-                    var nMax: Int = 0
-                    for (k in voted){
-                        if(k == max) nMax = nMax + 1
-                    }
-                    if(nMax > 1) Toast.makeText(context,"Reselect a target, we had a tie",Toast.LENGTH_LONG).show()
-                    else{ //kill selected player
-                        val path2bkilled = "$roomName/Players/$checkedId/--" //TODO create a path for target to be killed
-                        val tobkilled: String = GeneralDataModel.getAnyData(path2bkilled) as String
-                        GeneralDataModel.killPlayer(tobkilled)
-                    }
-
+                    else Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG ).show()
                 }
-                Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG).show()
-
             }
+            else Toast.makeText(context,"Waiting for other werewolves to decide",Toast.LENGTH_LONG ).show()
         }
     }
 }

@@ -1,0 +1,87 @@
+Index: app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_Werewolf.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.t_mobop_werewolf\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.os.Build\r\nimport android.os.Bundle\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.*\r\nimport androidx.annotation.RequiresApi\r\nimport androidx.fragment.app.Fragment\r\nimport com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel\r\nimport kotlinx.android.synthetic.main.activity_playing.*\r\nimport kotlinx.android.synthetic.main.fragment_actions_werewolf.*\r\n\r\nclass Frag_Actions_Werewolf : Fragment() {\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n    }\r\n\r\n    // onCreateView is similar to onCreate for an activity\r\n    // be careful not to refer to an UI element as they are not yet available (return null)\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater,\r\n        container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View? {\r\n\r\n        val v = inflater.inflate(R.layout.fragment_actions_werewolf, container, false)\r\n        return v\r\n    }\r\n\r\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\r\n        super.onViewCreated(view, savedInstanceState)\r\n\r\n        val buttonSave = view.findViewById<Button>(R.id.buttonValidVote)\r\n\r\n        buttonValidVote.setOnClickListener{\r\n            val roomName = GeneralDataModel.localRoomName\r\n            val pseudo = GeneralDataModel.localPseudo\r\n\r\n\r\n            val path1 = \"$roomName/Players/$pseudo/--\" //TODO got to find this\r\n            val path2 = \"$roomName/Players/$pseudo/--\" //TODO got to find this\r\n\r\n\r\n            playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->\r\n                if (checkedId != null) {\r\n\r\n                    val pathRole = \"$roomName/Players/$checkedId/--\" //TODO got to find path to role\r\n                    val selectedRole = GeneralDataModel.getAnyData(pathRole) as String\r\n                    val pathSelected = \"$roomName/Players/$checkedId/--\" //TODO create a path for selected targets\r\n                    val pathListSelected = \"$roomName/Players/$checkedId/--\" //TODO create a path for list of selected targets\r\n\r\n                    // Verify that target isn't a werewolf\r\n                    if (selectedRole == \"Werewolf\") {\r\n                        Toast.makeText(context,\"Select a villager, not an other werewolf\",Toast.LENGTH_LONG).show()\r\n                    }\r\n                    else {\r\n                        var votes: Int = GeneralDataModel.getAnyData(pathSelected) as Int\r\n                        GeneralDataModel.setAnyData(pathSelected, votes+1)\r\n                    }\r\n\r\n                    //TODO Check if a majority of werewolves have selected a target\r\n                    val voted = arrayListOf<Int>(GeneralDataModel.getAnyData(pathListSelected) as Int)\r\n                    val max: Int? = voted.max()\r\n                    var nMax: Int = 0\r\n                    for (k in voted){\r\n                        if(k == max) nMax = nMax + 1\r\n                    }\r\n                    if(nMax > 1) Toast.makeText(context,\"Reselect a target, we had a tie\",Toast.LENGTH_LONG).show()\r\n                    else{ //kill selected player\r\n                        val path2bkilled = \"$roomName/Players/$checkedId/--\" //TODO create a path for target to be killed\r\n                        val tobkilled: String = GeneralDataModel.getAnyData(path2bkilled) as String\r\n                        GeneralDataModel.killPlayer(tobkilled)\r\n                    }\r\n\r\n                }\r\n                Toast.makeText(context,\"Select a villager to kill and try again\",Toast.LENGTH_LONG).show()\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_Werewolf.kt	(revision 3c875d2533d03ca8eb4aae0077e11c7bc7445d61)
++++ app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_Werewolf.kt	(date 1609576118310)
+@@ -33,21 +33,18 @@
+     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+         super.onViewCreated(view, savedInstanceState)
+ 
+-        val buttonSave = view.findViewById<Button>(R.id.buttonValidVote)
++        val buttonValidVote = view.findViewById<Button>(R.id.buttonValidVote)
+ 
++        //TODO Check if all werewolfs have voted
+         buttonValidVote.setOnClickListener{
+             val roomName = GeneralDataModel.localRoomName
+             val pseudo = GeneralDataModel.localPseudo
+ 
+ 
+-            val path1 = "$roomName/Players/$pseudo/--" //TODO got to find this
+-            val path2 = "$roomName/Players/$pseudo/--" //TODO got to find this
+-
+-
+             playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+                 if (checkedId != null) {
+ 
+-                    val pathRole = "$roomName/Players/$checkedId/--" //TODO got to find path to role
++                    val pathRole = "$roomName/Players/Player$checkedId/Role" // got to find path to role
+                     val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
+                     val pathSelected = "$roomName/Players/$checkedId/--" //TODO create a path for selected targets
+                     val pathListSelected = "$roomName/Players/$checkedId/--" //TODO create a path for list of selected targets
+Index: app/src/main/java/com/example/t_mobop_werewolf/PlayingActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.t_mobop_werewolf\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.content.Context\r\nimport android.graphics.Color\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.*\r\nimport com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel\r\nimport com.google.firebase.database.DataSnapshot\r\nimport com.google.firebase.database.DatabaseError\r\nimport com.google.firebase.database.ValueEventListener\r\nimport com.google.firebase.database.ktx.database\r\nimport com.google.firebase.ktx.Firebase\r\n\r\n\r\nclass PlayingActivity : AppCompatActivity() {\r\n\r\n    var roomName = GeneralDataModel.localRoomName\r\n    var storyState: Double = 0.0\r\n    var storyStateRef = Firebase.database.reference.child(\"$roomName/GeneralData/StoryState\")\r\n\r\n    @SuppressLint(\"ResourceType\")\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_playing)\r\n\r\n        // These lines will be modified to display from the data received from Firebase\r\n        // This text will be created only at the game start, won't change after\r\n        val player_role = findViewById<TextView>(R.id.textview_PlayerRole)\r\n        player_role.text = GeneralDataModel.localRole\r\n\r\n        val player_name = GeneralDataModel.localPseudo\r\n\r\n        val story = findViewById<TextView>(R.id.textview_storytelling)\r\n        story.text = \"The night falls on the quiet village.\" // TODO later controlled by Firebase\r\n\r\n        val playersList = findViewById<ListView>(R.id.listview_Players)\r\n        playersList.setBackgroundColor(Color.parseColor(\"#FFFFFF\"))\r\n        //playersList.adapter = PlayersListAdapter(this)\r\n\r\n        // should be received by Firebase\r\n        val names = arrayListOf<String>(\r\n            \"Jean\", \"Jeanette\", \"Charles\", \"Alphonse\", \"Madeleine\", \"Clémentine\")\r\n\r\n        fun getCount(): Int {return names.size}\r\n        var k: Int = 1\r\n        // Create RadioButton dynamically\r\n        for(players in names){\r\n            val radioButton = RadioButton(this)\r\n            radioButton.layoutParams= LinearLayout.LayoutParams(\r\n                ViewGroup.LayoutParams.WRAP_CONTENT,\r\n                ViewGroup.LayoutParams.WRAP_CONTENT)\r\n            radioButton.setPadding(24,0,0,16)\r\n            radioButton.setText(players)\r\n            radioButton.id = k //TODO verifier le type\r\n            k++\r\n\r\n            findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)\r\n        }\r\n\r\n\r\n\r\n        //---\r\n        // ---x--- Firebase database listener for the StoryState variable ---x---\r\n        storyStateRef.addValueEventListener(object: ValueEventListener\r\n        {\r\n            override fun onDataChange(snapshot: DataSnapshot) {\r\n            if (snapshot.exists()) {\r\n                storyState = snapshot.value as Double\r\n                Log.d(\"StoryState\", \"Data updated\")\r\n                Toast.makeText(applicationContext, \"StoryState changed: $storyState\", Toast.LENGTH_SHORT).show()\r\n                nextActions()   // this function is called every time StoryState is updated\r\n            }\r\n        }\r\n            override fun onCancelled(error: DatabaseError) {\r\n                Toast.makeText(applicationContext, \"Error database for storyState\", Toast.LENGTH_SHORT).show()\r\n            }\r\n        })\r\n        //---\r\n\r\n    }\r\n\r\n    override fun onDestroy() {\r\n        super.onDestroy()\r\n        // add code to remove listener\r\n    }\r\n\r\n\r\n    // THIS FUNCTION IS CALLED EVERY TIME THE STORYSTATE VALUE IS UPDATED !!!! ADD ACTIONS HERE\r\n    private fun nextActions(){\r\n        Toast.makeText(this, \"Function nextActions() called\", Toast.LENGTH_SHORT).show()\r\n        // Here can be added another call for a function in the fragment that will receive the\r\n        // new StoryState value and do his thing\r\n    }\r\n\r\n\r\n\r\n    // --------------------x-----------------------------------\r\n    // Adapter for the list displaying all the players\r\n    private class PlayersListAdapter(context : Context) : BaseAdapter() {\r\n        private val mContext : Context = context\r\n\r\n        // should be received by Firebase\r\n        private val names = arrayListOf<String>(\r\n            \"Jean\", \"Jeanette\", \"Charles\", \"Alphonse\", \"Madeleine\", \"Clémentine\")\r\n\r\n        override fun getCount(): Int {return names.size}\r\n\r\n        override fun getItem(position: Int): Any {return \"\"}\r\n\r\n        override fun getItemId(position: Int): Long {return position.toLong()}\r\n\r\n        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {\r\n            val layoutInflater = LayoutInflater.from(mContext)\r\n            val rowMain = layoutInflater.inflate(R.layout.row_players_list,viewGroup, false)\r\n            val playerName = rowMain.findViewById<TextView>(R.id.playerName)\r\n            playerName.text = names.get(position)\r\n            return rowMain\r\n        }\r\n\r\n\r\n\r\n\r\n\r\n    }\r\n\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/t_mobop_werewolf/PlayingActivity.kt	(revision 3c875d2533d03ca8eb4aae0077e11c7bc7445d61)
++++ app/src/main/java/com/example/t_mobop_werewolf/PlayingActivity.kt	(date 1609575322099)
+@@ -44,8 +44,7 @@
+         //playersList.adapter = PlayersListAdapter(this)
+ 
+         // should be received by Firebase
+-        val names = arrayListOf<String>(
+-            "Jean", "Jeanette", "Charles", "Alphonse", "Madeleine", "Clémentine")
++        val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
+ 
+         fun getCount(): Int {return names.size}
+         var k: Int = 1
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(revision 3c875d2533d03ca8eb4aae0077e11c7bc7445d61)
++++ .idea/gradle.xml	(date 1609574892044)
+@@ -15,6 +15,7 @@
+           </set>
+         </option>
+         <option name="resolveModulePerSourceSet" value="false" />
++        <option name="useQualifiedModuleNames" value="true" />
+       </GradleProjectSettings>
+     </option>
+   </component>
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_7\" default=\"true\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 3c875d2533d03ca8eb4aae0077e11c7bc7445d61)
++++ .idea/misc.xml	(date 1609574892041)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
