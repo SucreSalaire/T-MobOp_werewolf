@@ -25,7 +25,6 @@ class Frag_Actions_Werewolf : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val v = inflater.inflate(R.layout.fragment_actions_werewolf, container, false)
         return v
     }
@@ -41,32 +40,35 @@ class Frag_Actions_Werewolf : Fragment() {
             val pseudo = GeneralDataModel.localPseudo
 
             // Check if all werewolves have voted
-            if(GeneralDataModel.validateVote(roomName, "Werewolf")) {
-                playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
-                    if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
 
-                        val pathRole = "$roomName/Players/Player$checkedId/Role"
-                        val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
-                        val pathSelected = "$roomName/Players/Player$checkedId/Votes"
-                        val votes = GeneralDataModel.getPlayersVotes(GeneralDataModel.localRoomName)
-                        val max: Int? = votes.max()
+            playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+                if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
 
-                        var nMax: Int = 0;
-                        var killed: Int = 0;
-                        var n: Int = 1
-                        var nVotes: Int = GeneralDataModel.getAnyData(pathSelected) as Int
+                    val pathRole = "$roomName/Players/Player$checkedId/Role"
+                    val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
+                    val pathSelected = "$roomName/Players/Player$checkedId/Votes"
+                    val votes = GeneralDataModel.getPlayersVotes(GeneralDataModel.localRoomName)
+                    val max: Int? = votes.max()
 
-                        // Verify that target isn't a werewolf
-                        if (selectedRole == "Werewolf") {
-                            Toast.makeText(
-                                context,
-                                "Select a villager, not an other werewolf",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            GeneralDataModel.setAnyData(pathSelected, nVotes + 1)
-                        }
+                    var nMax: Int = 0;
+                    var killed: Int = 0;
+                    var n: Int = 1
+                    var nVotes: Int = GeneralDataModel.getAnyData(pathSelected) as Int
 
+                    // Verify that target isn't a werewolf
+                    if (selectedRole == "Werewolf") {
+                        Toast.makeText(
+                            context,
+                            "Select a villager, not an other werewolf",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    else {
+                        GeneralDataModel.setAnyData(pathSelected, nVotes + 1)
+                    }
+
+                    // Check if all werewolves have voted
+                    if(GeneralDataModel.validateVote(roomName, "Werewolf")) {
                         // Check if a majority of werewolves have selected a target
                         for (k in votes) {
                             if (k == max) {
@@ -85,12 +87,15 @@ class Frag_Actions_Werewolf : Fragment() {
                             GeneralDataModel.killPlayer(tobkilled)
                             Toast.makeText(context, "You've aced the kill !", Toast.LENGTH_LONG)
                                 .show()
+                            //TODO change the flag for next turn
                         }
                     }
-                    else Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG ).show()
+                    else Toast.makeText(context,"Waiting for other werewolves to decide",Toast.LENGTH_LONG ).show()
                 }
+                else Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG ).show()
             }
-            else Toast.makeText(context,"Waiting for other werewolves to decide",Toast.LENGTH_LONG ).show()
+
+
         }
     }
 }
