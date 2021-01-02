@@ -42,7 +42,7 @@ class WaitingRoomActivity : AppCompatActivity() {
                     Log.d("WaitingRoomActivity", "Fun setupAndStartGame() failed")
                 }
                 try{
-                    val intent = Intent(this, PlayingActivity::class.java)
+                    val intent = Intent(this, PlayingHostActivity::class.java)
                     startActivity(intent)
                 } catch (e: Exception) {
                     e.printStackTrace()

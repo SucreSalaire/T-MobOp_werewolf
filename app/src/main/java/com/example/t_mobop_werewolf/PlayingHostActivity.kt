@@ -106,6 +106,7 @@ class PlayingHostActivity : AppCompatActivity() {
                 //Toast.makeText(applicationContext, "Werewolf voted", Toast.LENGTH_SHORT).show()
                 Log.d("MainActivity", "werewolf voted")
             }
+            Log.d("MainActivity", "werewolfTurn")
         }
         else if (storyState == 3 as Long){ // villager voting time
             val voted = GeneralDataModel.validateVote(roomName, "Villager")

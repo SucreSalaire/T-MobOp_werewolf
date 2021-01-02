@@ -41,7 +41,7 @@ class PlayingActivity : AppCompatActivity() {
 
         val playersList = findViewById<ListView>(R.id.listview_Players)
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
-        //playersList.adapter = PlayersListAdapter(this)
+        GeneralDataModel.localRole = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
 
         // should be received by Firebase
         val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
