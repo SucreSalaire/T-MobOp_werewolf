@@ -38,7 +38,7 @@ class PlayingHostActivity : AppCompatActivity() {
         // This text will be created only at the game start, won't change after
         val player_role = findViewById<TextView>(R.id.textview_PlayerRole)
         player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
-
+        GeneralDataModel.localRole = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
         val player_name = GeneralDataModel.localPseudo
 
         val story = findViewById<TextView>(R.id.textview_storytelling)
