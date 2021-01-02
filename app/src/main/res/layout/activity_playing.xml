@@ -46,7 +46,7 @@
 
     <fragment
         android:id="@+id/fragment_PlayerActions"
-        android:name="com.example.t_mobop_werewolf.Frag_Actions_Villager"
+        android:name="com.example.t_mobop_werewolf.Frag_Actions_NoActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

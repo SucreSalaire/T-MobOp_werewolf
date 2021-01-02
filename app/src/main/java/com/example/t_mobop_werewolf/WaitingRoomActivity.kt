@@ -25,10 +25,10 @@ class WaitingRoomActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_waiting_room)
-
         val roomName = findViewById<TextView>(R.id.textViewRoomName)
         roomName.text = GeneralDataModel.localRoomName
 
+        // Launching the game
         val launchGameButton = findViewById<Button>(R.id.buttonLaunchGame)
         if (GeneralDataModel.iAmtheHost)
         {
@@ -54,6 +54,7 @@ class WaitingRoomActivity : AppCompatActivity() {
         // List of the waiting players
         val waitingListView = findViewById<ListView>(R.id.listViewRoomWaiting)
         waitingListView.adapter = PlayerWaitingAdapter(this)
+        waitingListView.invalidateViews()
 
         // PopUp pannel to configure game rules - not used
         val fragmentWaitingRoom = Frag_WaitingRoom()

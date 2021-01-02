@@ -4,11 +4,14 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
 import com.example.t_mobop_werewolf.PlayingActivity
+import com.example.t_mobop_werewolf.PlayingHostActivity
 import com.example.t_mobop_werewolf.WaitingRoomActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_playing.*
+import kotlinx.android.synthetic.main.activity_waiting_room.*
 import java.util.*
 
 /*
@@ -88,6 +91,101 @@ object GeneralDataModel: Observable()
     //                                      Firebase Functions
 
 
+    // This function is called at the end of a turn. It will setup the next state.
+    fun nextStage(currentState: Long): Long {
+        // use : nextStage(GeneralDataModel.getStoryState(), GeneralDataModel.localRoomName)
+
+        // For every step
+            // 1    check which is the next state (roles dead/alive)
+            // 2    update story for the new state
+            // 3    update value nextState
+
+        var nextState : Long = 0
+        var textToShow: String = "Waiting"
+
+        when(currentState) {
+            1.toLong() ->   // Game starts
+            {
+                // Next state 2 by default
+                textToShow = "2"
+                nextState = 2 // village goes to sleep
+            }
+
+            2.toLong() ->   // Village sleeping
+            {
+                // Next state 3 by default
+                textToShow = "3"
+                nextState = 3 // Werewolf will play
+            }
+
+            3.toLong() ->   // Werewolf have played
+            {
+                if (localSnapshot.child("$localRoomName/RolesData/VillagerCount").value as Long == 0 as Long) {
+                    textToShow = "9"
+                    nextState = 9   // end of game, villagers are dead
+                } else if (localSnapshot.child("$localRoomName/RolesData/WitchAlive").value as Boolean) {
+                    textToShow = "4"
+                    nextState = 4   // Witch will play
+                } else if (localSnapshot.child("$localRoomName/RolesData/FortuneTellerAlive").value as Boolean) {
+                    textToShow = "5"
+                    nextState = 5   // FortuneTeller will play
+                } else {
+                    textToShow = "6"
+                    nextState = 6   // Village will wake up
+                }
+            }
+
+            4.toLong() ->   // Witch has played
+            {
+                if (localSnapshot.child("$localRoomName/RolesData/FortuneTellerAlive").value as Boolean) {
+                    textToShow = "5"
+                    nextState = 5 // FortuneTeller will play
+                } else {
+                    nextState = 6 // Village will wake up
+                }
+            }
+
+            5.toLong() ->   // Fortune teller has played
+            {
+                textToShow = "6"
+                nextState = 6 // Village will wake up
+            }
+
+            6.toLong() ->   // Village has discovered the dead
+            {
+                textToShow = "7"
+                nextState = 7 // Village will barbecue someone
+            }
+
+            7.toLong() ->   // Village has sacrificed
+            {
+                textToShow = "8"
+                nextState = 8 // Village will reveal sacrifice
+            }
+
+            8.toLong() ->   // Village sacrifice revelation
+            {
+                if (localSnapshot.child("$localRoomName/RolesData/WerewolvesCount").value as Long > 0) {
+                    textToShow = "2"
+                    nextState = 2   // going to sleep
+                } else {
+                    textToShow = "9"
+                    nextState = 9   // end of game, werevolves are dead
+                }
+            }
+
+            9.toLong() ->   // Game end
+            {
+                Log.d(TAG, "The game is finished and you should not see this text.")
+            }
+            else -> textToShow = "You messed up something."
+        }
+        PlayingActivity().textview_storytelling.text = textToShow
+        PlayingHostActivity().textview_storytelling.text = textToShow
+        changeStoryState(nextState)
+        return nextState
+    }
+
 
     fun createRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean
     {
@@ -111,7 +209,7 @@ object GeneralDataModel: Observable()
                 database.child("$RoomName/GeneralData/NbPlayers").setValue(1)
                 database.child("$RoomName/GeneralData/RolesDistributed").setValue(false)
                 database.child("$RoomName/GeneralData/RoomName").setValue(RoomName)
-                database.child("$RoomName/GeneralData/StoryState").setValue(0.0)
+                database.child("$RoomName/GeneralData/StoryState").setValue(0) //(0.0)
                 database.child("$RoomName/GeneralData/WaitingRoomOpen").setValue(false)
                 database.child("$RoomName/GeneralData/Flag").setValue(false)
 
@@ -124,6 +222,10 @@ object GeneralDataModel: Observable()
 
                 database.child("$RoomName/RolesData/PotionKill").setValue(1)
                 database.child("$RoomName/RolesData/PotionSave").setValue(1)
+                database.child("$RoomName/RolesData/VillagersCount").setValue(0)
+                database.child("$RoomName/RolesData/WerewolvesCount").setValue(0)
+                database.child("$RoomName/RolesData/WitchAlive").setValue(false)
+                database.child("$RoomName/RolesData/FortuneTellerAlive").setValue(false)
 
                 localRoomName = RoomName
                 localPseudo = HostName
@@ -155,6 +257,7 @@ object GeneralDataModel: Observable()
                 localPseudo = Pseudo
                 iAmtheHost = false
                 localPlayerNb = nbPlayer
+                WaitingRoomActivity().listViewRoomWaiting.invalidateViews() // update players list waiting in the room
                 Log.d(TAG, "Fun joinRoom() success")
                 joinSuccess = true
             } catch (e: Exception) {
@@ -173,11 +276,7 @@ object GeneralDataModel: Observable()
     fun setupAndStartGame()
     {
         Log.d(TAG, "Fun setupAndStartGame()")
-        //database.child("Rooms/$localRoomName").setValue("Closed")
-
-        // Here can be added all the code necessary to configure special rules or any other
-        // parameters related to the gameplay
-
+        database.child("0_Rooms/$localRoomName").setValue("Closed")
         try{
             distributeRoles()
         } catch (e: Exception) {
@@ -186,7 +285,7 @@ object GeneralDataModel: Observable()
         }
         database.child("$localRoomName/GeneralData/GameStarted").setValue(true)
         try{
-            changeStoryState(1.0)
+            changeStoryState(1)
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "Fun setupAndStartGame()/changeStoryState(1.0) failed")
@@ -205,6 +304,11 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/Players/Player1/Role").setValue("Villager")
                 database.child("$localRoomName/Players/Player2/Role").setValue("Werewolf")
                 database.child("$localRoomName/Players/Player3/Role").setValue("Witch")
+
+                database.child("$localRoomName/RolesData/VillagersCount").setValue(2)
+                database.child("$localRoomName/RolesData/WerewolvesCount").setValue(1)
+                database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
+                database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(false)
             }
             4.toLong() ->
             {
@@ -213,27 +317,42 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/Players/Player2/Role").setValue("Villager")
                 database.child("$localRoomName/Players/Player3/Role").setValue("Werewolf")
                 database.child("$localRoomName/Players/Player4/Role").setValue("Witch")
+
+                database.child("$localRoomName/RolesData/VillagersCount").setValue(3)
+                database.child("$localRoomName/RolesData/WerewolvesCount").setValue(1)
+                database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
+                database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(false)
             }
             5.toLong() ->
             {
                 Log.d(TAG, "fun distributeRoles(5)")
                 database.child("$localRoomName/Players/Player1/Role").setValue("Villager")
-                database.child("$localRoomName/Players/Player2/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player2/Role").setValue("Werewolf")
                 database.child("$localRoomName/Players/Player3/Role").setValue("Werewolf")
-                database.child("$localRoomName/Players/Player4/Role").setValue("Werewolf")
-                database.child("$localRoomName/Players/Player5/Role").setValue("Witch")
+                database.child("$localRoomName/Players/Player4/Role").setValue("Witch")
+                database.child("$localRoomName/Players/Player5/Role").setValue("FortuneTeller")
+
+                database.child("$localRoomName/RolesData/VillagersCount").setValue(3)
+                database.child("$localRoomName/RolesData/WerewolvesCount").setValue(2)
+                database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
+                database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(true)
             }
             6.toLong() ->
             {
                 Log.d(TAG, "fun distributeRoles(6)")
                 database.child("$localRoomName/Players/Player1/Role").setValue("Villager")
                 database.child("$localRoomName/Players/Player2/Role").setValue("Villager")
-                database.child("$localRoomName/Players/Player3/Role").setValue("Villager")
+                database.child("$localRoomName/Players/Player3/Role").setValue("Werewolf")
                 database.child("$localRoomName/Players/Player4/Role").setValue("Werewolf")
-                database.child("$localRoomName/Players/Player5/Role").setValue("Werewolf")
-                database.child("$localRoomName/Players/Player6/Role").setValue("Witch")
+                database.child("$localRoomName/Players/Player5/Role").setValue("Witch")
+                database.child("$localRoomName/Players/Player6/Role").setValue("FortuneTeller")
+
+                database.child("$localRoomName/RolesData/VillagersCount").setValue(4)
+                database.child("$localRoomName/RolesData/WerewolvesCount").setValue(2)
+                database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
+                database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(false)
             }
-            else -> Log.d(TAG, "fun distributeRoles(): wrong number of players")
+            else -> Log.d(TAG, "fun distributeRoles(): can't assign roles to players")
         }
     }
 
@@ -270,6 +389,16 @@ object GeneralDataModel: Observable()
             playersVotesArray.add(localSnapshot.child("$RoomName/Players/Player$i/Votes").value as Int)
         }
         return playersVotesArray
+    }
+
+    fun getPlayerRole(PlayerPseudo: String): String {
+        return try{
+            localSnapshot.child("$localRoomName/Players/Player$localPlayerNb/Role").value as String
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d(TAG, "fun getPlayerRole failed")
+            "Failed"
+        }
     }
 
     fun validateVote(RoomName: String, voteType: String  ): Boolean{
@@ -309,11 +438,11 @@ object GeneralDataModel: Observable()
         return success
     }
 
-    fun getStoryState() : Double {
-        return localSnapshot.child("$localRoomName/GeneralData/StoryState").value as Double
+    fun getStoryState() : Long {
+        return localSnapshot.child("$localRoomName/GeneralData/StoryState").value as Long
     }
 
-    fun changeStoryState(NextState: Double) : Boolean {
+    fun changeStoryState(NextState: Long) : Boolean {
         return try{
             database.child("$localRoomName/GeneralData/StoryState").setValue(NextState)
             true
@@ -321,16 +450,6 @@ object GeneralDataModel: Observable()
             e.printStackTrace()
             Log.d(TAG, "fun changeStoryState failed")
             false
-        }
-    }
-
-    fun getPlayerRole(PlayerPseudo: String): String {
-        return try{
-            localSnapshot.child("$localRoomName/Players/Player$localPlayerNb/Role").value as String
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d(TAG, "fun getPlayerRole failed")
-            "Failed"
         }
     }
 
