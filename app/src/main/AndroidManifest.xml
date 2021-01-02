@@ -16,7 +16,8 @@
         <activity android:name=".Frag_Actions_Villager" />
         <activity android:name=".WaitingRoomActivity" />
         <activity android:name=".PlayingActivity" />
-        <activity android:name=".SplashScreen">
+        <activity android:name=".SplashScreen"/>
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -31,6 +31,12 @@
         android:textAlignment="center"
         android:layout_gravity="center_horizontal"/>
 
+    <RadioGroup
+        android:id="@+id/playersRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.05" />
+
     <ListView
         android:id="@+id/listview_Players"
         android:layout_width="match_parent"

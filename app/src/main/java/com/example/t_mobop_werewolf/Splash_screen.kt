@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.*
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
-import kotlinx.android.synthetic.main.splash_screen.*
+import kotlinx.android.synthetic.main.activity_splash_screen.*
 
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.splash_screen)
+        setContentView(R.layout.activity_splash_screen)
 
 
         //animation declaration
