@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RadioGroup
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 import kotlinx.android.synthetic.*
@@ -42,7 +43,7 @@ class Frag_Actions_FortuneTeller : Fragment() {
         buttonReveal.setOnClickListener {
             val roomName = GeneralDataModel.localRoomName
             val pseudo = GeneralDataModel.localPseudo
-            Log.d("MainActivity", "1 role reavealed")
+            Log.d("MainActivity", "Teller chose to reaveal a role")
             playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->// get the player pseudo
                 val playerPseudo = GeneralDataModel.getAnyData("$roomName/Players/Player$checkedId/Pseudo") as String// display it
                 val playerRole = GeneralDataModel.getAnyData("$roomName/Players/Player$checkedId/Role") as String // display it
@@ -52,18 +53,29 @@ class Frag_Actions_FortuneTeller : Fragment() {
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT)
                 roleText.setPadding(24,0,0,16)
-                roleText.setText(playerPseudo + "is a" + playerRole)
+                roleText.text = playerPseudo + "is a" + playerRole
 
-                //view.findViewById<Layout>(R.id.tellerList)?.addView(roleText)
-                //TODO change the flag for next turn
+                view.findViewById<RelativeLayout>(R.id.tellerList)?.addView(roleText)
+                Log.d("MainActivity", "Role has been revealed")
+
+                val path = "$roomName/GeneralData/Flag"
+                val flag = GeneralDataModel.getAnyData(path) as Boolean
+
+                GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
             }
         }
 
         // add a button that waits on the player to have
 
         buttonPass.setOnClickListener {
-            Log.d("MainActivity", "FortuneTeller has pass her turn")
-            //TODO change the flag for next turn
+            Log.d("MainActivity", "FortuneTeller has passed her turn")
+            val roomName = GeneralDataModel.localRoomName
+            val pseudo = GeneralDataModel.localPseudo
+            val path = "$roomName/GeneralData/Flag"
+            val flag = GeneralDataModel.getAnyData(path) as Boolean
+
+            GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
+            Log.d("MainActivity", "you chose to not use your clairvoyance")
         }
     }
 }

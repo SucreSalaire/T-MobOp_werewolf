@@ -97,15 +97,15 @@ class Frag_Actions_Witch : Fragment() {
         }
 
         buttonPass.setOnClickListener{
-            Log.d("MainActivity", "witch passed")
+            Log.d("MainActivity", "witch passed her turn")
             val roomName = GeneralDataModel.localRoomName
             val pseudo = GeneralDataModel.localPseudo
             val path = "$roomName/GeneralData/Flag"
 
             val flag = GeneralDataModel.getAnyData(path) as Boolean
 
-            GeneralDataModel.setAnyData(path, flag.not()) // Actualise any data to activate DataChanged function
-            Log.d("MainActivity", "you choosed to don't wast your potion")
+            GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
+            Log.d("MainActivity", "you chose to not waste your potion")
         }
 
     }
