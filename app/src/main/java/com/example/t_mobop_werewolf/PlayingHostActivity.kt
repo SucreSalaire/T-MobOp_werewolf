@@ -32,7 +32,7 @@ class PlayingHostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
 
-        val fragment_actions = Frag_WaitingRoom()
+        val fragment_actions = Frag_Actions_NoActions()
 
         // These lines will be modified to display from the data received from Firebase
         // This text will be created only at the game start, won't change after
