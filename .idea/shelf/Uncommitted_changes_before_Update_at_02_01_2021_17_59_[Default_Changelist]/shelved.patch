@@ -1,0 +1,194 @@
+Index: app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_Werewolf.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.t_mobop_werewolf\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.os.Build\r\nimport android.os.Bundle\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.*\r\nimport androidx.annotation.RequiresApi\r\nimport androidx.fragment.app.Fragment\r\nimport com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel\r\nimport kotlinx.android.synthetic.main.activity_playing.*\r\nimport kotlinx.android.synthetic.main.fragment_actions_werewolf.*\r\n\r\nclass Frag_Actions_Werewolf : Fragment() {\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n    }\r\n\r\n    // onCreateView is similar to onCreate for an activity\r\n    // be careful not to refer to an UI element as they are not yet available (return null)\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater,\r\n        container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View? {\r\n\r\n        val v = inflater.inflate(R.layout.fragment_actions_werewolf, container, false)\r\n        return v\r\n    }\r\n\r\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\r\n        super.onViewCreated(view, savedInstanceState)\r\n\r\n        val buttonValidVote = view.findViewById<Button>(R.id.buttonValidVote)\r\n\r\n\r\n        buttonValidVote.setOnClickListener {\r\n            val roomName = GeneralDataModel.localRoomName\r\n            val pseudo = GeneralDataModel.localPseudo\r\n\r\n            // Check if all werewolves have voted\r\n            if(GeneralDataModel.validateVote(roomName, \"Werewolf\")) {\r\n                playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->\r\n                    if (playersRadioGroup.getCheckedRadioButtonId() != -1) {\r\n\r\n                        val pathRole = \"$roomName/Players/Player$checkedId/Role\"\r\n                        val selectedRole = GeneralDataModel.getAnyData(pathRole) as String\r\n                        val pathSelected = \"$roomName/Players/Player$checkedId/Votes\"\r\n                        val votes = GeneralDataModel.getPlayersVotes(GeneralDataModel.localRoomName)\r\n                        val max: Int? = votes.max()\r\n\r\n                        var nMax: Int = 0;\r\n                        var killed: Int = 0;\r\n                        var n: Int = 1\r\n                        var nVotes: Int = GeneralDataModel.getAnyData(pathSelected) as Int\r\n\r\n                        // Verify that target isn't a werewolf\r\n                        if (selectedRole == \"Werewolf\") {\r\n                            Toast.makeText(\r\n                                context,\r\n                                \"Select a villager, not an other werewolf\",\r\n                                Toast.LENGTH_LONG\r\n                            ).show()\r\n                        } else {\r\n                            GeneralDataModel.setAnyData(pathSelected, nVotes + 1)\r\n                        }\r\n\r\n                        // Check if a majority of werewolves have selected a target\r\n                        for (k in votes) {\r\n                            if (k == max) {\r\n                                nMax += 1\r\n                                killed = n\r\n                            }\r\n                            n += 1\r\n                        }\r\n                        if (nMax > 1) Toast.makeText(\r\n                            context,\r\n                            \"Reselect a target, we had a tie\",\r\n                            Toast.LENGTH_LONG\r\n                        ).show()\r\n                        else { //kill selected player\r\n                            val tobkilled: String = \"Player$killed\"\r\n                            GeneralDataModel.killPlayer(tobkilled)\r\n                            Toast.makeText(context, \"You've aced the kill !\", Toast.LENGTH_LONG)\r\n                                .show()\r\n                        }\r\n                    }\r\n                    else Toast.makeText(context,\"Select a villager to kill and try again\",Toast.LENGTH_LONG ).show()\r\n                }\r\n            }\r\n            else Toast.makeText(context,\"Waiting for other werewolves to decide\",Toast.LENGTH_LONG ).show()\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_Werewolf.kt	(revision 25546af3944965ea50b1265dbf6f94e1389c6a43)
++++ app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_Werewolf.kt	(date 1609594083907)
+@@ -25,7 +25,6 @@
+         container: ViewGroup?,
+         savedInstanceState: Bundle?
+     ): View? {
+-
+         val v = inflater.inflate(R.layout.fragment_actions_werewolf, container, false)
+         return v
+     }
+@@ -41,32 +40,35 @@
+             val pseudo = GeneralDataModel.localPseudo
+ 
+             // Check if all werewolves have voted
+-            if(GeneralDataModel.validateVote(roomName, "Werewolf")) {
+-                playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+-                    if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
++
++            playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
++                if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
+ 
+-                        val pathRole = "$roomName/Players/Player$checkedId/Role"
+-                        val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
+-                        val pathSelected = "$roomName/Players/Player$checkedId/Votes"
+-                        val votes = GeneralDataModel.getPlayersVotes(GeneralDataModel.localRoomName)
+-                        val max: Int? = votes.max()
++                    val pathRole = "$roomName/Players/Player$checkedId/Role"
++                    val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
++                    val pathSelected = "$roomName/Players/Player$checkedId/Votes"
++                    val votes = GeneralDataModel.getPlayersVotes(GeneralDataModel.localRoomName)
++                    val max: Int? = votes.max()
+ 
+-                        var nMax: Int = 0;
+-                        var killed: Int = 0;
+-                        var n: Int = 1
+-                        var nVotes: Int = GeneralDataModel.getAnyData(pathSelected) as Int
++                    var nMax: Int = 0;
++                    var killed: Int = 0;
++                    var n: Int = 1
++                    var nVotes: Int = GeneralDataModel.getAnyData(pathSelected) as Int
+ 
+-                        // Verify that target isn't a werewolf
+-                        if (selectedRole == "Werewolf") {
+-                            Toast.makeText(
+-                                context,
+-                                "Select a villager, not an other werewolf",
+-                                Toast.LENGTH_LONG
+-                            ).show()
+-                        } else {
+-                            GeneralDataModel.setAnyData(pathSelected, nVotes + 1)
+-                        }
++                    // Verify that target isn't a werewolf
++                    if (selectedRole == "Werewolf") {
++                        Toast.makeText(
++                            context,
++                            "Select a villager, not an other werewolf",
++                            Toast.LENGTH_LONG
++                        ).show()
++                    }
++                    else {
++                        GeneralDataModel.setAnyData(pathSelected, nVotes + 1)
++                    }
+ 
++                    // Check if all werewolves have voted
++                    if(GeneralDataModel.validateVote(roomName, "Werewolf")) {
+                         // Check if a majority of werewolves have selected a target
+                         for (k in votes) {
+                             if (k == max) {
+@@ -85,12 +87,15 @@
+                             GeneralDataModel.killPlayer(tobkilled)
+                             Toast.makeText(context, "You've aced the kill !", Toast.LENGTH_LONG)
+                                 .show()
++                            //TODO change the flag for next turn
+                         }
+                     }
+-                    else Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG ).show()
+-                }
+-            }
+-            else Toast.makeText(context,"Waiting for other werewolves to decide",Toast.LENGTH_LONG ).show()
++                    else Toast.makeText(context,"Waiting for other werewolves to decide",Toast.LENGTH_LONG ).show()
++                }
++                else Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG ).show()
++            }
++
++
+         }
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_FortuneTeller.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.t_mobop_werewolf\r\n\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.Button\r\nimport androidx.fragment.app.Fragment\r\n\r\nclass Frag_Actions_FortuneTeller : Fragment() {\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n    }\r\n\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater,\r\n        container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View? {\r\n        val v = inflater.inflate(R.layout.fragment_actions_fortuneteller, container, false)\r\n        return v\r\n\r\n    }\r\n\r\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\r\n        super.onViewCreated(view, savedInstanceState)\r\n\r\n        val buttonReveal = view.findViewById<Button>(R.id.buttonChoose)\r\n        val buttonPass = view.findViewById<Button>(R.id.buttonPassFortuneTeller)\r\n\r\n\r\n        buttonReveal.setOnClickListener {\r\n            Log.d(\"MainActivity\", \"1 role reavealed\")\r\n            // get the player pseudo\r\n            // display it\r\n            // change the flag for next turn\r\n\r\n        }\r\n\r\n        // add a button that waits on the player to have\r\n\r\n        buttonPass.setOnClickListener {\r\n            Log.d(\"MainActivity\", \"FortuneTeller has pass her turn\")\r\n            // change the flag for next turn\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_FortuneTeller.kt	(revision 25546af3944965ea50b1265dbf6f94e1389c6a43)
++++ app/src/main/java/com/example/t_mobop_werewolf/Frag_Actions_FortuneTeller.kt	(date 1609606586054)
+@@ -1,18 +1,27 @@
+ package com.example.t_mobop_werewolf
+ 
+ import android.os.Bundle
++import android.text.Layout
+ import android.util.Log
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+ import android.widget.Button
++import android.widget.LinearLayout
++import android.widget.RadioGroup
+ import androidx.fragment.app.Fragment
++import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
++import kotlinx.android.synthetic.*
++import kotlinx.android.synthetic.main.activity_playing.*
++import kotlinx.android.synthetic.main.fragment_waiting_room.*
+ 
+ class Frag_Actions_FortuneTeller : Fragment() {
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+     }
+ 
++    // onCreateView is similar to onCreate for an activity
++    // be careful not to refer to an UI element as they are not yet available (return null)
+     override fun onCreateView(
+         inflater: LayoutInflater,
+         container: ViewGroup?,
+@@ -31,18 +40,30 @@
+ 
+ 
+         buttonReveal.setOnClickListener {
++            val roomName = GeneralDataModel.localRoomName
++            val pseudo = GeneralDataModel.localPseudo
+             Log.d("MainActivity", "1 role reavealed")
+-            // get the player pseudo
+-            // display it
+-            // change the flag for next turn
++            playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->// get the player pseudo
++                val playerPseudo = GeneralDataModel.getAnyData("$roomName/Players/Player$checkedId/Pseudo") as String// display it
++                val playerRole = GeneralDataModel.getAnyData("$roomName/Players/Player$checkedId/Role") as String // display it
+ 
++                val roleText = textView
++                roleText.layoutParams= LinearLayout.LayoutParams(
++                    ViewGroup.LayoutParams.WRAP_CONTENT,
++                    ViewGroup.LayoutParams.WRAP_CONTENT)
++                roleText.setPadding(24,0,0,16)
++                roleText.setText(playerPseudo + "is a" + playerRole)
++
++                //view.findViewById<Layout>(R.id.tellerList)?.addView(roleText)
++                //TODO change the flag for next turn
++            }
+         }
+ 
+         // add a button that waits on the player to have
+ 
+         buttonPass.setOnClickListener {
+             Log.d("MainActivity", "FortuneTeller has pass her turn")
+-            // change the flag for next turn
++            //TODO change the flag for next turn
+         }
+     }
+-}
+\ No newline at end of file
++}
+Index: app/src/main/res/layout/fragment_actions_fortuneteller.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".Frag_Actions_FortuneTeller\">\r\n\r\n    <TextView\r\n        android:id=\"@+id/textViewFortunetellerRole\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:gravity=\"center\"\r\n        android:text=\"@string/fortuneteller_role\"\r\n        android:textAlignment=\"center\"\r\n        android:textSize=\"16sp\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        app:layout_constraintBottom_toTopOf=\"@id/textViewFortunetellerOrder\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\">\r\n    </TextView>\r\n\r\n    <TextView\r\n        android:id=\"@+id/textViewFortunetellerOrder\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/fortuneteller_order\"\r\n        android:textSize=\"20sp\"\r\n        android:gravity=\"center\"\r\n        android:textAlignment=\"center\"\r\n        app:layout_constraintStart_toEndOf=\"@+id/textViewFortunetellerRole\"\r\n        app:layout_constraintBottom_toTopOf=\"@id/buttonChoose\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\">\r\n    </TextView>\r\n\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonChoose\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/fortuneteller_action_button_choose\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/textViewFortunetellerRole\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toStartOf=\"@+id/buttonPassFortuneTeller\">\r\n    </Button>\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonPassFortuneTeller\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/fortuneteller_action_button_pass\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/textViewFortunetellerRole\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintStart_toEndOf=\"@id/buttonChoose\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\">\r\n    </Button>\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/fragment_actions_fortuneteller.xml	(revision 25546af3944965ea50b1265dbf6f94e1389c6a43)
++++ app/src/main/res/layout/fragment_actions_fortuneteller.xml	(date 1609595694774)
+@@ -56,4 +56,13 @@
+         app:layout_constraintStart_toEndOf="@id/buttonChoose"
+         app:layout_constraintEnd_toEndOf="parent">
+     </Button>
++
++    <LinearLayout
++        android:id="@+id/tellerList"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="vertical"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
