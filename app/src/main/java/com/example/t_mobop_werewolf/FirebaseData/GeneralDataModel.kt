@@ -92,7 +92,7 @@ object GeneralDataModel: Observable()
 
 
     // This function is called at the end of a turn. It will setup the next state.
-    fun nextStage(currentState: Long): Long {
+    fun nextState(currentState: Long): Long {
         // use : nextStage(GeneralDataModel.getStoryState(), GeneralDataModel.localRoomName)
 
         // For every step

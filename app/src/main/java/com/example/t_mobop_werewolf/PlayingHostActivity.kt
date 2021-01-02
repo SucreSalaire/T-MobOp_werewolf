@@ -24,7 +24,7 @@ import com.google.firebase.ktx.Firebase
 class PlayingHostActivity : AppCompatActivity() {
 
     var roomName = GeneralDataModel.localRoomName
-    var storyState: Double = 0.0
+    var storyState: Long = 0
     var flagData = Firebase.database.reference.child("$roomName/GeneralData/Flag")
     val fragment_actions = Frag_Actions_NoActions()
 
@@ -93,18 +93,18 @@ class PlayingHostActivity : AppCompatActivity() {
 
     // THIS FUNCTION IS CALLED EVERY TIME a database VALUE IS UPDATED !!!! ADD ACTIONS HERE
     // This function decide what's the next storyState
-    private fun chooseActions() : Double{
+    private fun chooseActions() : Long{
         Toast.makeText(this, "Function chooseActions() called", Toast.LENGTH_SHORT).show()
-        var nextState : Double = 0.0
+        var nextState : Long = 0
 
-        if (storyState == 4.0) { // werewolf turn
+        if (storyState == 4 as Long) { // werewolf turn
             val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
             if(voted){
                 val nextState = GeneralDataModel.nextState(storyState)
                 Toast.makeText(this, "Werewolf voted", Toast.LENGTH_SHORT).show()
             }
         }
-        else if (storyState == 10.0){ // villager voting time
+        else if (storyState == 10 as Long){ // villager voting time
             val voted = GeneralDataModel.validateVote(roomName, "Villager")
             if (voted){
                 val nextState = GeneralDataModel.nextState(storyState)
@@ -119,7 +119,7 @@ class PlayingHostActivity : AppCompatActivity() {
         return(nextState)
     }
 
-    private fun changeFragment(story : Double){
+    private fun changeFragment(story : Long){
         var currentFrag = R.layout.fragment_actions_villager
 
         if (getStoryRoleName(story) == GeneralDataModel.localRole){
@@ -131,8 +131,8 @@ class PlayingHostActivity : AppCompatActivity() {
         }
         else{
             when(story){
-                1.0 -> currentFrag = R.layout.fragment_actions_player
-                2.0 -> currentFrag = R.layout.fragment_actions_villager
+                1.toLong() -> currentFrag = R.layout.fragment_actions_noactions
+                2.toLong() -> currentFrag = R.layout.fragment_actions_villager
             }
         }
 
@@ -141,11 +141,11 @@ class PlayingHostActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    private fun getStoryRoleName(story : Double) : String{
+    private fun getStoryRoleName(story : Long) : String{
         when(story){
-            3.0 -> return "werewolf"
-            4.0 -> return "witch"
-            5.0 -> return "fortuneTeller"
+            3.toLong() -> return "werewolf"
+            4.toLong() -> return "witch"
+            5.toLong() -> return "fortuneTeller"
         }
         return "None"
     }
