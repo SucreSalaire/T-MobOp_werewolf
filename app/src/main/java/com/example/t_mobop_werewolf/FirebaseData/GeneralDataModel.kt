@@ -112,6 +112,7 @@ object GeneralDataModel: Observable()
                 database.child("$RoomName/GeneralData/RoomName").setValue(RoomName)
                 database.child("$RoomName/GeneralData/StoryState").setValue(0.0)
                 database.child("$RoomName/GeneralData/WaitingRoomOpen").setValue(false)
+                database.child("$RoomName/GeneralData/Flag").setValue(false)
 
                 database.child("$RoomName/Players/Player1/Alive").setValue(true)
                 database.child("$RoomName/Players/Player1/Pseudo").setValue(HostName)
@@ -119,6 +120,9 @@ object GeneralDataModel: Observable()
                 database.child("$RoomName/Players/Player1/Voted").setValue(false)
                 database.child("$RoomName/Players/Player1/Votes").setValue(0)
                 database.child("$RoomName/Players/Player1/Werewolf").setValue(false)
+
+                database.child("$RoomName/RolesData/PotionKill").setValue(1)
+                database.child("$RoomName/RolesData/PotionSave").setValue(1)
 
                 localRoomName = RoomName
                 localPseudo = HostName

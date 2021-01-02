@@ -26,7 +26,7 @@ class PlayingHostActivity : AppCompatActivity() {
 
     var roomName = GeneralDataModel.localRoomName
     var storyState: Double = 0.0
-    var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
+    var allDataReference = Firebase.database.reference.child(roomName)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +48,14 @@ class PlayingHostActivity : AppCompatActivity() {
 
         //---
         // ---x--- Firebase database listener for the StoryState variable ---x---
-        storyStateRef.addValueEventListener(object: ValueEventListener
+        allDataReference.addValueEventListener(object: ValueEventListener
         {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    storyState = snapshot.value as Double
+                    //storyState = snapshot.value as Double
                     Log.d("StoryState", "Data updated")
-                    Toast.makeText(applicationContext, "StoryState changed: $storyState", Toast.LENGTH_SHORT).show()
-                    nextActions()   // this function is called every time StoryState is updated
+                    //Toast.makeText(applicationContext, "data changed: $storyState", Toast.LENGTH_SHORT).show()
+                    chooseActions()   // this function is called every time StoryState is updated
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -66,27 +66,24 @@ class PlayingHostActivity : AppCompatActivity() {
 
     }
 
-
-//
-
-
-
-
-
-
-
-
     override fun onDestroy() {
         super.onDestroy()
         // add code to remove listener
     }
 
-
-    // THIS FUNCTION IS CALLED EVERY TIME THE STORYSTATE VALUE IS UPDATED !!!! ADD ACTIONS HERE
-    private fun nextActions(){
-        Toast.makeText(this, "Function nextActions() called", Toast.LENGTH_SHORT).show()
+    // THIS FUNCTION IS CALLED EVERY TIME a database VALUE IS UPDATED !!!! ADD ACTIONS HERE
+    private fun chooseActions(){
+        Toast.makeText(this, "Function chooseActions() called", Toast.LENGTH_SHORT).show()
         // Here can be added another call for a function in the fragment that will receive the
         // new StoryState value and do his thing
+        if (storyState == 4.0) { // werewolfturn
+            var voted = GeneralDataModel.validateVote(roomName, "Werewolf")
+            if(voted){
+
+            }
+
+        }
+
     }
 
 
