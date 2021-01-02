@@ -100,19 +100,19 @@ class PlayingHostActivity : AppCompatActivity() {
         if (storyState == 4 as Long) { // werewolf turn
             val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
             if(voted){
-                val nextState = GeneralDataModel.nextState(storyState)
+                nextState = GeneralDataModel.nextState(storyState)
                 Toast.makeText(this, "Werewolf voted", Toast.LENGTH_SHORT).show()
             }
         }
         else if (storyState == 10 as Long){ // villager voting time
             val voted = GeneralDataModel.validateVote(roomName, "Villager")
             if (voted){
-                val nextState = GeneralDataModel.nextState(storyState)
+                nextState = GeneralDataModel.nextState(storyState)
                 Toast.makeText(this, "Everybody voted", Toast.LENGTH_SHORT).show()
             }
         }
         else{
-            val nextState = GeneralDataModel.nextState(storyState)
+            nextState = GeneralDataModel.nextState(storyState)
             Toast.makeText(this, " Going to next story state", Toast.LENGTH_SHORT).show()
         }
 
@@ -120,13 +120,13 @@ class PlayingHostActivity : AppCompatActivity() {
     }
 
     public fun changeFragment(story : Long){
-        var currentFrag = R.layout.fragment_actions_villager
+        var currentFrag = R.id.frag_actions_noactions
 
         if (getStoryRoleName(story) == GeneralDataModel.localRole){
             when(GeneralDataModel.localRole){
-                "werewolf" -> currentFrag = R.layout.fragment_actions_werewolf
-                "witch" -> currentFrag = R.layout.fragment_actions_witch
-                "fortuneTeller" -> currentFrag = R.layout.fragment_actions_fortuneteller
+                "werewolf" -> currentFrag = R.id.frag_actions_werewolf
+                "witch" -> currentFrag = R.id.frag_actions_witch
+                "fortuneTeller" -> currentFrag = R.id.frag_actions_fortuneteller
             }
         }
         else{
@@ -137,7 +137,7 @@ class PlayingHostActivity : AppCompatActivity() {
         }
 
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.layout.fragment_actions_fortuneteller.toInt(), fragment_actions)
+        transaction.replace(currentFrag, fragment_actions)
         transaction.commit()
     }
 
