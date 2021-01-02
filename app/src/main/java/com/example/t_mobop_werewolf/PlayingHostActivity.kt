@@ -8,10 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.GeneratedAdapter
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 import com.example.t_mobop_werewolf.FirebaseData.StoryState
@@ -27,11 +25,14 @@ class PlayingHostActivity : AppCompatActivity() {
 
     var roomName = GeneralDataModel.localRoomName
     var storyState: Double = 0.0
-    var allDataReference = Firebase.database.reference.child(roomName)
+    var flagData = Firebase.database.reference.child("$roomName/GeneralData/Flag")
+    val fragment_actions = Frag_Actions_NoActions()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
+
+        val fragment_actions = Frag_WaitingRoom()
 
         // These lines will be modified to display from the data received from Firebase
         // This text will be created only at the game start, won't change after
@@ -45,18 +46,37 @@ class PlayingHostActivity : AppCompatActivity() {
 
         val playersList = findViewById<ListView>(R.id.listview_Players)
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
-        playersList.adapter = PlayersListAdapter(this)
+
+        // should be received by Firebase
+        val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
+
+        fun getCount(): Int {return names.size}
+        var k: Int = 1
+        // Create RadioButton dynamically
+        for(players in names){
+            val radioButton = RadioButton(this)
+            radioButton.layoutParams= LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+            radioButton.setPadding(24,0,0,16)
+            radioButton.setText(players)
+            radioButton.id = k //TODO verifier le type
+            k++
+
+            findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)
+        }
 
         //---
-        // ---x--- Firebase database listener for the StoryState variable ---x---
-        allDataReference.addValueEventListener(object: ValueEventListener
+        // ---x--- Firebase database listener for the Flag variable ---x---
+        flagData.addValueEventListener(object: ValueEventListener
         {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    //storyState = snapshot.value as Double
+
                     Log.d("StoryState", "Data updated")
                     //Toast.makeText(applicationContext, "data changed: $storyState", Toast.LENGTH_SHORT).show()
-                    chooseActions()   // this function is called every time StoryState is updated
+                    storyState = chooseActions()   // this function is called every time StoryState is updated
+                    changeFragment(storyState)
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -64,7 +84,6 @@ class PlayingHostActivity : AppCompatActivity() {
             }
         })
         //---
-
     }
 
     override fun onDestroy() {
@@ -73,21 +92,63 @@ class PlayingHostActivity : AppCompatActivity() {
     }
 
     // THIS FUNCTION IS CALLED EVERY TIME a database VALUE IS UPDATED !!!! ADD ACTIONS HERE
-    private fun chooseActions(){
+    // This function decide what's the next storyState
+    private fun chooseActions() : Double{
         Toast.makeText(this, "Function chooseActions() called", Toast.LENGTH_SHORT).show()
-        // Here can be added another call for a function in the fragment that will receive the
-        // new StoryState value and do his thing
-        if (storyState == 4.0) { // werewolfturn
-            var voted = GeneralDataModel.validateVote(roomName, "Werewolf")
+        var nextState : Double = 0.0
+
+        if (storyState == 4.0) { // werewolf turn
+            val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
             if(voted){
-
+                val nextState = GeneralDataModel.nextState(storyState)
+                Toast.makeText(this, "Werewolf voted", Toast.LENGTH_SHORT).show()
             }
-
+        }
+        else if (storyState == 10.0){ // villager voting time
+            val voted = GeneralDataModel.validateVote(roomName, "Villager")
+            if (voted){
+                val nextState = GeneralDataModel.nextState(storyState)
+                Toast.makeText(this, "Everybody voted", Toast.LENGTH_SHORT).show()
+            }
+        }
+        else{
+            val nextState = GeneralDataModel.nextState(storyState)
+            Toast.makeText(this, " Going to next story state", Toast.LENGTH_SHORT).show()
         }
 
+        return(nextState)
     }
 
+    private fun changeFragment(story : Double){
+        var currentFrag = R.layout.fragment_actions_villager
 
+        if (getStoryRoleName(story) == GeneralDataModel.localRole){
+            when(GeneralDataModel.localRole){
+                "werewolf" -> currentFrag = R.layout.fragment_actions_werewolf
+                "witch" -> currentFrag = R.layout.fragment_actions_witch
+                "fortuneTeller" -> currentFrag = R.layout.fragment_actions_fortuneteller
+            }
+        }
+        else{
+            when(story){
+                1.0 -> currentFrag = R.layout.fragment_actions_player
+                2.0 -> currentFrag = R.layout.fragment_actions_villager
+            }
+        }
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.layout.fragment_actions_fortuneteller.toInt(), fragment_actions)
+        transaction.commit()
+    }
+
+    private fun getStoryRoleName(story : Double) : String{
+        when(story){
+            3.0 -> return "werewolf"
+            4.0 -> return "witch"
+            5.0 -> return "fortuneTeller"
+        }
+        return "None"
+    }
 
     // --------------------x-----------------------------------
     // Adapter for the list displaying all the players
