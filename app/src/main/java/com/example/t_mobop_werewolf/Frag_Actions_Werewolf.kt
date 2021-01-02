@@ -77,6 +77,7 @@ class Frag_Actions_Werewolf : Fragment() {
 
                 }
                 Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG).show()
+
             }
         }
     }

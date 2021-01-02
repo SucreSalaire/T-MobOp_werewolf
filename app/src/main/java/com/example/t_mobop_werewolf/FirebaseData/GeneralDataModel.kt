@@ -158,11 +158,11 @@ object GeneralDataModel: Observable()
 
         distributeRoles()
         changeStoryState(1.0)
+        // add a branch with only werewolf
     }
 
     fun distributeRoles()
     {
-
         when(getPlayersNumber(localRoomName))
         {
             3.toLong() ->
@@ -215,6 +215,12 @@ object GeneralDataModel: Observable()
             playersPseudoArray.add(localSnapshot.child("$RoomName/Players/Player${i.toString()}/Pseudo").value as String)
         }
         return playersPseudoArray
+    }
+
+    fun validateVote(Type: String, ): Boolean{
+        // set le flag a true
+        // check all flags
+            // if all are true (everybody has voted), return true
     }
 
     fun getAnyData(Path: String): Any {
@@ -272,7 +278,6 @@ object GeneralDataModel: Observable()
         }
     }
 
-
     fun localSnapshotInit() {
         FirebaseDatabase.getInstance().reference.addListenerForSingleValueEvent(
             object: ValueEventListener
@@ -301,6 +306,5 @@ object GeneralDataModel: Observable()
 
         Log.d(TAG, "Database has been set to default.")
     }
-
 
 }
