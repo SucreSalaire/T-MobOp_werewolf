@@ -54,7 +54,6 @@ class WaitingRoomActivity : AppCompatActivity() {
         // List of the waiting players
         val waitingListView = findViewById<ListView>(R.id.listViewRoomWaiting)
         waitingListView.adapter = PlayerWaitingAdapter(this)
-        waitingListView.invalidateViews()
 
         // PopUp pannel to configure game rules - not used
         val fragmentWaitingRoom = Frag_WaitingRoom()

@@ -257,7 +257,7 @@ object GeneralDataModel: Observable()
                 localPseudo = Pseudo
                 iAmtheHost = false
                 localPlayerNb = nbPlayer
-                WaitingRoomActivity().listViewRoomWaiting.invalidateViews() // update players list waiting in the room
+                //WaitingRoomActivity().listViewRoomWaiting.invalidateViews() // update players list waiting in the room
                 Log.d(TAG, "Fun joinRoom() success")
                 joinSuccess = true
             } catch (e: Exception) {
