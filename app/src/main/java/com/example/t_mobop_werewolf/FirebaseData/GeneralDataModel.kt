@@ -166,6 +166,7 @@ object GeneralDataModel: Observable()
             Log.d(TAG, "Fun setAnyData() failed")
             false
         }
+        return success
     }
 
     fun getStoryState() : Double {
@@ -188,7 +189,7 @@ object GeneralDataModel: Observable()
             return localSnapshot.child("$localRoomName/Players/$PlayerPseudo/Role").value as String
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d(TAG, "fun killPlayer failed")
+            Log.d(TAG, "fun getPlayerRole failed")
             return "Failed"
         }
     }

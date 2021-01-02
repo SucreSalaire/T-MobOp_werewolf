@@ -1,5 +1,6 @@
 package com.example.t_mobop_werewolf
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -8,15 +9,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
-import com.example.t_mobop_werewolf.FirebaseData.StoryState
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -28,6 +24,7 @@ class PlayingActivity : AppCompatActivity() {
     var storyState: Double = 0.0
     var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
 
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
@@ -40,11 +37,33 @@ class PlayingActivity : AppCompatActivity() {
         val player_name = GeneralDataModel.localPseudo
 
         val story = findViewById<TextView>(R.id.textview_storytelling)
-        story.text = "The night falls on the quiet village." // later controlled by Firebase
+        story.text = "The night falls on the quiet village." // TODO later controlled by Firebase
 
         val playersList = findViewById<ListView>(R.id.listview_Players)
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
-        playersList.adapter = PlayersListAdapter(this)
+        //playersList.adapter = PlayersListAdapter(this)
+
+        // should be received by Firebase
+        val names = arrayListOf<String>(
+            "Jean", "Jeanette", "Charles", "Alphonse", "Madeleine", "Clémentine")
+
+        fun getCount(): Int {return names.size}
+        var k: Int = 1
+        // Create RadioButton dynamically
+        for(players in names){
+            val radioButton = RadioButton(this)
+            radioButton.layoutParams= LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+            radioButton.setPadding(24,0,0,16)
+            radioButton.setText(players)
+            radioButton.id = k //TODO verifier le type
+            k++
+
+            findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)
+        }
+
+
 
         //---
         // ---x--- Firebase database listener for the StoryState variable ---x---
@@ -103,6 +122,11 @@ class PlayingActivity : AppCompatActivity() {
             playerName.text = names.get(position)
             return rowMain
         }
+
+
+
+
+
     }
 
 }
