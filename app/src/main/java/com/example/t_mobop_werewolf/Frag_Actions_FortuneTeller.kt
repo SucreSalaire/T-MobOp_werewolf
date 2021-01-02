@@ -38,11 +38,12 @@ class Frag_Actions_FortuneTeller : Fragment() {
 
         val buttonReveal = view.findViewById<Button>(R.id.buttonChoose)
         val buttonPass = view.findViewById<Button>(R.id.buttonPassFortuneTeller)
-
+        val roomName = GeneralDataModel.localRoomName
+        //val pseudo = GeneralDataModel.localPseudo
+        val path = "$roomName/GeneralData/Flag"
+        val flag = GeneralDataModel.getAnyData(path) as Boolean
 
         buttonReveal.setOnClickListener {
-            val roomName = GeneralDataModel.localRoomName
-            val pseudo = GeneralDataModel.localPseudo
             Log.d("MainActivity", "Teller chose to reaveal a role")
             playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->// get the player pseudo
                 val playerPseudo = GeneralDataModel.getAnyData("$roomName/Players/Player$checkedId/Pseudo") as String// display it
@@ -57,10 +58,6 @@ class Frag_Actions_FortuneTeller : Fragment() {
 
                 view.findViewById<RelativeLayout>(R.id.tellerList)?.addView(roleText)
                 Log.d("MainActivity", "Role has been revealed")
-
-                val path = "$roomName/GeneralData/Flag"
-                val flag = GeneralDataModel.getAnyData(path) as Boolean
-
                 GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
             }
         }
@@ -69,11 +66,6 @@ class Frag_Actions_FortuneTeller : Fragment() {
 
         buttonPass.setOnClickListener {
             Log.d("MainActivity", "FortuneTeller has passed her turn")
-            val roomName = GeneralDataModel.localRoomName
-            val pseudo = GeneralDataModel.localPseudo
-            val path = "$roomName/GeneralData/Flag"
-            val flag = GeneralDataModel.getAnyData(path) as Boolean
-
             GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
             Log.d("MainActivity", "you chose to not use your clairvoyance")
         }

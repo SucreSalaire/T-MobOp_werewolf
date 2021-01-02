@@ -36,11 +36,14 @@ class Frag_Actions_Witch : Fragment() {
         val buttonSave = view.findViewById<Button>(R.id.buttonSave)
         val buttonKill = view.findViewById<Button>(R.id.buttonKill)
         val buttonPass = view.findViewById<Button>(R.id.buttonValidate)
-        val playerList = view.findViewById<ListView>(R.id.listview_Players)
+        val roomName = GeneralDataModel.localRoomName
+        //val pseudo = GeneralDataModel.localPseudo
+        //val playerList = view.findViewById<ListView>(R.id.listview_Players)
+        val path = "$roomName/GeneralData/Flag"
+
+        val flag = GeneralDataModel.getAnyData(path) as Boolean
 
         buttonSave.setOnClickListener{
-            val roomName = GeneralDataModel.localRoomName
-            val pseudo = GeneralDataModel.localPseudo
 
             playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
                 if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
@@ -52,7 +55,7 @@ class Frag_Actions_Witch : Fragment() {
 
                         GeneralDataModel.setAnyData(potionSavePath, potionLeft - 1)
                         GeneralDataModel.killPlayer(tobekilled)
-
+                        GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
                         Log.d("MainActivity", "witch saved someone")
                     } else {
                         Log.d("MainActivity", "you don't have any saving potion left")
@@ -68,8 +71,6 @@ class Frag_Actions_Witch : Fragment() {
         }
 
         buttonKill.setOnClickListener {
-            val roomName = GeneralDataModel.localRoomName
-            val pseudo = GeneralDataModel.localPseudo
 
             playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
                 if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
@@ -81,7 +82,7 @@ class Frag_Actions_Witch : Fragment() {
 
                         GeneralDataModel.setAnyData(potionKillPath, potionLeft - 1)
                         GeneralDataModel.killPlayer(tobekilled)
-
+                        GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
                         Log.d("MainActivity", "witch killed someone")
                     } else {
                         Log.d("MainActivity", "you don't have any killing potion left")
@@ -97,13 +98,6 @@ class Frag_Actions_Witch : Fragment() {
         }
 
         buttonPass.setOnClickListener{
-            Log.d("MainActivity", "witch passed her turn")
-            val roomName = GeneralDataModel.localRoomName
-            val pseudo = GeneralDataModel.localPseudo
-            val path = "$roomName/GeneralData/Flag"
-
-            val flag = GeneralDataModel.getAnyData(path) as Boolean
-
             GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
             Log.d("MainActivity", "you chose to not waste your potion")
         }

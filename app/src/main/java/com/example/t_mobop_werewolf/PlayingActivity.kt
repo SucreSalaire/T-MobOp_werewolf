@@ -59,7 +59,7 @@ class PlayingActivity : AppCompatActivity() {
             val nb = GeneralDataModel.localPlayerNb.toString()
 
             if (radioButton.text == GeneralDataModel.localPseudo
-                && GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") != "Witch") radioButton.isClickable.not()
+                || GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") != "Witch") radioButton.isClickable.not()
 
 
             if(GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") == "Werewolf"

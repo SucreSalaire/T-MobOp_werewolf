@@ -3,6 +3,7 @@ package com.example.t_mobop_werewolf
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,19 +34,22 @@ class Frag_Actions_Werewolf : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val buttonValidVote = view.findViewById<Button>(R.id.buttonValidVote)
+        val roomName = GeneralDataModel.localRoomName
+        val path = "$roomName/GeneralData/Flag"
+        val flag = GeneralDataModel.getAnyData(path) as Boolean
 
 
         buttonValidVote.setOnClickListener {
-            val roomName = GeneralDataModel.localRoomName
-            val pseudo = GeneralDataModel.localPseudo
+
+            //val pseudo = GeneralDataModel.localPseudo
 
             // Check if all werewolves have voted
 
             playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
                 if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
 
-                    val pathRole = "$roomName/Players/Player$checkedId/Role"
-                    val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
+                    //val pathRole = "$roomName/Players/Player$checkedId/Role"
+                    //val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
                     val pathSelected = "$roomName/Players/Player$checkedId/Votes"
                     val votes = GeneralDataModel.getPlayersVotes(GeneralDataModel.localRoomName)
                     val max: Int? = votes.max()
@@ -55,7 +59,7 @@ class Frag_Actions_Werewolf : Fragment() {
                     var n: Int = 1
                     var nVotes: Int = GeneralDataModel.getAnyData(pathSelected) as Int
 
-                    // Verify that target isn't a werewolf
+                    /* Verify that target isn't a werewolf
                     if (selectedRole == "Werewolf") {
                         Toast.makeText(
                             context,
@@ -63,9 +67,9 @@ class Frag_Actions_Werewolf : Fragment() {
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    else {
-                        GeneralDataModel.setAnyData(pathSelected, nVotes + 1)
-                    }
+                    else {*/
+                    GeneralDataModel.setAnyData(pathSelected, nVotes + 1)
+                    //}
 
                     // Check if all werewolves have voted
                     if(GeneralDataModel.validateVote(roomName, "Werewolf")) {
@@ -87,14 +91,22 @@ class Frag_Actions_Werewolf : Fragment() {
                             GeneralDataModel.killPlayer(tobkilled)
                             Toast.makeText(context, "You've aced the kill !", Toast.LENGTH_LONG)
                                 .show()
-                            //TODO change the flag for next turn
+                            GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
+                            Log.d("MainActivity", "Target kill successful")
                         }
                     }
-                    else Toast.makeText(context,"Waiting for other werewolves to decide",Toast.LENGTH_LONG ).show()
+                    else {
+                        Toast.makeText(
+                            context,
+                            "Waiting for other werewolves to decide",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
+                        Log.d("MainActivity", "Target kill successful")
+                    }
                 }
                 else Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG ).show()
             }
-
 
         }
     }
