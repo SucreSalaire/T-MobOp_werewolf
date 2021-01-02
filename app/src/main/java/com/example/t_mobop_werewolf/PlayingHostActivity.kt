@@ -119,7 +119,7 @@ class PlayingHostActivity : AppCompatActivity() {
         return(nextState)
     }
 
-    private fun changeFragment(story : Long){
+    public fun changeFragment(story : Long){
         var currentFrag = R.layout.fragment_actions_villager
 
         if (getStoryRoleName(story) == GeneralDataModel.localRole){

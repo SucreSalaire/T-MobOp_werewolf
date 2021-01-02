@@ -80,8 +80,9 @@ class PlayingActivity : AppCompatActivity() {
                 storyState = snapshot.value as Long
                 Log.d("StoryState", "Data updated")
                 Toast.makeText(applicationContext, "StoryState changed: $storyState", Toast.LENGTH_SHORT).show()
-                nextActions()   // this function is called every time StoryState is updated
+                PlayingHostActivity().changeFragment(storyState) // this function is called every time StoryState is updated
             }
+
         }
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(applicationContext, "Error database for storyState", Toast.LENGTH_SHORT).show()
