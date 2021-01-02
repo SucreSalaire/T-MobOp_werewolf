@@ -11,8 +11,17 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 import com.example.t_mobop_werewolf.FirebaseData.StoryState
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class WaitingRoomActivity : AppCompatActivity() {
+
+    var roomName = GeneralDataModel.localRoomName
+    val gameStartedRef = Firebase.database.reference.child("$roomName/GeneralData/GameStarted")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_waiting_room)
@@ -69,7 +78,26 @@ class WaitingRoomActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+
+        // ---x--- Firebase database listener for the GameStarted variable ---x---
+        gameStartedRef.addValueEventListener(object: ValueEventListener
+        {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    // works if the host has launched the game
+                    if (snapshot.value as Boolean && GeneralDataModel.iAmtheHost.not()){
+                        Log.d("WaitingRoomActivity", "GameStarted : true")
+                        val intent = Intent(this@WaitingRoomActivity, PlayingActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(applicationContext, "Error database for storyState", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    } // onCreate
 
 
     // List adapter for display the players in the room

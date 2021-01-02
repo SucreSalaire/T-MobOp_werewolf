@@ -31,7 +31,7 @@ class Frag_Actions_FortuneTeller : Fragment() {
 
 
         buttonReveal.setOnClickListener {
-            Log.d("MainActivity", "1 role reavealed")
+            Log.d("MainActivity", "1 role revealed")
             // get the player pseudo
             // display it
             // change the flag for next turn

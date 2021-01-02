@@ -178,12 +178,14 @@ object GeneralDataModel: Observable()
             e.printStackTrace()
             Log.d(TAG, "Fun setupAndStartGame()/distributeRoles() failed")
         }
+        database.child("$localRoomName/GeneralData/GameStarted").setValue(true)
         try{
             changeStoryState(1.0)
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "Fun setupAndStartGame()/changeStoryState(1.0) failed")
         }
+
     }
 
     private fun distributeRoles()

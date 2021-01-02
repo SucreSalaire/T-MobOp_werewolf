@@ -63,8 +63,6 @@ class PlayingActivity : AppCompatActivity() {
         }
 
 
-
-        //---
         // ---x--- Firebase database listener for the StoryState variable ---x---
         storyStateRef.addValueEventListener(object: ValueEventListener
         {
@@ -80,9 +78,7 @@ class PlayingActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Error database for storyState", Toast.LENGTH_SHORT).show()
             }
         })
-        //---
-
-    }
+    }   // onCreate
 
     override fun onDestroy() {
         super.onDestroy()
