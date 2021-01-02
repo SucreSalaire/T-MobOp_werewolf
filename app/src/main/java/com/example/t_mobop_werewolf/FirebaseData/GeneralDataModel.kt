@@ -265,9 +265,12 @@ object GeneralDataModel: Observable()
     fun getPlayersVotes(RoomName: String): ArrayList<Int>{
         var nbPlayers = getPlayersNumber(RoomName)
         var playersVotesArray = ArrayList<Int>()
-        for (i in 1..nbPlayers)
-        {
-            playersVotesArray.add(localSnapshot.child("$RoomName/Players/Player$i/Votes").value as Int)
+        for (i in 1..nbPlayers) {
+            if (localSnapshot.child("$RoomName/Players/Player$i/Votes").exists()) {
+                playersVotesArray.add(localSnapshot.child("$RoomName/Players/Player$i/Votes").value as Int)
+            } else {
+                Log.d(TAG, "fun getPlayersVotes() failed")
+            }
         }
         return playersVotesArray
     }

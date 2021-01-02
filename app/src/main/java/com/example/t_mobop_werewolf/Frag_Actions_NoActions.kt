@@ -19,7 +19,7 @@ class Frag_Actions_NoActions : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val v = inflater.inflate(R.layout.fragment_actions_player, container, false)
+        val v = inflater.inflate(R.layout.fragment_actions_noactions, container, false)
         return v
     }
 
