@@ -76,7 +76,8 @@ class PlayingHostActivity : AppCompatActivity() {
                     Log.d("StoryState", "Data updated")
                     //Toast.makeText(applicationContext, "data changed: $storyState", Toast.LENGTH_SHORT).show()
                     storyState = chooseActions()   // this function is called every time StoryState is updated
-                    Toast.makeText(applicationContext, "nextStorySt = $storyState", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(applicationContext, "nextStorySt = $storyState", Toast.LENGTH_SHORT).show()
+                    Log.d("MainActivity", "nextStorySt = $storyState")
                     changeFragment(storyState)
                 }
             }
@@ -95,26 +96,28 @@ class PlayingHostActivity : AppCompatActivity() {
     // THIS FUNCTION IS CALLED EVERY TIME a database VALUE IS UPDATED !!!! ADD ACTIONS HERE
     // This function decide what's the next storyState
     private fun chooseActions() : Long{
-        Toast.makeText(this, "Function chooseActions() called", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "Function chooseActions() called", Toast.LENGTH_SHORT).show()
         var nextState : Long = 0
 
         if (storyState == 1 as Long) { // werewolf turn
             val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
             if(voted){
                 nextState = GeneralDataModel.nextState(storyState)
-                Toast.makeText(this, "Werewolf voted", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "Werewolf voted", Toast.LENGTH_SHORT).show()
+                Log.d("MainActivity", "werewolf voted")
             }
         }
         else if (storyState == 3 as Long){ // villager voting time
             val voted = GeneralDataModel.validateVote(roomName, "Villager")
             if (voted){
                 nextState = GeneralDataModel.nextState(storyState)
-                Toast.makeText(this, "Everybody voted", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "Everybody voted", Toast.LENGTH_SHORT).show()
+                Log.d("MainActivity", "everybodyvoted")
             }
         }
         else{
             nextState = GeneralDataModel.nextState(storyState)
-            Toast.makeText(this, " Going to next story state", Toast.LENGTH_SHORT).show()
+            Log.d("MainActivity", "Going to next storyState")
         }
 
         return(nextState)
@@ -124,7 +127,7 @@ class PlayingHostActivity : AppCompatActivity() {
         var currentFrag = R.id.frag_actions_noactions
 
         if (getStoryRoleName(story) == GeneralDataModel.localRole){
-            Toast.makeText(this, "your turn", Toast.LENGTH_SHORT).show()
+            Log.d("MainActivity", "your turn")
             when(GeneralDataModel.localRole){
                 "werewolf" -> currentFrag = R.id.frag_actions_werewolf
                 "witch" -> currentFrag = R.id.frag_actions_witch
@@ -132,7 +135,7 @@ class PlayingHostActivity : AppCompatActivity() {
             }
         }
         else{
-            Toast.makeText(this, "noactions", Toast.LENGTH_SHORT).show()
+            Log.d("MainActivity", "noactions")
             when(story){
                 1.toLong() -> currentFrag = R.id.frag_actions_noactions
                 2.toLong() -> currentFrag = R.id.frag_actions_villager
@@ -143,7 +146,7 @@ class PlayingHostActivity : AppCompatActivity() {
             replace(R.id.FragmentConfigRoom, fragment_actions)
             txt = "fragChanged"
         }
-        Toast.makeText(this, txt, Toast.LENGTH_SHORT).show()
+        Log.d("MainActivity", txt)
         //val transaction = supportFragmentManager.beginTransaction()
         //transaction.replace(currentFrag, fragment_actions)
         //transaction.commit()
