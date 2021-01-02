@@ -257,7 +257,7 @@ object GeneralDataModel: Observable()
                 localPseudo = Pseudo
                 iAmtheHost = false
                 localPlayerNb = nbPlayer
-                //WaitingRoomActivity().listViewRoomWaiting.invalidateViews() // update players list waiting in the room
+                // update players list waiting in the room
                 Log.d(TAG, "Fun joinRoom() success")
                 joinSuccess = true
             } catch (e: Exception) {
@@ -305,6 +305,8 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/Players/Player2/Role").setValue("Werewolf")
                 database.child("$localRoomName/Players/Player3/Role").setValue("Witch")
 
+                database.child("$localRoomName/Players/Player2/Werewolf").setValue(true)
+
                 database.child("$localRoomName/RolesData/VillagersCount").setValue(2)
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(1)
                 database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
@@ -317,6 +319,8 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/Players/Player2/Role").setValue("Villager")
                 database.child("$localRoomName/Players/Player3/Role").setValue("Werewolf")
                 database.child("$localRoomName/Players/Player4/Role").setValue("Witch")
+
+                database.child("$localRoomName/Players/Player3/Werewolf").setValue(true)
 
                 database.child("$localRoomName/RolesData/VillagersCount").setValue(3)
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(1)
@@ -331,6 +335,9 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/Players/Player3/Role").setValue("Werewolf")
                 database.child("$localRoomName/Players/Player4/Role").setValue("Witch")
                 database.child("$localRoomName/Players/Player5/Role").setValue("FortuneTeller")
+
+                database.child("$localRoomName/Players/Player2/Werewolf").setValue(true)
+                database.child("$localRoomName/Players/Player3/Werewolf").setValue(true)
 
                 database.child("$localRoomName/RolesData/VillagersCount").setValue(3)
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(2)
@@ -347,12 +354,19 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/Players/Player5/Role").setValue("Witch")
                 database.child("$localRoomName/Players/Player6/Role").setValue("FortuneTeller")
 
+                database.child("$localRoomName/Players/Player3/Werewolf").setValue(true)
+                database.child("$localRoomName/Players/Player4/Werewolf").setValue(true)
+
                 database.child("$localRoomName/RolesData/VillagersCount").setValue(4)
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(2)
                 database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
                 database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(false)
             }
-            else -> Log.d(TAG, "fun distributeRoles(): can't assign roles to players")
+            else ->
+            {
+                Log.d(TAG, "fun distributeRoles(): can't assign roles to players")
+                database.child("$localRoomName/GeneralData/RolesDistributed").setValue(true)
+            }
         }
     }
 
@@ -469,6 +483,7 @@ object GeneralDataModel: Observable()
     }
 
     fun localSnapshotInit() {
+        setAnyData("0_NbPhoneConnected", (getAnyData("0_NbPhoneConnected") as Boolean).not())
         FirebaseDatabase.getInstance().reference.addListenerForSingleValueEvent(
             object: ValueEventListener
             {

@@ -138,8 +138,8 @@ class PlayingHostActivity : AppCompatActivity() {
 
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.FragmentConfigRoom, fragment_actions)
-            addToBackStack(null)
-            commit()
+            //addToBackStack(null)
+            //commit()
         }
 
         //val transaction = supportFragmentManager.beginTransaction()

@@ -53,6 +53,8 @@ class WaitingRoomActivity : AppCompatActivity() {
 
         // List of the waiting players
         val waitingListView = findViewById<ListView>(R.id.listViewRoomWaiting)
+        //val adapter = ArrayAdapter(this, R.layout.row_waiting_room, GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName))
+        //waitingListView.adapter = adapter
         waitingListView.adapter = PlayerWaitingAdapter(this)
 
         // PopUp pannel to configure game rules - not used
