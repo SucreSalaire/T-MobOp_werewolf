@@ -50,6 +50,7 @@ object GeneralDataModel: Observable()
     lateinit var localSnapshot: DataSnapshot
     var localRoomName: String = "None"
     var localPseudo: String = "None"
+    var localPlayerNb: Long = 1
     var localRole: String = "None"
     var iAmtheHost: Boolean = false
 
@@ -153,6 +154,7 @@ object GeneralDataModel: Observable()
                 localRoomName = RoomName
                 localPseudo = Pseudo
                 iAmtheHost = false
+                localPlayerNb = nbPlayer
                 Log.d(TAG, "Fun joinRoom() success")
                 joinSuccess = true
             } catch (e: Exception) {
@@ -324,7 +326,7 @@ object GeneralDataModel: Observable()
 
     fun getPlayerRole(PlayerPseudo: String): String {
         return try{
-            localSnapshot.child("$localRoomName/Players/$PlayerPseudo/Role").value as String
+            localSnapshot.child("$localRoomName/Players/Player$localPlayerNb/Role").value as String
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "fun getPlayerRole failed")
