@@ -129,52 +129,36 @@ object GeneralDataModel: Observable()
     }
 
 
-    fun joinRoom(RoomName: String, Pseudo: String): Boolean
-    {
+    fun joinRoom(RoomName: String, Pseudo: String) : Boolean{
         // Add check if player already exists
         // Add check for max players
         Log.d(TAG, "Fun joinRoom() called")
-        var joinSuccess: Boolean = false
-
-        joinSuccess = try {
-            val nbPlayer = getPlayersNumber(RoomName) + 1
-            database.child("$RoomName/Players/Player$nbPlayer/Alive").setValue(true)
-            database.child("$RoomName/Players/Player$nbPlayer/Pseudo").setValue(Pseudo)
-            database.child("$RoomName/Players/Player$nbPlayer/Role").setValue("None")
-            database.child("$RoomName/Players/Player$nbPlayer/Voted").setValue(false)
-            database.child("$RoomName/Players/Player$nbPlayer/Votes").setValue(0)
-            database.child("$RoomName/Players/Player$nbPlayer/Werewolf").setValue(false)
-            database.child("$RoomName/GeneralData/NbPlayers").setValue(nbPlayer)
-            localRoomName = RoomName
-            localPseudo = Pseudo
-            iAmtheHost = false
-            Log.d(TAG, "Fun joinRoom() success")
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d(TAG, "Fun joinRoom() failed")
-            false
-
+        var joinSuccess : Boolean = false
         if (localSnapshot.child("Rooms/$RoomName").value.toString() == "Open")
         {
-            joinSuccess = try {
+            try
+            {
                 val nbPlayer = getPlayersNumber(RoomName) + 1
                 database.child("$RoomName/Players/Player$nbPlayer/Alive").setValue(true)
                 database.child("$RoomName/Players/Player$nbPlayer/Pseudo").setValue(Pseudo)
                 database.child("$RoomName/Players/Player$nbPlayer/Role").setValue("None")
+                database.child("$RoomName/Players/Player$nbPlayer/Voted").setValue(false)
+                database.child("$RoomName/Players/Player$nbPlayer/Votes").setValue(0)
+                database.child("$RoomName/Players/Player$nbPlayer/Werewolf").setValue(false)
                 database.child("$RoomName/GeneralData/NbPlayers").setValue(nbPlayer)
                 localRoomName = RoomName
                 localPseudo = Pseudo
                 iAmtheHost = false
                 Log.d(TAG, "Fun joinRoom() success")
-                true
+                joinSuccess = true
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.d(TAG, "Fun joinRoom() failed")
-                false
+                joinSuccess = false
             }
-        } else{
+        } else {
             Log.d(TAG, "Room: $RoomName is closed, sorry.")
+            joinSuccess = false
         }
         return joinSuccess
     }
