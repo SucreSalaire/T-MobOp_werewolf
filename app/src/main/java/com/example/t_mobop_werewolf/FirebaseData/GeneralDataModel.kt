@@ -483,7 +483,7 @@ object GeneralDataModel: Observable()
     }
 
     fun localSnapshotInit() {
-        setAnyData("0_NbPhoneConnected", (getAnyData("0_NbPhoneConnected") as Boolean).not())
+        //setAnyData("0_NbPhoneConnected", (getAnyData("0_NbPhoneConnected") as Boolean).not())
         FirebaseDatabase.getInstance().reference.addListenerForSingleValueEvent(
             object: ValueEventListener
             {
