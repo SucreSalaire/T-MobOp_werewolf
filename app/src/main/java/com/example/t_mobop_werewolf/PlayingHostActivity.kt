@@ -127,7 +127,13 @@ class PlayingHostActivity : AppCompatActivity() {
     public fun changeFragment(story : Long){
         var currentFrag = R.id.frag_actions_noactions
 
-        if (getStoryRoleName(story) == GeneralDataModel.localRole){
+        val a = getStoryRoleName(story)
+        val b = GeneralDataModel.localRole
+
+        Log.d("MainActivity", a)
+        Log.d("MainActivity", b)
+
+        if ( a == b){
             Log.d("MainActivity", "your turn")
             when(GeneralDataModel.localRole){
                 "Werewolf" -> currentFrag = R.id.frag_actions_werewolf
@@ -148,9 +154,6 @@ class PlayingHostActivity : AppCompatActivity() {
             txt = "fragChanged"
         }
         Log.d("MainActivity", txt)
-        //val transaction = supportFragmentManager.beginTransaction()
-        //transaction.replace(currentFrag, fragment_actions)
-        //transaction.commit()
     }
 
     private fun getStoryRoleName(story : Long) : String{
