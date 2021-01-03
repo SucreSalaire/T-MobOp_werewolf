@@ -28,9 +28,8 @@ class MainActivity : AppCompatActivity(), Observer {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        this.initializeButtons()     // setup buttons for dev purpose
-        GeneralDataModel        // initialisation Firebase database model
+        initializeButtons()        // setup buttons for dev purpose
+        GeneralDataModel           // initialisation Firebase database model
         GeneralDataModel.localSnapshotInit()
     }
 

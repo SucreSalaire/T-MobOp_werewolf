@@ -78,7 +78,7 @@ object GeneralDataModel: Observable()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG, "Updated snapshot download cancelled!")}
+                Log.d(TAG, "localSnapshot update cancelled!")}
 
         } // mValueDataListener
         getDatabaseRef()?.addValueEventListener(mGeneralListener!!)
@@ -287,10 +287,10 @@ object GeneralDataModel: Observable()
         }
         database.child("$localRoomName/GeneralData/GameStarted").setValue(true)
         try{
-            changeStoryState(2)
+            changeStoryState(1)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d(TAG, "Fun setupAndStartGame()/changeStoryState(1.0) failed")
+            Log.d(TAG, "Fun setupAndStartGame()/changeStoryState(1) failed")
         }
     }
 
