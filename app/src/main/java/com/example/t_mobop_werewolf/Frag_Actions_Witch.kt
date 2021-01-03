@@ -51,10 +51,10 @@ class Frag_Actions_Witch : Fragment() {
                     val potionLeft = GeneralDataModel.getAnyData(potionSavePath) as Int
 
                     if (potionLeft > 0) {
-                        val tobekilled: String = "Player$checkedId"
+                        val tobesaved: String = "Player$checkedId"
 
                         GeneralDataModel.setAnyData(potionSavePath, potionLeft - 1)
-                        GeneralDataModel.killPlayer(tobekilled)
+                        GeneralDataModel.savePlayer(tobesaved)
                         GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
                         Log.d("MainActivity", "witch saved someone")
                     } else {

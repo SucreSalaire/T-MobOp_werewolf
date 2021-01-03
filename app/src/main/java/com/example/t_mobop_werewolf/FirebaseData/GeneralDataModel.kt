@@ -304,13 +304,13 @@ object GeneralDataModel: Observable()
                 Log.d(TAG, "fun distributeRoles(3)")
                 database.child("$localRoomName/Players/Player1/Role").setValue("Villager")
                 database.child("$localRoomName/Players/Player2/Role").setValue("Werewolf")
-                database.child("$localRoomName/Players/Player3/Role").setValue("Witch")
+                database.child("$localRoomName/Players/Player3/Role").setValue("Villager")
 
                 database.child("$localRoomName/Players/Player2/Werewolf").setValue(true)
 
                 database.child("$localRoomName/RolesData/VillagersCount").setValue(2)
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(1)
-                database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
+                database.child("$localRoomName/RolesData/WitchAlive").setValue(false)
                 database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(false)
             }
             4.toLong() ->
@@ -480,6 +480,18 @@ object GeneralDataModel: Observable()
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "fun killPlayer failed")
+            false
+        }
+    }
+
+    fun savePlayer(PlayerPseudo: String): Boolean {
+        // add role dependant save count in DB
+        return try{
+            database.child("$localRoomName/Players/$PlayerPseudo/Alive").setValue(true)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d(TAG, "fun savePlayer failed")
             false
         }
     }
