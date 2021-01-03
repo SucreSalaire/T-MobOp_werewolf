@@ -184,6 +184,7 @@ object GeneralDataModel: Observable()
         PlayingActivity().textview_storytelling.text = textToShow
         PlayingHostActivity().textview_storytelling.text = textToShow
         changeStoryState(nextState)
+        Log.d(TAG, "fun nextStage success")
         return nextState
     }
 
@@ -286,7 +287,7 @@ object GeneralDataModel: Observable()
         }
         database.child("$localRoomName/GeneralData/GameStarted").setValue(true)
         try{
-            changeStoryState(1)
+            changeStoryState(2)
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "Fun setupAndStartGame()/changeStoryState(1.0) failed")
@@ -461,6 +462,7 @@ object GeneralDataModel: Observable()
 
     fun changeStoryState(NextState: Long) : Boolean {
         return try{
+            Log.d(TAG, "changeStoryState called")
             database.child("$localRoomName/GeneralData/StoryState").setValue(NextState)
             true
         } catch (e: Exception) {
