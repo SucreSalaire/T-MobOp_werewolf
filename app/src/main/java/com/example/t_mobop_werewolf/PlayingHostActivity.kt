@@ -20,11 +20,10 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-
 class PlayingHostActivity : AppCompatActivity() {
 
     var roomName = GeneralDataModel.localRoomName
-    var storyState: Long = 0
+    var storyState: Long = 1
     var flagData = Firebase.database.reference.child("$roomName/GeneralData/Flag")
     val fragment_actions = Frag_Actions_NoActions()
 
@@ -32,15 +31,9 @@ class PlayingHostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
 
-        val fragment_actions = Frag_Actions_NoActions()
-
-        // These lines will be modified to display from the data received from Firebase
-        // This text will be created only at the game start, won't change after
-
         val player_role = findViewById<TextView>(R.id.textview_PlayerRole)
         player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
         GeneralDataModel.localRole = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
-        val player_name = GeneralDataModel.localPseudo
 
         val story = findViewById<TextView>(R.id.textview_storytelling)
         story.text = "The night falls on the quiet village." // later controlled by Firebase
@@ -48,10 +41,8 @@ class PlayingHostActivity : AppCompatActivity() {
         val playersList = findViewById<ListView>(R.id.listview_Players)
         playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
 
-        // should be received by Firebase
         val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 
-        fun getCount(): Int {return names.size}
         var k: Int = 1
         // Create RadioButton dynamically
         for(players in names){
@@ -67,26 +58,27 @@ class PlayingHostActivity : AppCompatActivity() {
             findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)
         }
 
-        //---
         // ---x--- Firebase database listener for the Flag variable ---x---
         flagData.addValueEventListener(object: ValueEventListener
         {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-
-                    Log.d("StoryState", "Data updated")
-                    //Toast.makeText(applicationContext, "data changed: $storyState", Toast.LENGTH_SHORT).show()
+                    Log.d("PlayingHostActivity", "Data updated")
                     storyState = chooseActions()   // this function is called every time StoryState is updated
-                    //Toast.makeText(applicationContext, "nextStorySt = $storyState", Toast.LENGTH_SHORT).show()
-                    Log.d("MainActivity", "nextStorySt = $storyState")
+                    Log.d("PlayingHostActivity", "nextStorySt = $storyState")
                     changeFragment(storyState)
                 }
             }
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(applicationContext, "Error database for storyState", Toast.LENGTH_SHORT).show()
+                Log.d("PlayingHostActivity", "nextStorySt = $storyState")
             }
         })
-        //---
+
+        val roomName = GeneralDataModel.localRoomName
+        val path = "$roomName/GeneralData/Flag"
+
+        val flag = GeneralDataModel.getAnyData(path) as Boolean
+        GeneralDataModel.setAnyData(path, flag.not())
     }
 
     override fun onDestroy() {
@@ -94,34 +86,28 @@ class PlayingHostActivity : AppCompatActivity() {
         // add code to remove listener
     }
 
-    // THIS FUNCTION IS CALLED EVERY TIME a database VALUE IS UPDATED !!!! ADD ACTIONS HERE
-    // This function decide what's the next storyState
     private fun chooseActions() : Long{
-        //Toast.makeText(this, "Function chooseActions() called", Toast.LENGTH_SHORT).show()
         var nextState : Long = 0
 
-        if (storyState == 1 as Long) { // werewolf turn
+        if (storyState == 3.toLong()) { // werewolf turn
             val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
             if(voted){
                 nextState = GeneralDataModel.nextState(storyState)
-                //Toast.makeText(applicationContext, "Werewolf voted", Toast.LENGTH_SHORT).show()
-                Log.d("MainActivity", "werewolf voted")
+                Log.d("PlayingHostActivity", "werewolf voted")
             }
-            Log.d("MainActivity", "werewolfTurn")
+            Log.d("PlayingHostActivity", "werewolfTurn")
         }
-        else if (storyState == 3 as Long){ // villager voting time
+        else if (storyState == 7.toLong()){ // villager voting time
             val voted = GeneralDataModel.validateVote(roomName, "Villager")
             if (voted){
                 nextState = GeneralDataModel.nextState(storyState)
-                //Toast.makeText(applicationContext, "Everybody voted", Toast.LENGTH_SHORT).show()
-                Log.d("MainActivity", "everybodyvoted")
+                Log.d("PlayingHostActivity", "everybodyvoted")
             }
         }
         else{
             nextState = GeneralDataModel.nextState(storyState)
-            Log.d("MainActivity", "Going to next storyState")
+            Log.d("PlayingHostActivity", "Going to next storyState")
         }
-
         return(nextState)
     }
 
@@ -131,11 +117,11 @@ class PlayingHostActivity : AppCompatActivity() {
         val a = getStoryRoleName(story)
         val b = GeneralDataModel.localRole
 
-        Log.d("MainActivity", a)
-        Log.d("MainActivity", b)
+        Log.d("PlayingHostActivity", a)
+        Log.d("PlayingHostActivity", b)
 
         if ( a == b){
-            Log.d("MainActivity", "your turn")
+            Log.d("PlayingHostActivity", "your turn")
             when(GeneralDataModel.localRole){
                 "Werewolf" -> currentFrag = R.id.frag_actions_werewolf
                 "Witch" -> currentFrag = R.id.frag_actions_witch
@@ -143,51 +129,27 @@ class PlayingHostActivity : AppCompatActivity() {
             }
         }
         else{
-            Log.d("MainActivity", "noactions")
-            when(story){
-                1.toLong() -> currentFrag = R.id.frag_actions_noactions
-                2.toLong() -> currentFrag = R.id.frag_actions_villager
-            }
+            Log.d("PlayingHostActivity", "noactions")
+            //when(story){
+            //    1.toLong() -> currentFrag = R.id.frag_actions_noactions
+            //    2.toLong() -> currentFrag = R.id.frag_actions_villager
+            //}
+            currentFrag = R.id.frag_actions_noactions
         }
         var txt = ""
         supportFragmentManager.beginTransaction().apply {
             replace(currentFrag, fragment_actions)
             txt = "fragChanged"
         }
-        Log.d("MainActivity", txt)
+        Log.d("PlayingHostActivity", txt)
     }
 
     private fun getStoryRoleName(story : Long) : String{
         when(story){
-            1.toLong() -> return "Werewolf"
-            2.toLong() -> return "Witch"
-            3.toLong() -> return "FortuneTeller"
+            3.toLong() -> return "Werewolf"
+            4.toLong() -> return "Witch"
+            5.toLong() -> return "FortuneTeller"
         }
         return "None"
     }
-
-    // --------------------x-----------------------------------
-    // Adapter for the list displaying all the players
-    private class PlayersListAdapter(context : Context) : BaseAdapter() {
-        private val mContext : Context = context
-
-        // should be received by Firebase
-        private val names = arrayListOf<String>(
-            "Jean", "Jeanette", "Charles", "Alphonse", "Madeleine", "Clémentine")
-
-        override fun getCount(): Int {return names.size}
-
-        override fun getItem(position: Int): Any {return ""}
-
-        override fun getItemId(position: Int): Long {return position.toLong()}
-
-        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
-            val layoutInflater = LayoutInflater.from(mContext)
-            val rowMain = layoutInflater.inflate(R.layout.row_players_list,viewGroup, false)
-            val playerName = rowMain.findViewById<TextView>(R.id.playerName)
-            playerName.text = names.get(position)
-            return rowMain
-        }
-    }
-
 }
