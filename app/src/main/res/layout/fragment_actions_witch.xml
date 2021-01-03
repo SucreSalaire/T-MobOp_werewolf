@@ -10,27 +10,16 @@
 
     <ImageView
         android:id="@+id/imageViewHunter"
-        android:layout_width="100sp"
-        android:layout_height="100sp"
-        android:layout_marginBottom="24dp"
         android:contentDescription="Witch icon"
         android:src="@drawable/ic_icon_witch"
         app:layout_constraintBottom_toTopOf="@+id/textViewHunterRole"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/icon_style" />
 
     <TextView
         android:id="@+id/textViewHunterRole"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="92dp"
-        android:fontFamily="@font/allerta"
         android:text="@string/witch_role"
         app:layout_constraintBottom_toTopOf="@+id/textViewHunterOrder"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +35,8 @@
         app:layout_constraintBottom_toTopOf="@+id/HunterActionbtn1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewHunterRole"></TextView>
+        app:layout_constraintTop_toBottomOf="@+id/textViewHunterRole"
+        ></TextView>
 
     <Button
         android:id="@+id/HunterActionbtn1"

@@ -17,7 +17,8 @@
         android:fontFamily="@font/allerta"
         android:text="Waiting Room"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/actionButton"/>
 
     <Button
         android:id="@+id/buttonPlaying"
@@ -28,7 +29,8 @@
         android:layout_marginBottom="8dp"
         android:text="Playing Activity"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/buttonWaitingRoom" />
+        app:layout_constraintStart_toEndOf="@+id/buttonWaitingRoom"
+        style="@style/actionButton"/>
 
     <Button
         android:id="@+id/buttonFirebaseTest"
@@ -39,7 +41,8 @@
         android:layout_marginBottom="8dp"
         android:text="DB default"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/buttonPlaying" />
+        app:layout_constraintStart_toEndOf="@+id/buttonPlaying"
+        style="@style/actionButton"/>
 
     <Button
         android:id="@+id/buttonJoinRoom"
@@ -49,7 +52,8 @@
         android:text="Join Room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/actionButton"/>
 
     <Button
         android:id="@+id/buttonCreateRoom"
@@ -59,6 +63,7 @@
         android:text="Create Room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonJoinRoom" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonJoinRoom"
+        style="@style/actionButton"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
