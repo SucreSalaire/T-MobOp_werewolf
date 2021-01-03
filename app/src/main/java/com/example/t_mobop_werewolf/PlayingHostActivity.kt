@@ -1,10 +1,10 @@
 package com.example.t_mobop_werewolf
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.FragmentActivity
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -12,7 +12,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class PlayingHostActivity : AppCompatActivity() {
+
+class PlayingHostActivity : FragmentActivity() {
 
     val TAG = "PlayingHostActivity"
     var roomName = GeneralDataModel.localRoomName
@@ -31,7 +32,6 @@ class PlayingHostActivity : AppCompatActivity() {
         initializePlayerList()
 
     }
-
 
 
     fun setupListenerOnStoryState()

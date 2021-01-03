@@ -43,7 +43,7 @@ class Frag_Actions_Werewolf : Fragment() {
             //val pseudo = GeneralDataModel.localPseudo
             // Check if all werewolves have voted
 
-            playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+            playersRadioGroup.setOnCheckedChangeListener {_, checkedId ->
                 if (playersRadioGroup.checkedRadioButtonId != -1 && playersRadioGroup.checkedRadioButtonId != null) {
                     Log.d("Frag_Actions_Werewolf", "playersRadioGroup.setOnCheckedChangeListener")
                     //val pathRole = "$roomName/Players/Player$checkedId/Role"
