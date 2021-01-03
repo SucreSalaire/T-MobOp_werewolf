@@ -1,6 +1,7 @@
 package com.example.t_mobop_werewolf
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,12 +16,11 @@ import kotlinx.android.synthetic.main.activity_playing.*
 import kotlinx.android.synthetic.main.fragment_actions_werewolf.*
 
 class Frag_Actions_Werewolf : Fragment() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    // onCreateView is similar to onCreate for an activity
-    // be careful not to refer to an UI element as they are not yet available (return null)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,16 +38,14 @@ class Frag_Actions_Werewolf : Fragment() {
         val path = "$roomName/GeneralData/Flag"
         val flag = GeneralDataModel.getAnyData(path) as Boolean
 
-
         buttonValidVote.setOnClickListener {
 
             //val pseudo = GeneralDataModel.localPseudo
-
             // Check if all werewolves have voted
 
             playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->
-                if (playersRadioGroup.getCheckedRadioButtonId() != -1) {
-
+                if (playersRadioGroup.checkedRadioButtonId != -1 && playersRadioGroup.checkedRadioButtonId != null) {
+                    Log.d("Frag_Actions_Werewolf", "playersRadioGroup.setOnCheckedChangeListener")
                     //val pathRole = "$roomName/Players/Player$checkedId/Role"
                     //val selectedRole = GeneralDataModel.getAnyData(pathRole) as String
                     val pathSelected = "$roomName/Players/Player$checkedId/Votes"

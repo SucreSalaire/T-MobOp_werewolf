@@ -5,14 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
+
 
 class CreatingRoomActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creating_room)
+
 
         val buttonCreateRoom = findViewById<Button>(R.id.buttonCreateConfirm)
         buttonCreateRoom.setOnClickListener{
@@ -31,7 +32,6 @@ class CreatingRoomActivity : AppCompatActivity() {
                 finish()
                 startActivity(intent)
             }
-
         }
     }
 }

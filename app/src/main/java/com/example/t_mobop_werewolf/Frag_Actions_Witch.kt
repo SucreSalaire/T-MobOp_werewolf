@@ -11,12 +11,12 @@ import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 import kotlinx.android.synthetic.main.activity_playing.*
 
 class Frag_Actions_Witch : Fragment() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    // onCreateView is similar to onCreate for an activity
-    // be careful not to refer to an UI element as they are not yet available (return null)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

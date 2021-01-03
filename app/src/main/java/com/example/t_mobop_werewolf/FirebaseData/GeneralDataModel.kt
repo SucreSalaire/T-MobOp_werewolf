@@ -19,32 +19,35 @@ import java.util.*
         Data is accessible in a local snapshot and is updated on any change (method onDataChange())
         The Database has a listener attached to it that allows to automatically update it.
 
+    The following functions are usable anywhere in the project to access/manipulate the database :
 
-    The following function are usable anywhere in the project to access a value from the
-    database:
-
-
+        GeneralDataModel.nextState(currentState: Long): Long
         GeneralDataModel.createRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean
         GeneralDataModel.joinRoom(RoomName: String, Pseudo: String): Boolean
         GeneralDataModel.setupAndStartGame()
-        GeneralDataModel.getPlayersNumber(RoomName: String): Int
+        GeneralDataModel.distributeRoles()
+        GeneralDataModel.getPlayersNumber(RoomName: String): Long
+        GeneralDataModel.getPlayersPseudos(RoomName: String): ArrayList<String>
+        GeneralDataModel.getPlayersVotes(RoomName: String): ArrayList<Int>
+        GeneralDataModel.getPlayerRole(PlayerPseudo: String): String
+        GeneralDataModel.validateVote(RoomName: String, voteType: String): Boolean
         GeneralDataModel.getAnyData(Path: String): Any
+        GeneralDataModel.setAnyData(Path: String, Value: Any): Boolean
         GeneralDataModel.getStoryState(RoomName: String): Double
         GeneralDataModel.changeStoryState(RoomName: String, NextState: Double) : Boolean
-        GeneralDataModel.getPlayerRole(RoomName: String, PlayerPseudo: String): String
         GeneralDataModel.killPlayer(RoomName: String, PlayerPseudo: String): Boolean
+        GeneralDataModel.savePlayer(PlayerPseudo: String): Boolean
         GeneralDataModel.localSnapshotInit()
         GeneralDataModel.setupDatabaseAsDefault()
-
-
  */
 
 object GeneralDataModel: Observable()
 {
     private var TAG = "GeneralDataModel"
+
+    // Database references
     private var database = Firebase.database.reference
-    private fun getDatabaseRef() : DatabaseReference? {
-        return FirebaseDatabase.getInstance().reference}
+    private fun getDatabaseRef() : DatabaseReference? {return FirebaseDatabase.getInstance().reference}
 
     // Event listener attached to the database root
     private var mGeneralListener: ValueEventListener? = null
@@ -57,6 +60,7 @@ object GeneralDataModel: Observable()
     var localRole: String = "None"
     var iAmtheHost: Boolean = false
 
+    // Database main listener
     init
     {
         if (mGeneralListener != null) {getDatabaseRef()?.removeEventListener(mGeneralListener!!)}
@@ -65,15 +69,11 @@ object GeneralDataModel: Observable()
         mGeneralListener = object: ValueEventListener
         {
             override fun onDataChange(snapshot: DataSnapshot) {
-                try
-                {
-                    if (snapshot != null)
-                    {
-                        localSnapshot = snapshot
-                        Log.d(TAG, "Data updated")
-                        setChanged()
-                        notifyObservers()
-                    }
+                try{
+                    localSnapshot = snapshot
+                    Log.d(TAG, "Database updated")
+                    setChanged()
+                    notifyObservers()
                 } catch (e: Exception) { e.printStackTrace() }
             }
 
@@ -91,36 +91,25 @@ object GeneralDataModel: Observable()
     //                                      Firebase Functions
 
 
-    // This function is called at the end of a turn. It will setup the next state.
-    fun nextState(currentState: Long): Long {
-        // use : nextStage(GeneralDataModel.getStoryState(), GeneralDataModel.localRoomName)
-
-        // For every step
-            // 1    check which is the next state (roles dead/alive)
-            // 2    update story for the new state
-            // 3    update value nextState
-
-        Log.d(TAG, "fun nextState($currentState)")
+    // This function is called at the end of a turn. It will decide the next state.
+    fun nextState(currentState: Long): Long
+    {
+        Log.d(TAG, "fun nextState($currentState) called")
         var nextState : Long = 0
         var textToShow: String = "Waiting"
 
         when(currentState) {
-            1.toLong() ->   // Game starts
-            {
-                // Next state 2 by default
+            1.toLong() -> {   // Game starts
                 textToShow = "2"
-                nextState = 2 // village goes to sleep
+                nextState = 2 // Next state 2 by default, village goes to sleep
             }
 
-            2.toLong() ->   // Village sleeping
-            {
-                // Next state 3 by default
+            2.toLong() -> {   // Village sleeping
                 textToShow = "3"
-                nextState = 3 // Werewolf will play
+                nextState = 3 // Next state 3 by default, werewolf will play
             }
 
-            3.toLong() ->   // Werewolf have played
-            {
+            3.toLong() -> {  // Werewolf have played
                 if (localSnapshot.child("$localRoomName/RolesData/VillagerCount").value as Long == 0 as Long) {
                     textToShow = "9"
                     nextState = 9   // end of game, villagers are dead
@@ -136,8 +125,7 @@ object GeneralDataModel: Observable()
                 }
             }
 
-            4.toLong() ->   // Witch has played
-            {
+            4.toLong() -> {  // Witch has played
                 if (localSnapshot.child("$localRoomName/RolesData/FortuneTellerAlive").value as Boolean) {
                     textToShow = "5"
                     nextState = 5 // FortuneTeller will play
@@ -146,26 +134,22 @@ object GeneralDataModel: Observable()
                 }
             }
 
-            5.toLong() ->   // Fortune teller has played
-            {
+            5.toLong() -> {  // Fortune teller has played
                 textToShow = "6"
                 nextState = 6 // Village will wake up
             }
 
-            6.toLong() ->   // Village has discovered the dead
-            {
+            6.toLong() -> {  // Village has discovered the dead
                 textToShow = "7"
                 nextState = 7 // Village will barbecue someone
             }
 
-            7.toLong() ->   // Village has sacrificed
-            {
+            7.toLong() -> {  // Village has sacrificed
                 textToShow = "8"
                 nextState = 8 // Village will reveal sacrifice
             }
 
-            8.toLong() ->   // Village sacrifice revelation
-            {
+            8.toLong() -> {  // Village sacrifice revelation
                 if (localSnapshot.child("$localRoomName/RolesData/WerewolvesCount").value as Long > 0) {
                     textToShow = "2"
                     nextState = 2   // going to sleep
@@ -175,14 +159,12 @@ object GeneralDataModel: Observable()
                 }
             }
 
-            9.toLong() ->   // Game end
-            {
+            9.toLong() -> {  // Game end
                 Log.d(TAG, "The game is finished and you should not see this text.")
             }
             else -> textToShow = "You messed up something."
         }
-        //PlayingActivity().textview_storytelling.text = textToShow
-        //PlayingHostActivity().textview_storytelling.text = textToShow
+
         changeStoryState(nextState)
         Log.d(TAG, "fun nextStage success")
         return nextState
@@ -238,9 +220,8 @@ object GeneralDataModel: Observable()
     }
 
 
-    fun joinRoom(RoomName: String, Pseudo: String) : Boolean{
-        // Add check if player already exists
-        // Add check for max players
+    fun joinRoom(RoomName: String, Pseudo: String) : Boolean
+    {
         Log.d(TAG, "Fun joinRoom() called")
         var joinSuccess : Boolean = false
         if (localSnapshot.child("0_Rooms/$RoomName").value.toString() == "Open")
@@ -277,7 +258,7 @@ object GeneralDataModel: Observable()
 
     fun setupAndStartGame()
     {
-        Log.d(TAG, "Fun setupAndStartGame()")
+        Log.d(TAG, "Fun setupAndStartGame() called")
         database.child("0_Rooms/$localRoomName").setValue("Closed")
         try{
             distributeRoles()
@@ -294,9 +275,9 @@ object GeneralDataModel: Observable()
         }
     }
 
-    private fun distributeRoles()
+    fun distributeRoles()
     {
-        Log.d(TAG, getPlayersNumber(localRoomName).toString())
+        Log.d(TAG, " fun ${getPlayersNumber(localRoomName)} called")
         when(getPlayersNumber(localRoomName))
         {
             3.toLong() ->
@@ -312,6 +293,8 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(1)
                 database.child("$localRoomName/RolesData/WitchAlive").setValue(false)
                 database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(false)
+
+                database.child("$localRoomName/GeneralData/RolesDistributed").setValue(true)
             }
             4.toLong() ->
             {
@@ -327,6 +310,8 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(1)
                 database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
                 database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(false)
+
+                database.child("$localRoomName/GeneralData/RolesDistributed").setValue(true)
             }
             5.toLong() ->
             {
@@ -344,6 +329,8 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(2)
                 database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
                 database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(true)
+
+                database.child("$localRoomName/GeneralData/RolesDistributed").setValue(true)
             }
             6.toLong() ->
             {
@@ -362,14 +349,17 @@ object GeneralDataModel: Observable()
                 database.child("$localRoomName/RolesData/WerewolvesCount").setValue(2)
                 database.child("$localRoomName/RolesData/WitchAlive").setValue(true)
                 database.child("$localRoomName/RolesData/FortuneTellerAlive").setValue(false)
+
+                database.child("$localRoomName/GeneralData/RolesDistributed").setValue(true)
             }
             else ->
             {
                 Log.d(TAG, "fun distributeRoles(): can't assign roles to players")
-                database.child("$localRoomName/GeneralData/RolesDistributed").setValue(true)
+                database.child("$localRoomName/GeneralData/RolesDistributed").setValue(false)
             }
         }
     }
+
 
     fun getPlayersNumber(RoomName: String): Long {
         val value: Long
@@ -381,7 +371,8 @@ object GeneralDataModel: Observable()
         return value
     }
 
-    fun getPlayersPseudos(RoomName: String): ArrayList<String>{
+
+    fun getPlayersPseudos(RoomName: String): ArrayList<String> {
         var nbPlayers = getPlayersNumber(RoomName)
         var playersPseudoArray = ArrayList<String>()
         for (i in 1..nbPlayers)
@@ -396,7 +387,8 @@ object GeneralDataModel: Observable()
         return playersPseudoArray
     }
 
-    fun getPlayersVotes(RoomName: String): ArrayList<Int>{
+
+    fun getPlayersVotes(RoomName: String): ArrayList<Int> {
         var nbPlayers = getPlayersNumber(RoomName)
         var playersVotesArray = ArrayList<Int>()
         for (i in 1..nbPlayers) {
@@ -409,6 +401,7 @@ object GeneralDataModel: Observable()
         return playersVotesArray
     }
 
+
     fun getPlayerRole(PlayerPseudo: String): String {
         return try{
             localSnapshot.child("$localRoomName/Players/Player$localPlayerNb/Role").value as String
@@ -419,7 +412,8 @@ object GeneralDataModel: Observable()
         }
     }
 
-    fun validateVote(RoomName: String, voteType: String  ): Boolean{
+
+    fun validateVote(RoomName: String, voteType: String): Boolean {
         var nbPlayers = getPlayersNumber(RoomName)
         var voteFlag: Boolean = true// set le flag a true
         when (voteType){
@@ -437,6 +431,7 @@ object GeneralDataModel: Observable()
         }
         return voteFlag
     }
+
 
     fun getAnyData(Path: String): Any {
         return localSnapshot.child(Path).value as Any
@@ -456,9 +451,11 @@ object GeneralDataModel: Observable()
         return success
     }
 
+
     fun getStoryState() : Long {
         return localSnapshot.child("$localRoomName/GeneralData/StoryState").value as Long
     }
+
 
     fun changeStoryState(NextState: Long) : Boolean {
         return try{
@@ -472,6 +469,7 @@ object GeneralDataModel: Observable()
         }
     }
 
+
     fun killPlayer(PlayerPseudo: String): Boolean {
         // add role dependant kill count in DB
         return try{
@@ -483,6 +481,7 @@ object GeneralDataModel: Observable()
             false
         }
     }
+
 
     fun savePlayer(PlayerPseudo: String): Boolean {
         // add role dependant save count in DB
@@ -496,8 +495,8 @@ object GeneralDataModel: Observable()
         }
     }
 
+
     fun localSnapshotInit() {
-        //setAnyData("0_NbPhoneConnected", (getAnyData("0_NbPhoneConnected") as Boolean).not())
         FirebaseDatabase.getInstance().reference.addListenerForSingleValueEvent(
             object: ValueEventListener
             {
@@ -514,7 +513,7 @@ object GeneralDataModel: Observable()
         )
     }
 
-    // Must be used only once !!! Otherwise will reinitialize all the game
+
     fun resetAllDatabase(){
         //database = Firebase.database.reference
         database.removeValue()              // removes everything at the root

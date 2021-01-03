@@ -1,26 +1,16 @@
 package com.example.t_mobop_werewolf
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
-import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.ktx.Firebase
 import java.util.*
 
 
 class MainActivity : AppCompatActivity(), Observer {
 
-    private lateinit var database: DatabaseReference
     private var mGeneralDataObserver: Observer? = null
 
 
@@ -49,11 +39,6 @@ class MainActivity : AppCompatActivity(), Observer {
         if (mGeneralDataObserver != null){
             GeneralDataModel.deleteObserver(mGeneralDataObserver)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
     }
 
     private fun initializeButtons(){
@@ -92,9 +77,7 @@ class MainActivity : AppCompatActivity(), Observer {
 
     }
 
-    override fun update(o: Observable?, arg: Any?) {
-        TODO("Needed ?")
-    }
+    override fun update(o: Observable?, arg: Any?) {}
 
 }
 
