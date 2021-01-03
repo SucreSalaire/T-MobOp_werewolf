@@ -63,7 +63,7 @@ class PlayingHostActivity : AppCompatActivity() {
             radioButton.setText(players)
             radioButton.id = k //TODO verifier le type
             k++
-
+            
             findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)
         }
 
