@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 
 class JoiningRoomActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_joining_room)

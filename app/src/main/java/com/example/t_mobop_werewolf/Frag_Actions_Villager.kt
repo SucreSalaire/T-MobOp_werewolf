@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class Frag_Actions_Villager : Fragment () {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    // onCreateView is similar to onCreate for an activity
-    // be careful not to refer to an UI element as they are not yet available (return null)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -1,13 +1,9 @@
 package com.example.t_mobop_werewolf
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Color
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
@@ -67,6 +63,7 @@ class PlayingActivity : AppCompatActivity() {
 
             when (playerRole)
             {
+                "Villager"          -> showFragVillager()
                 "Werewolf"          -> showFragWerewolf()
                 "Witch"             -> showFragWitch()
                 "FortuneTeller"     -> showFragFortuneTeller()
@@ -80,13 +77,20 @@ class PlayingActivity : AppCompatActivity() {
     }
 
 
-    // maybe will need a function to empty the fragment holder
-
     fun showFragNoActions()
     {
         Log.d(TAG,"showFragNoActions()")
         val transaction = manager.beginTransaction()
         val fragment = Frag_Actions_NoActions()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+    fun showFragVillager()
+    {
+        Log.d(TAG,"showFragVillager()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_Villager()
         transaction.replace(R.id.fragment_holder, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
@@ -127,6 +131,7 @@ class PlayingActivity : AppCompatActivity() {
             3.toLong() -> return "Werewolf"
             4.toLong() -> return "Witch"
             5.toLong() -> return "FortuneTeller"
+            7.toLong() -> return "Villager"
 
             else -> return "NoRoleRelatedToThisStoryState"
         }
@@ -134,10 +139,6 @@ class PlayingActivity : AppCompatActivity() {
 
     fun initializePlayerList()
     {
-
-        //val playersList = findViewById<ListView>(R.id.listview_Players)
-        //playersList.setBackgroundColor(Color.parseColor("#5fd3c8"))
-
         val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 
         var k: Int = 1
@@ -151,7 +152,6 @@ class PlayingActivity : AppCompatActivity() {
             radioButton.setPadding(24, 0, 0, 16)
             radioButton.text = players
             val nb = GeneralDataModel.localPlayerNb.toString()
-
             if (radioButton.text == GeneralDataModel.localPseudo
                 || GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") != "Witch"
             ) radioButton.isClickable.not()

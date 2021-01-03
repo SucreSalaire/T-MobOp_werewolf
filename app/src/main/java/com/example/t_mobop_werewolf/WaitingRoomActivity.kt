@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
-import com.example.t_mobop_werewolf.FirebaseData.StoryState
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -64,12 +63,12 @@ class WaitingRoomActivity : AppCompatActivity() {
 
         val buttonFloatingPointConfig = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.floattingPointConfig)
         buttonFloatingPointConfig.setOnClickListener{
-            if(fragmentWaitingRoom.isVisible){
+            if(fragmentWaitingRoom.isVisible && GeneralDataModel.iAmtheHost){
                 Toast.makeText(this, "Closing: ConfigFragment", Toast.LENGTH_SHORT).show()
                 supportFragmentManager.beginTransaction().apply {
                     remove(fragmentWaitingRoom)
                     commit() } }
-            else {
+            else if (GeneralDataModel.iAmtheHost) {
                 Toast.makeText(this, "Launching ConfigFragment", Toast.LENGTH_SHORT).show()
                 supportFragmentManager.beginTransaction().apply {
                     add(R.id.FragmentConfigRoom, fragmentWaitingRoom)

@@ -17,12 +17,11 @@ import kotlinx.android.synthetic.main.activity_playing.*
 import kotlinx.android.synthetic.main.fragment_waiting_room.*
 
 class Frag_Actions_FortuneTeller : Fragment() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    // onCreateView is similar to onCreate for an activity
-    // be careful not to refer to an UI element as they are not yet available (return null)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
