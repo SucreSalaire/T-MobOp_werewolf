@@ -22,134 +22,194 @@ import com.google.firebase.ktx.Firebase
 
 class PlayingHostActivity : AppCompatActivity() {
 
+    val TAG = "PlayingHostActivity"
     var roomName = GeneralDataModel.localRoomName
-    var storyState: Long = 1
-    var flagData = Firebase.database.reference.child("$roomName/GeneralData/Flag")
-    val fragment_actions = Frag_Actions_NoActions()
+    var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
+    var flagRef = Firebase.database.reference.child("$roomName/GeneralData/Flag")
+    var currentStoryState: Long = 1
+    val manager = supportFragmentManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
 
-        val player_role = findViewById<TextView>(R.id.textview_PlayerRole)
-        player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
-        GeneralDataModel.localRole = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
+        setupListenerOnStoryState()
+        setupListenerOnFlag()
+        initializePlayerList()
 
-        val story = findViewById<TextView>(R.id.textview_storytelling)
-        story.text = "The night falls on the quiet village." // later controlled by Firebase
+    } // onCreate()
+
+
+
+    fun setupListenerOnStoryState()
+    {
+        // ---x--- Firebase database listener for the StoryState variable ---x---
+        storyStateRef.addValueEventListener(object: ValueEventListener
+        {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    currentStoryState = snapshot.value as Long
+                    Log.d(TAG,  "StoryState changed to $currentStoryState")
+                    displayFragment(GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo), currentStoryState)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d(TAG, "StoryState listener failed")
+            }
+        })
+    }
+
+    fun setupListenerOnFlag()
+    {
+        // ---x--- Firebase database listener for the Flag variable ---x---
+        flagRef.addValueEventListener(object: ValueEventListener
+        {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    Log.d(TAG, "Flag has changed")
+                    chooseActions(currentStoryState)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d(TAG, "Flag listener failed")
+            }
+        })
+    }
+
+
+    fun chooseActions(currentStoryState: Long)
+    {
+        if (currentStoryState == 3.toLong()) { // werewolf turn
+            val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
+            if(voted){
+                GeneralDataModel.nextState(currentStoryState)
+                Log.d(TAG, "All the werewolves have voted")
+            }
+            Log.d(TAG, "werewolfTurn")
+        }
+        else if (currentStoryState == 7.toLong()){ // villager voting time
+            val voted = GeneralDataModel.validateVote(roomName, "Villager")
+            if (voted){
+                GeneralDataModel.nextState(currentStoryState)
+                Log.d(TAG, "All the village has voted")
+            }
+        }
+        else{
+            GeneralDataModel.nextState(currentStoryState)
+            Log.d(TAG, "Going to next storyState without any action")
+        }
+    }
+
+
+    fun displayFragment(playerRole: String, currentStoryState: Long)
+    {
+        Log.d(TAG, "fun displayFragment($playerRole, $currentStoryState)")
+
+        if (getRoleRelatedToStory(currentStoryState) == playerRole)
+        {
+            Log.d(TAG, "It's your turn to play: $playerRole")
+
+            when (playerRole)
+            {
+                "Werewolf"          -> showFragWerewolf()
+                "Witch"             -> showFragWitch()
+                "FortuneTeller"     -> showFragFortuneTeller()
+                else                -> showFragNoActions()
+            }
+        } else
+        {
+            Log.d(TAG, "It isn't your turn to play")
+            showFragNoActions()
+        }
+    }
+
+
+    // maybe will need a function to empty the fragment holder
+
+    fun showFragNoActions()
+    {
+        Log.d(TAG,"showFragNoActions()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_NoActions()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+    fun showFragWerewolf()
+    {
+        Log.d(TAG,"showFragWerewolf()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_Werewolf()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+    fun showFragWitch()
+    {
+        Log.d(TAG,"showFragWitch()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_Witch()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+    fun showFragFortuneTeller()
+    {
+        Log.d(TAG,"showFragFortuneTeller()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_FortuneTeller()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+
+    fun getRoleRelatedToStory(currentStoryState: Long): String
+    {
+        when(currentStoryState){
+            // These have to match with GeneralDataModel
+            3.toLong() -> return "Werewolf"
+            4.toLong() -> return "Witch"
+            5.toLong() -> return "FortuneTeller"
+
+            else -> return "NoRoleRelatedToThisStoryState"
+        }
+    }
+
+    fun initializePlayerList()
+    {
 
         val playersList = findViewById<ListView>(R.id.listview_Players)
-        playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
+        playersList.setBackgroundColor(Color.parseColor("#5fd3c8"))
 
         val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 
         var k: Int = 1
-        // Create RadioButton dynamically
-        for(players in names){
+
+        for (players in names) {
             val radioButton = RadioButton(this)
-            radioButton.layoutParams= LinearLayout.LayoutParams(
+            radioButton.layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT)
-            radioButton.setPadding(24,0,0,16)
-            radioButton.setText(players)
-            radioButton.id = k //TODO verifier le type
-            k++
-            
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            radioButton.setPadding(24, 0, 0, 16)
+            radioButton.text = players
+            val nb = GeneralDataModel.localPlayerNb.toString()
+
+            if (radioButton.text == GeneralDataModel.localPseudo
+                || GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") != "Witch"
+            ) radioButton.isClickable.not()
+
+
+            if (GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") == "Werewolf"
+                && GeneralDataModel.getAnyData("$roomName/Players/Player$k/Role") == "Werewolf"
+            ) radioButton.isClickable.not()
+
+            radioButton.id = k
+            k += 1
+
             findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)
         }
-
-        // ---x--- Firebase database listener for the Flag variable ---x---
-        flagData.addValueEventListener(object: ValueEventListener
-        {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    Log.d("PlayingHostActivity", "Data updated")
-                    storyState = chooseActions()   // this function is called every time StoryState is updated
-                    Log.d("PlayingHostActivity", "nextStorySt = $storyState")
-                    changeFragment(storyState)
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.d("PlayingHostActivity", "nextStorySt = $storyState")
-            }
-        })
-
-        val roomName = GeneralDataModel.localRoomName
-        val path = "$roomName/GeneralData/Flag"
-
-        val flag = GeneralDataModel.getAnyData(path) as Boolean
-        GeneralDataModel.setAnyData(path, flag.not())
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // add code to remove listener
-    }
-
-    private fun chooseActions() : Long{
-        var nextState : Long = 0
-
-        if (storyState == 3.toLong()) { // werewolf turn
-            val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
-            if(voted){
-                nextState = GeneralDataModel.nextState(storyState)
-                Log.d("PlayingHostActivity", "werewolf voted")
-            }
-            Log.d("PlayingHostActivity", "werewolfTurn")
-        }
-        else if (storyState == 7.toLong()){ // villager voting time
-            val voted = GeneralDataModel.validateVote(roomName, "Villager")
-            if (voted){
-                nextState = GeneralDataModel.nextState(storyState)
-                Log.d("PlayingHostActivity", "everybodyvoted")
-            }
-        }
-        else{
-            nextState = GeneralDataModel.nextState(storyState)
-            Log.d("PlayingHostActivity", "Going to next storyState")
-        }
-        return(nextState)
-    }
-
-    public fun changeFragment(story : Long){
-        var currentFrag = R.id.frag_actions_noactions
-
-        val a = getStoryRoleName(story)
-        val b = GeneralDataModel.localRole
-
-        Log.d("PlayingHostActivity", a)
-        Log.d("PlayingHostActivity", b)
-
-        if ( a == b){
-            Log.d("PlayingHostActivity", "your turn")
-            when(GeneralDataModel.localRole){
-                "Werewolf" -> currentFrag = R.id.frag_actions_werewolf
-                "Witch" -> currentFrag = R.id.frag_actions_witch
-                "FortuneTeller" -> currentFrag = R.id.frag_actions_fortuneteller
-            }
-        }
-        else{
-            Log.d("PlayingHostActivity", "noactions")
-            //when(story){
-            //    1.toLong() -> currentFrag = R.id.frag_actions_noactions
-            //    2.toLong() -> currentFrag = R.id.frag_actions_villager
-            //}
-            currentFrag = R.id.frag_actions_noactions
-        }
-        var txt = ""
-        supportFragmentManager.beginTransaction().apply {
-            replace(currentFrag, fragment_actions)
-            txt = "fragChanged"
-        }
-        Log.d("PlayingHostActivity", txt)
-    }
-
-    private fun getStoryRoleName(story : Long) : String{
-        when(story){
-            3.toLong() -> return "Werewolf"
-            4.toLong() -> return "Witch"
-            5.toLong() -> return "FortuneTeller"
-        }
-        return "None"
-    }
-}
+} // PlayingHostActivity

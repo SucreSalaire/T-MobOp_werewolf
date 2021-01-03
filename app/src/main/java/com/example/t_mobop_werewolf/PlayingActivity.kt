@@ -20,72 +20,151 @@ import com.google.firebase.ktx.Firebase
 
 class PlayingActivity : AppCompatActivity() {
 
+    val TAG = "PlayingActivity"
     var roomName = GeneralDataModel.localRoomName
-    var storyState: Long = 1
     var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
+    var currentStoryState: Long = 1
+    val manager = supportFragmentManager
 
-    @SuppressLint("ResourceType") // TODO: What's that ?
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
 
-        val player_role = findViewById<TextView>(R.id.textview_PlayerRole)
-        player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
-        GeneralDataModel.localRole = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)
+        setupListenerOnStoryState()
+        initializePlayerList()
 
-        val player_name = GeneralDataModel.localPseudo
+    } // onCreate()
 
-        val story = findViewById<TextView>(R.id.textview_storytelling)
-        story.text = "The night falls on the quiet village."
+
+
+    fun setupListenerOnStoryState()
+    {
+        // ---x--- Firebase database listener for the StoryState variable ---x---
+        storyStateRef.addValueEventListener(object: ValueEventListener
+        {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    currentStoryState = snapshot.value as Long
+                    Log.d(TAG,  "StoryState changed to $currentStoryState")
+                    displayFragment(GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo), currentStoryState)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d(TAG, "StoryState listener failed")
+            }
+        })
+    }
+
+
+    fun displayFragment(playerRole: String, currentStoryState: Long)
+    {
+        Log.d(TAG, "fun displayFragment($playerRole, $currentStoryState)")
+
+        if (getRoleRelatedToStory(currentStoryState) == playerRole)
+        {
+            Log.d(TAG, "It's your turn to play: $playerRole")
+
+            when (playerRole)
+            {
+                "Werewolf"          -> showFragWerewolf()
+                "Witch"             -> showFragWitch()
+                "FortuneTeller"     -> showFragFortuneTeller()
+                else                -> showFragNoActions()
+            }
+        } else
+        {
+            Log.d(TAG, "It isn't your turn to play")
+            showFragNoActions()
+        }
+    }
+
+
+    // maybe will need a function to empty the fragment holder
+
+    fun showFragNoActions()
+    {
+        Log.d(TAG,"showFragNoActions()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_NoActions()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+    fun showFragWerewolf()
+    {
+        Log.d(TAG,"showFragWerewolf()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_Werewolf()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+    fun showFragWitch()
+    {
+        Log.d(TAG,"showFragWitch()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_Witch()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+    fun showFragFortuneTeller()
+    {
+        Log.d(TAG,"showFragFortuneTeller()")
+        val transaction = manager.beginTransaction()
+        val fragment = Frag_Actions_FortuneTeller()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+
+    fun getRoleRelatedToStory(currentStoryState: Long): String
+    {
+        when(currentStoryState){
+            // These have to match with GeneralDataModel
+            3.toLong() -> return "Werewolf"
+            4.toLong() -> return "Witch"
+            5.toLong() -> return "FortuneTeller"
+
+            else -> return "NoRoleRelatedToThisStoryState"
+        }
+    }
+
+    fun initializePlayerList()
+    {
 
         val playersList = findViewById<ListView>(R.id.listview_Players)
-        playersList.setBackgroundColor(Color.parseColor("#FFFFFF"))
+        playersList.setBackgroundColor(Color.parseColor("#5fd3c8"))
 
         val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 
         var k: Int = 1
-        // Create RadioButton dynamically
-        for(players in names){
+
+        for (players in names) {
             val radioButton = RadioButton(this)
-            radioButton.layoutParams= LinearLayout.LayoutParams(
+            radioButton.layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT)
-            radioButton.setPadding(24,0,0,16)
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            radioButton.setPadding(24, 0, 0, 16)
             radioButton.text = players
             val nb = GeneralDataModel.localPlayerNb.toString()
 
             if (radioButton.text == GeneralDataModel.localPseudo
-                || GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") != "Witch") radioButton.isClickable.not()
+                || GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") != "Witch"
+            ) radioButton.isClickable.not()
 
 
-            if(GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") == "Werewolf"
-                && GeneralDataModel.getAnyData("$roomName/Players/Player$k/Role") == "Werewolf") radioButton.isClickable.not()
+            if (GeneralDataModel.getAnyData("$roomName/Players/Player$nb/Role") == "Werewolf"
+                && GeneralDataModel.getAnyData("$roomName/Players/Player$k/Role") == "Werewolf"
+            ) radioButton.isClickable.not()
 
             radioButton.id = k
             k += 1
 
             findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)
         }
-
-        // ---x--- Firebase database listener for the StoryState variable ---x---
-        storyStateRef.addValueEventListener(object: ValueEventListener
-        {
-            override fun onDataChange(snapshot: DataSnapshot) {
-            if (snapshot.exists()) {
-                storyState = snapshot.value as Long
-                Log.d("StoryState", "StoryState changed")
-                PlayingHostActivity().changeFragment(storyState) // this function is called every time StoryState is updated
-            }
-        }
-            override fun onCancelled(error: DatabaseError) {
-                Log.d("PlayingActivity", "Error database for storyState")
-            }
-        })
-    }   // onCreate
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // add code to remove listener
     }
-}
-
+} // PlayingActivity

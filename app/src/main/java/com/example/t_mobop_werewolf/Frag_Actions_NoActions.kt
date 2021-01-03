@@ -1,26 +1,29 @@
 package com.example.t_mobop_werewolf
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class Frag_Actions_NoActions : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    val TAG = "FragActionsNoActions"
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "onAttach()")
     }
 
-    // onCreateView is similar to onCreate for an activity
-    // be careful not to refer to an UI element as they are not yet available (return null)
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate()")
+    }
 
-        val v = inflater.inflate(R.layout.fragment_actions_noactions, container, false)
-        return v
+    override fun onCreateView(inflater: LayoutInflater,container: ViewGroup?,savedInstanceState: Bundle?): View? {
+        return inflater!!.inflate(R.layout.fragment_actions_noactions, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

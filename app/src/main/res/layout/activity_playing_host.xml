@@ -44,13 +44,11 @@
         android:layout_marginTop="10dp"
         android:layout_weight="0.45" />
 
-    <fragment
-        android:id="@+id/fragment_PlayerActions"
-        android:name="com.example.t_mobop_werewolf.Frag_Actions_NoActions"
+    <FrameLayout
+        android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="0.3" />
+        android:layout_margin="4dp"
+        android:layout_weight="0.35" />
 
 </LinearLayout>

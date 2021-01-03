@@ -181,8 +181,8 @@ object GeneralDataModel: Observable()
             }
             else -> textToShow = "You messed up something."
         }
-        PlayingActivity().textview_storytelling.text = textToShow
-        PlayingHostActivity().textview_storytelling.text = textToShow
+        //PlayingActivity().textview_storytelling.text = textToShow
+        //PlayingHostActivity().textview_storytelling.text = textToShow
         changeStoryState(nextState)
         Log.d(TAG, "fun nextStage success")
         return nextState
