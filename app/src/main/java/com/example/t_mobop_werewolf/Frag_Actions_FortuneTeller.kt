@@ -45,7 +45,8 @@ class Frag_Actions_FortuneTeller : Fragment() {
 
         buttonReveal.setOnClickListener {
             Log.d("MainActivity", "Teller chose to reaveal a role")
-            playersRadioGroup.setOnCheckedChangeListener { group, checkedId ->// get the player pseudo
+            val checkedId = playersRadioGroup.checkedRadioButtonId
+            if (checkedId != -1) {
                 val playerPseudo = GeneralDataModel.getAnyData("$roomName/Players/Player$checkedId/Pseudo") as String// display it
                 val playerRole = GeneralDataModel.getAnyData("$roomName/Players/Player$checkedId/Role") as String // display it
 

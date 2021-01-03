@@ -20,14 +20,7 @@
         <item name="android:textSize">18dp</item>
     </style>
 
-    <style name="description_textView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/allerta</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:textSize">16sp</item>
-    </style>
+
 
     <style name="actionButton">
         <item name="android:layout_width">wrap_content</item>
@@ -36,6 +29,27 @@
         <item name="android:fontFamily">@font/allerta</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="icon_style">
+        <item name="android:layout_width">100sp</item>
+        <item name="android:layout_height">100sp</item>
+        <item name="android:layout_marginBottom">24dp</item>
+    </style>
+
+    <style name="description_textView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">32dp</item>
+        <item name="android:layout_marginLeft">32dp</item>
+        <item name="android:layout_marginTop">32dp</item>
+        <item name="android:layout_marginEnd">32dp</item>
+        <item name="android:layout_marginRight">32dp</item>
+        <item name="android:layout_marginBottom">32dp</item>
+        <item name="android:fontFamily">@font/allerta</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 </resources>
