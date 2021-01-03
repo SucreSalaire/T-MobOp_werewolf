@@ -46,18 +46,16 @@ class WaitingRoomActivity : AppCompatActivity() {
                     startActivity(intent)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Log.d("WaitingRoomActivity", "PlayingActivity launch failed")
+                    Log.d("WaitingRoomActivity", "PlayingHostActivity launch failed")
                 }
             }
         }
 
         // List of the waiting players
         val waitingListView = findViewById<ListView>(R.id.listViewRoomWaiting)
-        //val adapter = ArrayAdapter(this, R.layout.row_waiting_room, GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName))
-        //waitingListView.adapter = adapter
         waitingListView.adapter = PlayerWaitingAdapter(this)
 
-        // PopUp pannel to configure game rules - not used
+        // PopUp panel to configure game rules - not used because uncomplete
         val fragmentWaitingRoom = Frag_WaitingRoom()
         supportFragmentManager.beginTransaction().apply {
             remove(fragmentWaitingRoom)
@@ -107,9 +105,9 @@ class WaitingRoomActivity : AppCompatActivity() {
 
         private val mContext: Context
 
-        private val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
-
         init{mContext = context}
+
+        private val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 
         override fun getCount(): Int { return names.size }
 
