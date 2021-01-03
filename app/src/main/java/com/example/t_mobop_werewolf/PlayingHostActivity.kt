@@ -181,8 +181,8 @@ class PlayingHostActivity : AppCompatActivity() {
     fun initializePlayerList()
     {
 
-        val playersList = findViewById<ListView>(R.id.listview_Players)
-        playersList.setBackgroundColor(Color.parseColor("#5fd3c8"))
+        //val playersList = findViewById<ListView>(R.id.listview_Players)
+        //playersList.setBackgroundColor(Color.parseColor("#5fd3c8"))
 
         val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 

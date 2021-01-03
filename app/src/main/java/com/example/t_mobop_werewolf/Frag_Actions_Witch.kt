@@ -7,11 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel
 import kotlinx.android.synthetic.main.activity_playing.*
-import kotlinx.android.synthetic.main.fragment_actions_werewolf.*
 
 class Frag_Actions_Witch : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,8 +30,8 @@ class Frag_Actions_Witch : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val buttonSave = view.findViewById<Button>(R.id.buttonSave)
-        val buttonKill = view.findViewById<Button>(R.id.buttonKill)
+        val buttonSave = view.findViewById<Button>(R.id.HunterActionbtn1)
+        val buttonKill = view.findViewById<Button>(R.id.HunterActionbtn2)
         val buttonPass = view.findViewById<Button>(R.id.buttonValidate)
         val roomName = GeneralDataModel.localRoomName
         //val pseudo = GeneralDataModel.localPseudo

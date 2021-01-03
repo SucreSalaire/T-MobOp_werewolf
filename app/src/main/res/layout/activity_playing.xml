@@ -1,48 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".PlayingActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dayBackground2"
+    android:orientation="vertical"
     android:paddingLeft="4dp"
     android:paddingRight="4dp"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:weightSum="1"
+    tools:context=".PlayingActivity">
 
     <TextView
         android:id="@+id/textview_PlayerRole"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:layout_weight="0.05"
+        android:fontFamily="@font/allerta"
         android:text="Role ?"
         android:textAlignment="center"
-        android:layout_gravity="center_horizontal"
         android:textSize="20dp" />
 
     <TextView
         android:id="@+id/textview_storytelling"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Text with the story happening ..."
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:layout_weight="0.2"
-        android:textAlignment="center"
-        android:layout_gravity="center_horizontal"/>
+        android:text="Text with the story happening ..."
+        android:textAlignment="center" />
 
     <RadioGroup
         android:id="@+id/playersRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.05" />
-
-    <ListView
-        android:id="@+id/listview_Players"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_weight="0.40" />
 
     <FrameLayout
         android:id="@+id/fragment_holder"

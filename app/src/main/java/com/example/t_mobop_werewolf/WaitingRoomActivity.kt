@@ -107,9 +107,9 @@ class WaitingRoomActivity : AppCompatActivity() {
 
         private val mContext: Context
 
-        private val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
-
         init{mContext = context}
+
+        private val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)
 
         override fun getCount(): Int { return names.size }
 

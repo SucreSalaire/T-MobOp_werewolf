@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dayBackground2"
     tools:context=".CreatingRoomActivity">
 
     <EditText
@@ -16,8 +17,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Enter the room name"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,8 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Enter the host pseudo"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="@+id/editTextNewRoomName"
         app:layout_constraintStart_toStartOf="@+id/editTextNewRoomName"
         app:layout_constraintTop_toBottomOf="@+id/editTextNewRoomName" />

@@ -2,38 +2,35 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frag_actions_fortuneteller"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Frag_Actions_FortuneTeller"
-    android:id="@+id/frag_actions_fortuneteller">
+    android:background="@color/dayBackground2"
+    tools:context=".Frag_Actions_FortuneTeller">
 
     <TextView
         android:id="@+id/textViewFortunetellerRole"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
         android:text="@string/fortuneteller_role"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/textViewFortunetellerOrder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </TextView>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/description_textView"></TextView>
 
     <TextView
+        style="@style/option_textView"
         android:id="@+id/textViewFortunetellerOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/fortuneteller_order"
-        android:textSize="20sp"
+        android:fontFamily="@font/allerta"
         android:gravity="center"
+        android:text="@string/fortuneteller_order"
         android:textAlignment="center"
-        app:layout_constraintStart_toEndOf="@+id/textViewFortunetellerRole"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/buttonChoose"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </TextView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewFortunetellerRole"
+        app:layout_constraintStart_toStartOf="parent"></TextView>
 
 
     <Button
@@ -41,22 +38,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/fortuneteller_action_button_choose"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFortunetellerRole"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonPassFortuneTeller"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonPassFortuneTeller">
-    </Button>
+        app:layout_constraintTop_toBottomOf="@+id/textViewFortunetellerRole"></Button>
 
     <Button
         android:id="@+id/buttonPassFortuneTeller"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/fortuneteller_action_button_pass"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFortunetellerRole"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/buttonChoose"
-        app:layout_constraintEnd_toEndOf="parent">
-    </Button>
+        app:layout_constraintTop_toBottomOf="@+id/textViewFortunetellerRole"></Button>
 
     <LinearLayout
         android:id="@+id/tellerList"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C6B4B4"
+    android:background="@color/dayBackground2"
     android:visibility="visible"
     tools:context=".WaitingRoomActivity">
 
@@ -37,6 +37,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
+        android:src="@android:drawable/ic_menu_manage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
@@ -62,6 +63,7 @@
         android:id="@+id/textViewRoomName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/allerta"
         android:gravity="center_horizontal"
         android:text="None"
         android:textAlignment="center"
@@ -76,7 +78,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
+        android:fontFamily="@font/allerta"
         android:text="Launch the game"
+        android:textColor="@color/greyed"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

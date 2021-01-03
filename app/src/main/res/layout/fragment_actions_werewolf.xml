@@ -2,48 +2,47 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frag_actions_werewolf"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Frag_Actions_Werewolf"
-    android:id="@+id/frag_actions_werewolf">
+    android:background="@color/dayBackground2"
+    tools:context=".Frag_Actions_Werewolf">
 
 
     <TextView
         android:id="@+id/textViewWerewolfRole"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/werewolf_role"
         android:textAlignment="center"
-        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-    </TextView>
+        app:layout_constraintTop_toTopOf="parent"></TextView>
 
     <TextView
         android:id="@+id/textViewAction"
+        style="@style/option_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/werewolf_order"
         android:textAlignment="center"
-        android:gravity="center"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/textViewWerewolfRole"
         app:layout_constraintBottom_toTopOf="@+id/buttonValidVote"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@+id/textViewWerewolfRole"></TextView>
 
     <Button
         android:id="@+id/buttonValidVote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/werewolf_action_button1"
-        app:layout_constraintTop_toBottomOf="@id/textViewAction"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </Button>
+        app:layout_constraintTop_toBottomOf="@id/textViewAction"></Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

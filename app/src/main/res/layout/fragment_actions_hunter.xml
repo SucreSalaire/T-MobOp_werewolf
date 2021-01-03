@@ -1,45 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frag_actions_hunter"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/dayBackground2"
+    tools:context=".Frag_Actions_Hunter">
+
+    <ImageView
+        android:id="@+id/imageViewHunter"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="Hunter icon"
+        android:src="@drawable/ic_icon_witch"
+        app:layout_constraintBottom_toTopOf="@+id/textViewHunterRole"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_icon_hunter" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewHunterRole"
+        style="@style/description_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="92dp"
+        android:fontFamily="@font/allerta"
         android:text="@string/hunter_role"
+        app:layout_constraintBottom_toTopOf="@+id/textViewHunterOrder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewHunter"></TextView>
+
+    <TextView
+        android:id="@+id/textViewHunterOrder"
+        style="@style/option_textView"
+        android:fontFamily="@font/allerta"
+        android:text="@string/hunter_order"
+        app:layout_constraintBottom_toTopOf="@+id/HunterActionbtn1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHunterRole"></TextView>
+
+    <Button
+        android:id="@+id/HunterActionbtn1"
+        android:text="@string/hunter_action_button1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/HunterActionbtn2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHunterOrder"
+        style="@style/actionButton" />
+
+    <Button
+        android:id="@+id/HunterActionbtn2"
+        android:text="@string/hunter_action_button2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/HunterActionbtn1"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHunterOrder"
+        style="@style/actionButton"/>
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/action_description_title"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        tools:layout_editor_absoluteX="0dp" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hunter_action_button1"
-        app:layout_constraintEnd_toStartOf="@+id/button3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hunter_action_button2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button2"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,7 @@
     <string name="hunter_role">When he dies, the hunter can choose to take one person to the grave with him.</string>
     <string name="hunter_action_button1">Shoot someone</string>
     <string name="hunter_action_button2">Let go peacefully</string>
+    <string name="hunter_order">Take a someone down with you</string>
 
     <string name="thief_role">The thief has the ability to switch the roles of two players.</string>
     <string name="thief_action_button1">"Swap two players' roles"</string>
