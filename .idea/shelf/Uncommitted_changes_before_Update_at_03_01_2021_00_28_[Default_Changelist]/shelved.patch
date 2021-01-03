@@ -1,0 +1,172 @@
+Index: app/src/main/java/com/example/t_mobop_werewolf/PlayingHostActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.t_mobop_werewolf\r\n\r\nimport android.content.Context\r\nimport android.graphics.Color\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.*\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.lifecycle.GeneratedAdapter\r\nimport com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel\r\nimport com.example.t_mobop_werewolf.FirebaseData.StoryState\r\nimport com.google.firebase.database.DataSnapshot\r\nimport com.google.firebase.database.DatabaseError\r\nimport com.google.firebase.database.FirebaseDatabase\r\nimport com.google.firebase.database.ValueEventListener\r\nimport com.google.firebase.database.ktx.database\r\nimport com.google.firebase.ktx.Firebase\r\n\r\n\r\nclass PlayingHostActivity : AppCompatActivity() {\r\n\r\n    var roomName = GeneralDataModel.localRoomName\r\n    var storyState: Long = 0\r\n    var flagData = Firebase.database.reference.child(\"$roomName/GeneralData/Flag\")\r\n    val fragment_actions = Frag_Actions_NoActions()\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_playing)\r\n\r\n        val fragment_actions = Frag_Actions_NoActions()\r\n\r\n        // These lines will be modified to display from the data received from Firebase\r\n        // This text will be created only at the game start, won't change after\r\n        val player_role = findViewById<TextView>(R.id.textview_PlayerRole)\r\n        player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)\r\n\r\n        val player_name = GeneralDataModel.localPseudo\r\n\r\n        val story = findViewById<TextView>(R.id.textview_storytelling)\r\n        story.text = \"The night falls on the quiet village.\" // later controlled by Firebase\r\n\r\n        val playersList = findViewById<ListView>(R.id.listview_Players)\r\n        playersList.setBackgroundColor(Color.parseColor(\"#FFFFFF\"))\r\n\r\n        // should be received by Firebase\r\n        val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)\r\n\r\n        fun getCount(): Int {return names.size}\r\n        var k: Int = 1\r\n        // Create RadioButton dynamically\r\n        for(players in names){\r\n            val radioButton = RadioButton(this)\r\n            radioButton.layoutParams= LinearLayout.LayoutParams(\r\n                ViewGroup.LayoutParams.WRAP_CONTENT,\r\n                ViewGroup.LayoutParams.WRAP_CONTENT)\r\n            radioButton.setPadding(24,0,0,16)\r\n            radioButton.setText(players)\r\n            radioButton.id = k //TODO verifier le type\r\n            k++\r\n\r\n            findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)\r\n        }\r\n\r\n        //---\r\n        // ---x--- Firebase database listener for the Flag variable ---x---\r\n        flagData.addValueEventListener(object: ValueEventListener\r\n        {\r\n            override fun onDataChange(snapshot: DataSnapshot) {\r\n                if (snapshot.exists()) {\r\n\r\n                    Log.d(\"StoryState\", \"Data updated\")\r\n                    //Toast.makeText(applicationContext, \"data changed: $storyState\", Toast.LENGTH_SHORT).show()\r\n                    storyState = chooseActions()   // this function is called every time StoryState is updated\r\n                    //Toast.makeText(applicationContext, \"nextStorySt = $storyState\", Toast.LENGTH_SHORT).show()\r\n                    Log.d(\"MainActivity\", \"nextStorySt = $storyState\")\r\n                    changeFragment(storyState)\r\n                }\r\n            }\r\n            override fun onCancelled(error: DatabaseError) {\r\n                Toast.makeText(applicationContext, \"Error database for storyState\", Toast.LENGTH_SHORT).show()\r\n            }\r\n        })\r\n        //---\r\n    }\r\n\r\n    override fun onDestroy() {\r\n        super.onDestroy()\r\n        // add code to remove listener\r\n    }\r\n\r\n    // THIS FUNCTION IS CALLED EVERY TIME a database VALUE IS UPDATED !!!! ADD ACTIONS HERE\r\n    // This function decide what's the next storyState\r\n    private fun chooseActions() : Long{\r\n        //Toast.makeText(this, \"Function chooseActions() called\", Toast.LENGTH_SHORT).show()\r\n        var nextState : Long = 0\r\n\r\n        if (storyState == 1 as Long) { // werewolf turn\r\n            val voted = GeneralDataModel.validateVote(roomName, \"Werewolf\")\r\n            if(voted){\r\n                nextState = GeneralDataModel.nextState(storyState)\r\n                //Toast.makeText(applicationContext, \"Werewolf voted\", Toast.LENGTH_SHORT).show()\r\n                Log.d(\"MainActivity\", \"werewolf voted\")\r\n            }\r\n        }\r\n        else if (storyState == 3 as Long){ // villager voting time\r\n            val voted = GeneralDataModel.validateVote(roomName, \"Villager\")\r\n            if (voted){\r\n                nextState = GeneralDataModel.nextState(storyState)\r\n                //Toast.makeText(applicationContext, \"Everybody voted\", Toast.LENGTH_SHORT).show()\r\n                Log.d(\"MainActivity\", \"everybodyvoted\")\r\n            }\r\n        }\r\n        else{\r\n            nextState = GeneralDataModel.nextState(storyState)\r\n            Log.d(\"MainActivity\", \"Going to next storyState\")\r\n        }\r\n\r\n        return(nextState)\r\n    }\r\n\r\n    public fun changeFragment(story : Long){\r\n        var currentFrag = R.id.frag_actions_noactions\r\n\r\n        if (getStoryRoleName(story) == GeneralDataModel.localRole){\r\n            Log.d(\"MainActivity\", \"your turn\")\r\n            when(GeneralDataModel.localRole){\r\n                \"werewolf\" -> currentFrag = R.id.frag_actions_werewolf\r\n                \"witch\" -> currentFrag = R.id.frag_actions_witch\r\n                \"fortuneTeller\" -> currentFrag = R.id.frag_actions_fortuneteller\r\n            }\r\n        }\r\n        else{\r\n            Log.d(\"MainActivity\", \"noactions\")\r\n            when(story){\r\n                1.toLong() -> currentFrag = R.id.frag_actions_noactions\r\n                2.toLong() -> currentFrag = R.id.frag_actions_villager\r\n            }\r\n        }\r\n        var txt = \"\"\r\n        supportFragmentManager.beginTransaction().apply {\r\n            replace(R.id.FragmentConfigRoom, fragment_actions)\r\n            txt = \"fragChanged\"\r\n        }\r\n        Log.d(\"MainActivity\", txt)\r\n        //val transaction = supportFragmentManager.beginTransaction()\r\n        //transaction.replace(currentFrag, fragment_actions)\r\n        //transaction.commit()\r\n    }\r\n\r\n    private fun getStoryRoleName(story : Long) : String{\r\n        when(story){\r\n            3.toLong() -> return \"werewolf\"\r\n            4.toLong() -> return \"witch\"\r\n            5.toLong() -> return \"fortuneTeller\"\r\n        }\r\n        return \"None\"\r\n    }\r\n\r\n    // --------------------x-----------------------------------\r\n    // Adapter for the list displaying all the players\r\n    private class PlayersListAdapter(context : Context) : BaseAdapter() {\r\n        private val mContext : Context = context\r\n\r\n        // should be received by Firebase\r\n        private val names = arrayListOf<String>(\r\n            \"Jean\", \"Jeanette\", \"Charles\", \"Alphonse\", \"Madeleine\", \"Clémentine\")\r\n\r\n        override fun getCount(): Int {return names.size}\r\n\r\n        override fun getItem(position: Int): Any {return \"\"}\r\n\r\n        override fun getItemId(position: Int): Long {return position.toLong()}\r\n\r\n        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {\r\n            val layoutInflater = LayoutInflater.from(mContext)\r\n            val rowMain = layoutInflater.inflate(R.layout.row_players_list,viewGroup, false)\r\n            val playerName = rowMain.findViewById<TextView>(R.id.playerName)\r\n            playerName.text = names.get(position)\r\n            return rowMain\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/t_mobop_werewolf/PlayingHostActivity.kt	(revision 0591c4f8cfa7f5adec9626e57d9fd281e8b43a20)
++++ app/src/main/java/com/example/t_mobop_werewolf/PlayingHostActivity.kt	(date 1609629611468)
+@@ -129,9 +129,9 @@
+         if (getStoryRoleName(story) == GeneralDataModel.localRole){
+             Log.d("MainActivity", "your turn")
+             when(GeneralDataModel.localRole){
+-                "werewolf" -> currentFrag = R.id.frag_actions_werewolf
+-                "witch" -> currentFrag = R.id.frag_actions_witch
+-                "fortuneTeller" -> currentFrag = R.id.frag_actions_fortuneteller
++                "Werewolf" -> currentFrag = R.id.frag_actions_werewolf
++                "Witch" -> currentFrag = R.id.frag_actions_witch
++                "FortuneTeller" -> currentFrag = R.id.frag_actions_fortuneteller
+             }
+         }
+         else{
+@@ -143,7 +143,7 @@
+         }
+         var txt = ""
+         supportFragmentManager.beginTransaction().apply {
+-            replace(R.id.FragmentConfigRoom, fragment_actions)
++            replace(currentFrag, fragment_actions)
+             txt = "fragChanged"
+         }
+         Log.d("MainActivity", txt)
+@@ -154,9 +154,9 @@
+ 
+     private fun getStoryRoleName(story : Long) : String{
+         when(story){
+-            3.toLong() -> return "werewolf"
+-            4.toLong() -> return "witch"
+-            5.toLong() -> return "fortuneTeller"
++            1.toLong() -> return "Werewolf"
++            2.toLong() -> return "Witch"
++            3.toLong() -> return "FortuneTeller"
+         }
+         return "None"
+     }
+Index: app/src/main/res/layout/fragment_actions_witch.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".Frag_Actions_Witch\"\r\n    android:id=\"@+id/frag_actions_witch\">\r\n\r\n    <TextView\r\n        android:id=\"@+id/textViewWitchRole\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_role\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/textViewWitchOrder\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"/>\r\n\r\n    <TextView\r\n        android:id=\"@+id/textViewWitchOrder\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_order\"\r\n        android:textSize=\"20sp\"\r\n        android:textAlignment=\"center\"\r\n        android:gravity=\"center\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/textViewWitchRole\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/buttonSave\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\">\r\n    </TextView>\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonSave\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_action_button_potion1\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/buttonValidate\"\r\n        app:layout_constraintEnd_toStartOf=\"@+id/buttonKill\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/textViewWitchOrder\" />\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonKill\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_action_button_potion2\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/textViewWitchOrder\"\r\n        app:layout_constraintBottom_toTopOf=\"@id/buttonValidate\"\r\n        app:layout_constraintStart_toEndOf=\"@+id/buttonSave\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"/>\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonValidate\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_action_button_pass\"\r\n        app:layout_constraintTop_toBottomOf=\"@id/buttonSave\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"/>\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/fragment_actions_witch.xml	(revision 0591c4f8cfa7f5adec9626e57d9fd281e8b43a20)
++++ app/src/main/res/layout/fragment_actions_witch.xml	(date 1609629611479)
+@@ -1,41 +1,61 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<androidx.constraintlayout.widget.ConstraintLayout
+-    xmlns:android="http://schemas.android.com/apk/res/android"
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/frag_actions_witch"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    tools:context=".Frag_Actions_Witch"
+-    android:id="@+id/frag_actions_witch">
++    android:background="@color/dayBackground2"
++    tools:context=".Frag_Actions_Witch">
++
++    <ImageView
++        android:id="@+id/imageView2"
++        android:layout_width="100sp"
++        android:layout_height="100sp"
++        android:layout_marginBottom="24dp"
++        android:contentDescription="Witch icon"
++        android:src="@drawable/ic_icon_witch"
++        app:layout_constraintBottom_toTopOf="@+id/textViewWitchRole"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
+ 
+     <TextView
+         android:id="@+id/textViewWitchRole"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
++        android:layout_marginStart="32dp"
++        android:layout_marginLeft="32dp"
++        android:layout_marginTop="32dp"
++        android:layout_marginEnd="32dp"
++        android:layout_marginRight="32dp"
++        android:layout_marginBottom="92dp"
+         android:text="@string/witch_role"
+-        app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintBottom_toTopOf="@+id/textViewWitchOrder"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"/>
++        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+ 
+     <TextView
+         android:id="@+id/textViewWitchOrder"
+-        android:layout_width="match_parent"
++        android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:background="@color/ic_launcher_background"
++        android:gravity="center"
++        android:padding="8dp"
+         android:text="@string/witch_order"
+-        android:textSize="20sp"
+         android:textAlignment="center"
+-        android:gravity="center"
+-        app:layout_constraintTop_toBottomOf="@+id/textViewWitchRole"
++        android:textSize="20sp"
+         app:layout_constraintBottom_toTopOf="@+id/buttonSave"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent">
+-    </TextView>
++        app:layout_constraintTop_toBottomOf="@+id/textViewWitchRole"></TextView>
+ 
+     <Button
+         android:id="@+id/buttonSave"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:fontFamily="@font/allerta"
+         android:text="@string/witch_action_button_potion1"
+         app:layout_constraintBottom_toTopOf="@+id/buttonValidate"
+         app:layout_constraintEnd_toStartOf="@+id/buttonKill"
+@@ -46,20 +66,22 @@
+         android:id="@+id/buttonKill"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:fontFamily="@font/allerta"
+         android:text="@string/witch_action_button_potion2"
+-        app:layout_constraintTop_toBottomOf="@+id/textViewWitchOrder"
+         app:layout_constraintBottom_toTopOf="@id/buttonValidate"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toEndOf="@+id/buttonSave"
+-        app:layout_constraintEnd_toEndOf="parent"/>
++        app:layout_constraintTop_toBottomOf="@+id/textViewWitchOrder" />
+ 
+     <Button
+         android:id="@+id/buttonValidate"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:fontFamily="@font/allerta"
+         android:text="@string/witch_action_button_pass"
+-        app:layout_constraintTop_toBottomOf="@id/buttonSave"
+         app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"/>
++        app:layout_constraintTop_toBottomOf="@id/buttonSave" />
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(revision 0591c4f8cfa7f5adec9626e57d9fd281e8b43a20)
++++ .idea/gradle.xml	(date 1609629611481)
+@@ -15,6 +15,7 @@
+           </set>
+         </option>
+         <option name="resolveModulePerSourceSet" value="false" />
++        <option name="useQualifiedModuleNames" value="true" />
+       </GradleProjectSettings>
+     </option>
+   </component>

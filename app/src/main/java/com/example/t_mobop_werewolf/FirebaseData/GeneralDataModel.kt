@@ -475,7 +475,7 @@ object GeneralDataModel: Observable()
     fun killPlayer(PlayerPseudo: String): Boolean {
         // add role dependant kill count in DB
         return try{
-            database.child("$localRoomName/GeneralData/Players/$PlayerPseudo/Alive").setValue(false)
+            database.child("$localRoomName/Players/$PlayerPseudo/Alive").setValue(false)
             true
         } catch (e: Exception) {
             e.printStackTrace()

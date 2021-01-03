@@ -80,8 +80,9 @@ class PlayingHostActivity : AppCompatActivity() {
 
     fun chooseActions(currentStoryState: Long)
     {
-        if (currentStoryState == 3.toLong()) { // werewolf turn
+        /*if (currentStoryState == 3.toLong()) { // werewolf turn
             val voted = GeneralDataModel.validateVote(roomName, "Werewolf")
+
             if(voted){
                 GeneralDataModel.nextState(currentStoryState)
                 Log.d(TAG, "All the werewolves have voted")
@@ -89,16 +90,16 @@ class PlayingHostActivity : AppCompatActivity() {
             Log.d(TAG, "werewolfTurn")
         }
         else if (currentStoryState == 7.toLong()){ // villager voting time
-            val voted = GeneralDataModel.validateVote(roomName, "Villager")
+            //val voted = GeneralDataModel.validateVote(roomName, "Villager")
             if (voted){
                 GeneralDataModel.nextState(currentStoryState)
                 Log.d(TAG, "All the village has voted")
             }
         }
-        else{
+        else{*/
             GeneralDataModel.nextState(currentStoryState)
             Log.d(TAG, "Going to next storyState without any action")
-        }
+        //}
     }
 
 

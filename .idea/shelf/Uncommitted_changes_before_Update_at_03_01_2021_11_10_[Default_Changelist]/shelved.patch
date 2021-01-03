@@ -1,0 +1,260 @@
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\r\napply plugin: 'kotlin-android'\r\napply plugin: 'kotlin-android-extensions'\r\napply plugin: 'com.google.gms.google-services'\r\n\r\nandroid {\r\n    compileSdkVersion 30\r\n    buildToolsVersion \"30.0.2\"\r\n\r\n    defaultConfig {\r\n        applicationId \"com.example.t_mobop_werewolf\"\r\n        minSdkVersion 16\r\n        targetSdkVersion 30\r\n        versionCode 1\r\n        versionName \"1.0\"\r\n\r\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n}\r\n\r\ndependencies {\r\n    implementation fileTree(dir: \"libs\", include: [\"*.jar\"])\r\n    implementation \"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version\"\r\n    implementation 'androidx.core:core-ktx:1.3.2'\r\n    implementation 'androidx.appcompat:appcompat:1.2.0'\r\n    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'\r\n    implementation 'com.google.android.material:material:1.2.1'\r\n    implementation 'androidx.legacy:legacy-support-v4:1.0.0'\r\n    implementation 'androidx.recyclerview:recyclerview:1.1.0'\r\n    implementation 'com.google.firebase:firebase-functions:19.1.0'\r\n    implementation 'com.google.firebase:firebase-database:19.5.1'\r\n    testImplementation 'junit:junit:4.12'\r\n    androidTestImplementation 'androidx.test.ext:junit:1.1.2'\r\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'\r\n\r\n    // Import the Firebase BoM\r\n\r\n    implementation platform('com.google.firebase:firebase-bom:26.0.0')\r\n    implementation 'com.google.firebase:firebase-database-ktx'\r\n    // Add the dependency for the Firebase SDK for Google Analytics\r\n    // When using the BoM, don't specify versions in Firebase dependencies\r\n    implementation 'com.google.firebase:firebase-analytics-ktx'\r\n\r\n\r\n    // Add the dependencies for any other desired Firebase products\r\n    // https://firebase.google.com/docs/android/setup#available-libraries\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision c999406929e9e6da186676fe92ece7154b8ebd9b)
++++ app/build.gradle	(date 1609634383405)
+@@ -48,6 +48,7 @@
+     // When using the BoM, don't specify versions in Firebase dependencies
+     implementation 'com.google.firebase:firebase-analytics-ktx'
+ 
++    implementation 'com.google.android.material:material:1.2.1' // for button material
+ 
+     // Add the dependencies for any other desired Firebase products
+     // https://firebase.google.com/docs/android/setup#available-libraries
+Index: app/src/main/java/com/example/t_mobop_werewolf/FirebaseData/GeneralDataModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.t_mobop_werewolf.FirebaseData\r\n\r\nimport android.content.Intent\r\nimport android.util.Log\r\nimport androidx.core.content.ContextCompat.startActivity\r\nimport com.example.t_mobop_werewolf.PlayingActivity\r\nimport com.example.t_mobop_werewolf.PlayingHostActivity\r\nimport com.example.t_mobop_werewolf.WaitingRoomActivity\r\nimport com.google.android.material.tabs.TabLayout\r\nimport com.google.firebase.database.*\r\nimport com.google.firebase.database.ktx.database\r\nimport com.google.firebase.ktx.Firebase\r\nimport kotlinx.android.synthetic.main.activity_playing.*\r\nimport kotlinx.android.synthetic.main.activity_waiting_room.*\r\nimport java.util.*\r\n\r\n/*\r\n    This object allows to communicate with the Firebase Realtime Database.\r\n        Data is accessible in a local snapshot and is updated on any change (method onDataChange())\r\n        The Database has a listener attached to it that allows to automatically update it.\r\n\r\n\r\n    The following function are usable anywhere in the project to access a value from the\r\n    database:\r\n\r\n\r\n        GeneralDataModel.createRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean\r\n        GeneralDataModel.joinRoom(RoomName: String, Pseudo: String): Boolean\r\n        GeneralDataModel.setupAndStartGame()\r\n        GeneralDataModel.getPlayersNumber(RoomName: String): Int\r\n        GeneralDataModel.getAnyData(Path: String): Any\r\n        GeneralDataModel.getStoryState(RoomName: String): Double\r\n        GeneralDataModel.changeStoryState(RoomName: String, NextState: Double) : Boolean\r\n        GeneralDataModel.getPlayerRole(RoomName: String, PlayerPseudo: String): String\r\n        GeneralDataModel.killPlayer(RoomName: String, PlayerPseudo: String): Boolean\r\n        GeneralDataModel.localSnapshotInit()\r\n        GeneralDataModel.setupDatabaseAsDefault()\r\n\r\n\r\n */\r\n\r\nobject GeneralDataModel: Observable()\r\n{\r\n    private var TAG = \"GeneralDataModel\"\r\n    private var database = Firebase.database.reference\r\n    private fun getDatabaseRef() : DatabaseReference? {\r\n        return FirebaseDatabase.getInstance().reference}\r\n\r\n    // Event listener attached to the database root\r\n    private var mGeneralListener: ValueEventListener? = null\r\n\r\n    // Local variables containing the database values\r\n    lateinit var localSnapshot: DataSnapshot\r\n    var localRoomName: String = \"None\"\r\n    var localPseudo: String = \"None\"\r\n    var localPlayerNb: Long = 1\r\n    var localRole: String = \"None\"\r\n    var iAmtheHost: Boolean = false\r\n\r\n    init\r\n    {\r\n        if (mGeneralListener != null) {getDatabaseRef()?.removeEventListener(mGeneralListener!!)}\r\n        mGeneralListener = null\r\n\r\n        mGeneralListener = object: ValueEventListener\r\n        {\r\n            override fun onDataChange(snapshot: DataSnapshot) {\r\n                try\r\n                {\r\n                    if (snapshot != null)\r\n                    {\r\n                        localSnapshot = snapshot\r\n                        Log.d(TAG, \"Data updated\")\r\n                        setChanged()\r\n                        notifyObservers()\r\n                    }\r\n                } catch (e: Exception) { e.printStackTrace() }\r\n            }\r\n\r\n            override fun onCancelled(error: DatabaseError) {\r\n                Log.d(TAG, \"Updated snapshot download cancelled!\")}\r\n\r\n        } // mValueDataListener\r\n        getDatabaseRef()?.addValueEventListener(mGeneralListener!!)\r\n    } // init\r\n\r\n\r\n\r\n\r\n    //                                      ---------x---------\r\n    //                                      Firebase Functions\r\n\r\n\r\n    // This function is called at the end of a turn. It will setup the next state.\r\n    fun nextState(currentState: Long): Long {\r\n        // use : nextStage(GeneralDataModel.getStoryState(), GeneralDataModel.localRoomName)\r\n\r\n        // For every step\r\n            // 1    check which is the next state (roles dead/alive)\r\n            // 2    update story for the new state\r\n            // 3    update value nextState\r\n\r\n        Log.d(TAG, \"fun nextState($currentState)\")\r\n        var nextState : Long = 0\r\n        var textToShow: String = \"Waiting\"\r\n\r\n        when(currentState) {\r\n            1.toLong() ->   // Game starts\r\n            {\r\n                // Next state 2 by default\r\n                textToShow = \"2\"\r\n                nextState = 2 // village goes to sleep\r\n            }\r\n\r\n            2.toLong() ->   // Village sleeping\r\n            {\r\n                // Next state 3 by default\r\n                textToShow = \"3\"\r\n                nextState = 3 // Werewolf will play\r\n            }\r\n\r\n            3.toLong() ->   // Werewolf have played\r\n            {\r\n                if (localSnapshot.child(\"$localRoomName/RolesData/VillagerCount\").value as Long == 0 as Long) {\r\n                    textToShow = \"9\"\r\n                    nextState = 9   // end of game, villagers are dead\r\n                } else if (localSnapshot.child(\"$localRoomName/RolesData/WitchAlive\").value as Boolean) {\r\n                    textToShow = \"4\"\r\n                    nextState = 4   // Witch will play\r\n                } else if (localSnapshot.child(\"$localRoomName/RolesData/FortuneTellerAlive\").value as Boolean) {\r\n                    textToShow = \"5\"\r\n                    nextState = 5   // FortuneTeller will play\r\n                } else {\r\n                    textToShow = \"6\"\r\n                    nextState = 6   // Village will wake up\r\n                }\r\n            }\r\n\r\n            4.toLong() ->   // Witch has played\r\n            {\r\n                if (localSnapshot.child(\"$localRoomName/RolesData/FortuneTellerAlive\").value as Boolean) {\r\n                    textToShow = \"5\"\r\n                    nextState = 5 // FortuneTeller will play\r\n                } else {\r\n                    nextState = 6 // Village will wake up\r\n                }\r\n            }\r\n\r\n            5.toLong() ->   // Fortune teller has played\r\n            {\r\n                textToShow = \"6\"\r\n                nextState = 6 // Village will wake up\r\n            }\r\n\r\n            6.toLong() ->   // Village has discovered the dead\r\n            {\r\n                textToShow = \"7\"\r\n                nextState = 7 // Village will barbecue someone\r\n            }\r\n\r\n            7.toLong() ->   // Village has sacrificed\r\n            {\r\n                textToShow = \"8\"\r\n                nextState = 8 // Village will reveal sacrifice\r\n            }\r\n\r\n            8.toLong() ->   // Village sacrifice revelation\r\n            {\r\n                if (localSnapshot.child(\"$localRoomName/RolesData/WerewolvesCount\").value as Long > 0) {\r\n                    textToShow = \"2\"\r\n                    nextState = 2   // going to sleep\r\n                } else {\r\n                    textToShow = \"9\"\r\n                    nextState = 9   // end of game, werevolves are dead\r\n                }\r\n            }\r\n\r\n            9.toLong() ->   // Game end\r\n            {\r\n                Log.d(TAG, \"The game is finished and you should not see this text.\")\r\n            }\r\n            else -> textToShow = \"You messed up something.\"\r\n        }\r\n        PlayingActivity().textview_storytelling.text = textToShow\r\n        PlayingHostActivity().textview_storytelling.text = textToShow\r\n        changeStoryState(nextState)\r\n        Log.d(TAG, \"fun nextStage success\")\r\n        return nextState\r\n    }\r\n\r\n\r\n    fun createRoom(RoomName: String, NbPlayers: Int, HostName: String ): Boolean\r\n    {\r\n        Log.d(TAG, \"Fun createRoom() called\")\r\n        var roomAlreadyOpen: Boolean = false\r\n        try\r\n        {\r\n            for (item: DataSnapshot in localSnapshot.child(\"Rooms\").children){\r\n                Log.d(TAG, \"ExistingRooms: ${item.key.toString()}\")\r\n                if (item.key.toString() == RoomName) {\r\n                    Log.d(TAG, \"Room already exists\")\r\n                    roomAlreadyOpen = true\r\n                }\r\n            }\r\n            if (roomAlreadyOpen.not()){\r\n                Log.d(TAG, \"Creating new room: $RoomName\")\r\n                database.child(\"0_Rooms/$RoomName\").setValue(\"Open\")\r\n                database.child(\"$RoomName/GeneralData/GameStarted\").setValue(false)\r\n                database.child(\"$RoomName/GeneralData/HostName\").setValue(HostName)\r\n                database.child(\"$RoomName/GeneralData/MaxPlayers\").setValue(NbPlayers)\r\n                database.child(\"$RoomName/GeneralData/NbPlayers\").setValue(1)\r\n                database.child(\"$RoomName/GeneralData/RolesDistributed\").setValue(false)\r\n                database.child(\"$RoomName/GeneralData/RoomName\").setValue(RoomName)\r\n                database.child(\"$RoomName/GeneralData/StoryState\").setValue(0) //(0.0)\r\n                database.child(\"$RoomName/GeneralData/WaitingRoomOpen\").setValue(false)\r\n                database.child(\"$RoomName/GeneralData/Flag\").setValue(false)\r\n\r\n                database.child(\"$RoomName/Players/Player1/Alive\").setValue(true)\r\n                database.child(\"$RoomName/Players/Player1/Pseudo\").setValue(HostName)\r\n                database.child(\"$RoomName/Players/Player1/Role\").setValue(\"None\")\r\n                database.child(\"$RoomName/Players/Player1/Voted\").setValue(false)\r\n                database.child(\"$RoomName/Players/Player1/Votes\").setValue(0)\r\n                database.child(\"$RoomName/Players/Player1/Werewolf\").setValue(false)\r\n\r\n                database.child(\"$RoomName/RolesData/PotionKill\").setValue(1)\r\n                database.child(\"$RoomName/RolesData/PotionSave\").setValue(1)\r\n                database.child(\"$RoomName/RolesData/VillagersCount\").setValue(0)\r\n                database.child(\"$RoomName/RolesData/WerewolvesCount\").setValue(0)\r\n                database.child(\"$RoomName/RolesData/WitchAlive\").setValue(false)\r\n                database.child(\"$RoomName/RolesData/FortuneTellerAlive\").setValue(false)\r\n\r\n                localRoomName = RoomName\r\n                localPseudo = HostName\r\n                iAmtheHost = true\r\n            }\r\n        } catch (e: Exception) { e.printStackTrace() }\r\n        return roomAlreadyOpen.not()\r\n    }\r\n\r\n\r\n    fun joinRoom(RoomName: String, Pseudo: String) : Boolean{\r\n        // Add check if player already exists\r\n        // Add check for max players\r\n        Log.d(TAG, \"Fun joinRoom() called\")\r\n        var joinSuccess : Boolean = false\r\n        if (localSnapshot.child(\"0_Rooms/$RoomName\").value.toString() == \"Open\")\r\n        {\r\n            try\r\n            {\r\n                val nbPlayer = getPlayersNumber(RoomName) + 1\r\n                database.child(\"$RoomName/Players/Player$nbPlayer/Alive\").setValue(true)\r\n                database.child(\"$RoomName/Players/Player$nbPlayer/Pseudo\").setValue(Pseudo)\r\n                database.child(\"$RoomName/Players/Player$nbPlayer/Role\").setValue(\"None\")\r\n                database.child(\"$RoomName/Players/Player$nbPlayer/Voted\").setValue(false)\r\n                database.child(\"$RoomName/Players/Player$nbPlayer/Votes\").setValue(0)\r\n                database.child(\"$RoomName/Players/Player$nbPlayer/Werewolf\").setValue(false)\r\n                database.child(\"$RoomName/GeneralData/NbPlayers\").setValue(nbPlayer)\r\n                localRoomName = RoomName\r\n                localPseudo = Pseudo\r\n                iAmtheHost = false\r\n                localPlayerNb = nbPlayer\r\n                // update players list waiting in the room\r\n                Log.d(TAG, \"Fun joinRoom() success\")\r\n                joinSuccess = true\r\n            } catch (e: Exception) {\r\n                e.printStackTrace()\r\n                Log.d(TAG, \"Fun joinRoom() failed\")\r\n                joinSuccess = false\r\n            }\r\n        } else {\r\n            Log.d(TAG, \"Room: $RoomName is closed, sorry.\")\r\n            joinSuccess = false\r\n        }\r\n        return joinSuccess\r\n    }\r\n\r\n\r\n    fun setupAndStartGame()\r\n    {\r\n        Log.d(TAG, \"Fun setupAndStartGame()\")\r\n        database.child(\"0_Rooms/$localRoomName\").setValue(\"Closed\")\r\n        try{\r\n            distributeRoles()\r\n        } catch (e: Exception) {\r\n            e.printStackTrace()\r\n            Log.d(TAG, \"Fun setupAndStartGame()/distributeRoles() failed\")\r\n        }\r\n        database.child(\"$localRoomName/GeneralData/GameStarted\").setValue(true)\r\n        try{\r\n            changeStoryState(2)\r\n        } catch (e: Exception) {\r\n            e.printStackTrace()\r\n            Log.d(TAG, \"Fun setupAndStartGame()/changeStoryState(1.0) failed\")\r\n        }\r\n    }\r\n\r\n    private fun distributeRoles()\r\n    {\r\n        Log.d(TAG, getPlayersNumber(localRoomName).toString())\r\n        when(getPlayersNumber(localRoomName))\r\n        {\r\n            3.toLong() ->\r\n            {\r\n                Log.d(TAG, \"fun distributeRoles(3)\")\r\n                database.child(\"$localRoomName/Players/Player1/Role\").setValue(\"Villager\")\r\n                database.child(\"$localRoomName/Players/Player2/Role\").setValue(\"Werewolf\")\r\n                database.child(\"$localRoomName/Players/Player3/Role\").setValue(\"Witch\")\r\n\r\n                database.child(\"$localRoomName/Players/Player2/Werewolf\").setValue(true)\r\n\r\n                database.child(\"$localRoomName/RolesData/VillagersCount\").setValue(2)\r\n                database.child(\"$localRoomName/RolesData/WerewolvesCount\").setValue(1)\r\n                database.child(\"$localRoomName/RolesData/WitchAlive\").setValue(true)\r\n                database.child(\"$localRoomName/RolesData/FortuneTellerAlive\").setValue(false)\r\n            }\r\n            4.toLong() ->\r\n            {\r\n                Log.d(TAG, \"fun distributeRoles(4)\")\r\n                database.child(\"$localRoomName/Players/Player1/Role\").setValue(\"Villager\")\r\n                database.child(\"$localRoomName/Players/Player2/Role\").setValue(\"Villager\")\r\n                database.child(\"$localRoomName/Players/Player3/Role\").setValue(\"Werewolf\")\r\n                database.child(\"$localRoomName/Players/Player4/Role\").setValue(\"Witch\")\r\n\r\n                database.child(\"$localRoomName/Players/Player3/Werewolf\").setValue(true)\r\n\r\n                database.child(\"$localRoomName/RolesData/VillagersCount\").setValue(3)\r\n                database.child(\"$localRoomName/RolesData/WerewolvesCount\").setValue(1)\r\n                database.child(\"$localRoomName/RolesData/WitchAlive\").setValue(true)\r\n                database.child(\"$localRoomName/RolesData/FortuneTellerAlive\").setValue(false)\r\n            }\r\n            5.toLong() ->\r\n            {\r\n                Log.d(TAG, \"fun distributeRoles(5)\")\r\n                database.child(\"$localRoomName/Players/Player1/Role\").setValue(\"Villager\")\r\n                database.child(\"$localRoomName/Players/Player2/Role\").setValue(\"Werewolf\")\r\n                database.child(\"$localRoomName/Players/Player3/Role\").setValue(\"Werewolf\")\r\n                database.child(\"$localRoomName/Players/Player4/Role\").setValue(\"Witch\")\r\n                database.child(\"$localRoomName/Players/Player5/Role\").setValue(\"FortuneTeller\")\r\n\r\n                database.child(\"$localRoomName/Players/Player2/Werewolf\").setValue(true)\r\n                database.child(\"$localRoomName/Players/Player3/Werewolf\").setValue(true)\r\n\r\n                database.child(\"$localRoomName/RolesData/VillagersCount\").setValue(3)\r\n                database.child(\"$localRoomName/RolesData/WerewolvesCount\").setValue(2)\r\n                database.child(\"$localRoomName/RolesData/WitchAlive\").setValue(true)\r\n                database.child(\"$localRoomName/RolesData/FortuneTellerAlive\").setValue(true)\r\n            }\r\n            6.toLong() ->\r\n            {\r\n                Log.d(TAG, \"fun distributeRoles(6)\")\r\n                database.child(\"$localRoomName/Players/Player1/Role\").setValue(\"Villager\")\r\n                database.child(\"$localRoomName/Players/Player2/Role\").setValue(\"Villager\")\r\n                database.child(\"$localRoomName/Players/Player3/Role\").setValue(\"Werewolf\")\r\n                database.child(\"$localRoomName/Players/Player4/Role\").setValue(\"Werewolf\")\r\n                database.child(\"$localRoomName/Players/Player5/Role\").setValue(\"Witch\")\r\n                database.child(\"$localRoomName/Players/Player6/Role\").setValue(\"FortuneTeller\")\r\n\r\n                database.child(\"$localRoomName/Players/Player3/Werewolf\").setValue(true)\r\n                database.child(\"$localRoomName/Players/Player4/Werewolf\").setValue(true)\r\n\r\n                database.child(\"$localRoomName/RolesData/VillagersCount\").setValue(4)\r\n                database.child(\"$localRoomName/RolesData/WerewolvesCount\").setValue(2)\r\n                database.child(\"$localRoomName/RolesData/WitchAlive\").setValue(true)\r\n                database.child(\"$localRoomName/RolesData/FortuneTellerAlive\").setValue(false)\r\n            }\r\n            else ->\r\n            {\r\n                Log.d(TAG, \"fun distributeRoles(): can't assign roles to players\")\r\n                database.child(\"$localRoomName/GeneralData/RolesDistributed\").setValue(true)\r\n            }\r\n        }\r\n    }\r\n\r\n    fun getPlayersNumber(RoomName: String): Long {\r\n        val value: Long\r\n        if (localSnapshot.child(\"$RoomName/GeneralData/NbPlayers\").exists()){\r\n            value = localSnapshot.child(\"$RoomName/GeneralData/NbPlayers\").value as Long\r\n        } else {\r\n            value = 1 //0(testing)\r\n        }\r\n        return value\r\n    }\r\n\r\n    fun getPlayersPseudos(RoomName: String): ArrayList<String>{\r\n        var nbPlayers = getPlayersNumber(RoomName)\r\n        var playersPseudoArray = ArrayList<String>()\r\n        for (i in 1..nbPlayers)\r\n        {\r\n            if (localSnapshot.child(\"$RoomName/Players/Player$i/Pseudo\").exists()){\r\n                playersPseudoArray.add(localSnapshot.child(\"$RoomName/Players/Player$i/Pseudo\").value as String)\r\n            } else {\r\n                Log.d(TAG, \"fun getPlayersPseudo($nbPlayers) failed\")\r\n            }\r\n\r\n        }\r\n        return playersPseudoArray\r\n    }\r\n\r\n    fun getPlayersVotes(RoomName: String): ArrayList<Int>{\r\n        var nbPlayers = getPlayersNumber(RoomName)\r\n        var playersVotesArray = ArrayList<Int>()\r\n        for (i in 1..nbPlayers) {\r\n            if (localSnapshot.child(\"$RoomName/Players/Player$i/Votes\").exists()) {\r\n                playersVotesArray.add(localSnapshot.child(\"$RoomName/Players/Player$i/Votes\").value as Int)\r\n            } else {\r\n                Log.d(TAG, \"fun getPlayersVotes() failed\")\r\n            }\r\n        }\r\n        return playersVotesArray\r\n    }\r\n\r\n    fun getPlayerRole(PlayerPseudo: String): String {\r\n        return try{\r\n            localSnapshot.child(\"$localRoomName/Players/Player$localPlayerNb/Role\").value as String\r\n        } catch (e: Exception) {\r\n            e.printStackTrace()\r\n            Log.d(TAG, \"fun getPlayerRole failed\")\r\n            \"Failed\"\r\n        }\r\n    }\r\n\r\n    fun validateVote(RoomName: String, voteType: String  ): Boolean{\r\n        var nbPlayers = getPlayersNumber(RoomName)\r\n        var voteFlag: Boolean = true// set le flag a true\r\n        when (voteType){\r\n            \"Villager\" ->\r\n                for (i in 1..nbPlayers) // check all flags\r\n                {\r\n                    if (!(localSnapshot.child(\"$RoomName/Players/Player$i/Voted\").value as Boolean)) voteFlag = false\r\n                }\r\n            \"Werewolf\" ->\r\n                for (i in 1..nbPlayers) // check all flags\r\n                {\r\n                    if (!(localSnapshot.child(\"$RoomName/Players/Player$i/Voted\").value as Boolean)\r\n                        && localSnapshot.child(\"$RoomName/Players/Player$i/Werewolf\").value as Boolean ) voteFlag = false\r\n                }\r\n        }\r\n        return voteFlag\r\n    }\r\n\r\n    fun getAnyData(Path: String): Any {\r\n        return localSnapshot.child(Path).value as Any\r\n    }\r\n\r\n    fun setAnyData(Path: String, Value: Any): Boolean {\r\n        Log.d(TAG, \"Fun setAnyData() called\")\r\n        var success: Boolean = false\r\n        success = try{\r\n            database.child(Path).setValue(Value)\r\n            true\r\n        } catch (e: Exception) {\r\n            e.printStackTrace()\r\n            Log.d(TAG, \"Fun setAnyData() failed\")\r\n            false\r\n        }\r\n        return success\r\n    }\r\n\r\n    fun getStoryState() : Long {\r\n        return localSnapshot.child(\"$localRoomName/GeneralData/StoryState\").value as Long\r\n    }\r\n\r\n    fun changeStoryState(NextState: Long) : Boolean {\r\n        return try{\r\n            Log.d(TAG, \"changeStoryState called\")\r\n            database.child(\"$localRoomName/GeneralData/StoryState\").setValue(NextState)\r\n            true\r\n        } catch (e: Exception) {\r\n            e.printStackTrace()\r\n            Log.d(TAG, \"fun changeStoryState failed\")\r\n            false\r\n        }\r\n    }\r\n\r\n    fun killPlayer(PlayerPseudo: String): Boolean {\r\n        // add role dependant kill count in DB\r\n        return try{\r\n            database.child(\"$localRoomName/GeneralData/Players/$PlayerPseudo/Alive\").setValue(false)\r\n            true\r\n        } catch (e: Exception) {\r\n            e.printStackTrace()\r\n            Log.d(TAG, \"fun killPlayer failed\")\r\n            false\r\n        }\r\n    }\r\n\r\n    fun localSnapshotInit() {\r\n        //setAnyData(\"0_NbPhoneConnected\", (getAnyData(\"0_NbPhoneConnected\") as Boolean).not())\r\n        FirebaseDatabase.getInstance().reference.addListenerForSingleValueEvent(\r\n            object: ValueEventListener\r\n            {\r\n                override fun onDataChange(snapshot: DataSnapshot) {\r\n                    if (snapshot.exists()){\r\n                        localSnapshot = snapshot\r\n                        Log.d(TAG, \"localSnapshot single updated at startup\")\r\n                    }\r\n                }\r\n                override fun onCancelled(error: DatabaseError) {\r\n                    Log.d(TAG, \"Fun singleRead() cancelled\")\r\n                }\r\n            }\r\n        )\r\n    }\r\n\r\n    // Must be used only once !!! Otherwise will reinitialize all the game\r\n    fun resetAllDatabase(){\r\n        //database = Firebase.database.reference\r\n        database.removeValue()              // removes everything at the root\r\n        Log.d(TAG, \"Database has been cleared.\")\r\n\r\n        database.child(\"0_NbPhoneConnected\").setValue(0)\r\n        database.child(\"0_Rooms/Room0\").setValue(\"Open\")\r\n\r\n        Log.d(TAG, \"Database has been set to default.\")\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/t_mobop_werewolf/FirebaseData/GeneralDataModel.kt	(revision c999406929e9e6da186676fe92ece7154b8ebd9b)
++++ app/src/main/java/com/example/t_mobop_werewolf/FirebaseData/GeneralDataModel.kt	(date 1609635263272)
+@@ -181,8 +181,8 @@
+             }
+             else -> textToShow = "You messed up something."
+         }
+-        PlayingActivity().textview_storytelling.text = textToShow
+-        PlayingHostActivity().textview_storytelling.text = textToShow
++        //PlayingActivity().textview_storytelling.text = textToShow
++        //PlayingHostActivity().textview_storytelling.text = textToShow
+         changeStoryState(nextState)
+         Log.d(TAG, "fun nextStage success")
+         return nextState
+Index: app/src/main/java/com/example/t_mobop_werewolf/PlayingActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.t_mobop_werewolf\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.content.Context\r\nimport android.graphics.Color\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.*\r\nimport com.example.t_mobop_werewolf.FirebaseData.GeneralDataModel\r\nimport com.google.firebase.database.DataSnapshot\r\nimport com.google.firebase.database.DatabaseError\r\nimport com.google.firebase.database.ValueEventListener\r\nimport com.google.firebase.database.ktx.database\r\nimport com.google.firebase.ktx.Firebase\r\n\r\n\r\nclass PlayingActivity : AppCompatActivity() {\r\n\r\n    var roomName = GeneralDataModel.localRoomName\r\n    var storyState: Long = 1\r\n    var storyStateRef = Firebase.database.reference.child(\"$roomName/GeneralData/StoryState\")\r\n\r\n    @SuppressLint(\"ResourceType\") // TODO: What's that ?\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_playing)\r\n\r\n        val player_role = findViewById<TextView>(R.id.textview_PlayerRole)\r\n        player_role.text = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)\r\n        GeneralDataModel.localRole = GeneralDataModel.getPlayerRole(GeneralDataModel.localPseudo)\r\n\r\n        val player_name = GeneralDataModel.localPseudo\r\n\r\n        val story = findViewById<TextView>(R.id.textview_storytelling)\r\n        story.text = \"The night falls on the quiet village.\"\r\n\r\n        val playersList = findViewById<ListView>(R.id.listview_Players)\r\n        playersList.setBackgroundColor(Color.parseColor(\"#FFFFFF\"))\r\n\r\n        val names = GeneralDataModel.getPlayersPseudos(GeneralDataModel.localRoomName)\r\n\r\n        var k: Int = 1\r\n        // Create RadioButton dynamically\r\n        for(players in names){\r\n            val radioButton = RadioButton(this)\r\n            radioButton.layoutParams= LinearLayout.LayoutParams(\r\n                ViewGroup.LayoutParams.WRAP_CONTENT,\r\n                ViewGroup.LayoutParams.WRAP_CONTENT)\r\n            radioButton.setPadding(24,0,0,16)\r\n            radioButton.text = players\r\n            val nb = GeneralDataModel.localPlayerNb.toString()\r\n\r\n            if (radioButton.text == GeneralDataModel.localPseudo\r\n                || GeneralDataModel.getAnyData(\"$roomName/Players/Player$nb/Role\") != \"Witch\") radioButton.isClickable.not()\r\n\r\n\r\n            if(GeneralDataModel.getAnyData(\"$roomName/Players/Player$nb/Role\") == \"Werewolf\"\r\n                && GeneralDataModel.getAnyData(\"$roomName/Players/Player$k/Role\") == \"Werewolf\") radioButton.isClickable.not()\r\n\r\n            radioButton.id = k\r\n            k += 1\r\n\r\n            findViewById<RadioGroup>(R.id.playersRadioGroup)?.addView(radioButton)\r\n        }\r\n\r\n        // ---x--- Firebase database listener for the StoryState variable ---x---\r\n        storyStateRef.addValueEventListener(object: ValueEventListener\r\n        {\r\n            override fun onDataChange(snapshot: DataSnapshot) {\r\n            if (snapshot.exists()) {\r\n                storyState = snapshot.value as Long\r\n                Log.d(\"StoryState\", \"StoryState changed\")\r\n                PlayingHostActivity().changeFragment(storyState) // this function is called every time StoryState is updated\r\n            }\r\n        }\r\n            override fun onCancelled(error: DatabaseError) {\r\n                Log.d(\"PlayingActivity\", \"Error database for storyState\")\r\n            }\r\n        })\r\n    }   // onCreate\r\n\r\n    override fun onDestroy() {\r\n        super.onDestroy()\r\n        // add code to remove listener\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/t_mobop_werewolf/PlayingActivity.kt	(revision c999406929e9e6da186676fe92ece7154b8ebd9b)
++++ app/src/main/java/com/example/t_mobop_werewolf/PlayingActivity.kt	(date 1609634956948)
+@@ -23,6 +23,7 @@
+     var roomName = GeneralDataModel.localRoomName
+     var storyState: Long = 1
+     var storyStateRef = Firebase.database.reference.child("$roomName/GeneralData/StoryState")
++    val fragment_actions = Frag_Actions_NoActions()
+ 
+     @SuppressLint("ResourceType") // TODO: What's that ?
+     override fun onCreate(savedInstanceState: Bundle?) {
+@@ -74,7 +75,7 @@
+             if (snapshot.exists()) {
+                 storyState = snapshot.value as Long
+                 Log.d("StoryState", "StoryState changed")
+-                PlayingHostActivity().changeFragment(storyState) // this function is called every time StoryState is updated
++                changeFragment(storyState) // this function is called every time StoryState is updated
+             }
+         }
+             override fun onCancelled(error: DatabaseError) {
+@@ -87,5 +88,47 @@
+         super.onDestroy()
+         // add code to remove listener
+     }
++
++    public fun changeFragment(story : Long){
++        var currentFrag = R.id.frag_actions_noactions
++
++        val a = getStoryRoleName(story)
++        val b = GeneralDataModel.localRole
++
++        Log.d("PlayingHostActivity", a)
++        Log.d("PlayingHostActivity", b)
++
++        if ( a == b){
++            Log.d("PlayingHostActivity", "your turn")
++            when(GeneralDataModel.localRole){
++                "Werewolf" -> currentFrag = R.id.frag_actions_werewolf
++                "Witch" -> currentFrag = R.id.frag_actions_witch
++                "FortuneTeller" -> currentFrag = R.id.frag_actions_fortuneteller
++            }
++        }
++        else{
++            Log.d("PlayingHostActivity", "noactions")
++            //when(story){
++            //    1.toLong() -> currentFrag = R.id.frag_actions_noactions
++            //    2.toLong() -> currentFrag = R.id.frag_actions_villager
++            //}
++            currentFrag = R.id.frag_actions_noactions
++        }
++        var txt = ""
++        supportFragmentManager.beginTransaction().apply {
++            replace(currentFrag, fragment_actions)
++            txt = "fragChanged"
++        }
++        Log.d("PlayingHostActivity", txt)
++    }
++
++    private fun getStoryRoleName(story : Long) : String{
++        when(story){
++            3.toLong() -> return "Werewolf"
++            4.toLong() -> return "Witch"
++            5.toLong() -> return "FortuneTeller"
++        }
++        return "None"
++    }
+ }
+ 
+Index: app/src/main/res/layout/fragment_actions_witch.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".Frag_Actions_Witch\"\r\n    android:id=\"@+id/frag_actions_witch\">\r\n\r\n    <TextView\r\n        android:id=\"@+id/textViewWitchRole\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_role\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/textViewWitchOrder\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"/>\r\n\r\n    <TextView\r\n        android:id=\"@+id/textViewWitchOrder\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_order\"\r\n        android:textSize=\"20sp\"\r\n        android:textAlignment=\"center\"\r\n        android:gravity=\"center\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/textViewWitchRole\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/buttonSave\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\">\r\n    </TextView>\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonSave\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_action_button_potion1\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/buttonValidate\"\r\n        app:layout_constraintEnd_toStartOf=\"@+id/buttonKill\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/textViewWitchOrder\" />\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonKill\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_action_button_potion2\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/textViewWitchOrder\"\r\n        app:layout_constraintBottom_toTopOf=\"@id/buttonValidate\"\r\n        app:layout_constraintStart_toEndOf=\"@+id/buttonSave\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"/>\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonValidate\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/witch_action_button_pass\"\r\n        app:layout_constraintTop_toBottomOf=\"@id/buttonSave\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"/>\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/fragment_actions_witch.xml	(revision c999406929e9e6da186676fe92ece7154b8ebd9b)
++++ app/src/main/res/layout/fragment_actions_witch.xml	(date 1609634383409)
+@@ -1,41 +1,61 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<androidx.constraintlayout.widget.ConstraintLayout
+-    xmlns:android="http://schemas.android.com/apk/res/android"
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/frag_actions_witch"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    tools:context=".Frag_Actions_Witch"
+-    android:id="@+id/frag_actions_witch">
++    android:background="@color/dayBackground2"
++    tools:context=".Frag_Actions_Witch">
++
++    <ImageView
++        android:id="@+id/imageView2"
++        android:layout_width="100sp"
++        android:layout_height="100sp"
++        android:layout_marginBottom="24dp"
++        android:contentDescription="Witch icon"
++        android:src="@drawable/ic_icon_witch"
++        app:layout_constraintBottom_toTopOf="@+id/textViewWitchRole"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
+ 
+     <TextView
+         android:id="@+id/textViewWitchRole"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
++        android:layout_marginStart="32dp"
++        android:layout_marginLeft="32dp"
++        android:layout_marginTop="32dp"
++        android:layout_marginEnd="32dp"
++        android:layout_marginRight="32dp"
++        android:layout_marginBottom="92dp"
+         android:text="@string/witch_role"
+-        app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintBottom_toTopOf="@+id/textViewWitchOrder"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"/>
++        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+ 
+     <TextView
+         android:id="@+id/textViewWitchOrder"
+-        android:layout_width="match_parent"
++        android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:background="@drawable/rounded_corner"
++        android:gravity="center"
++        android:padding="8dp"
+         android:text="@string/witch_order"
+-        android:textSize="20sp"
+         android:textAlignment="center"
+-        android:gravity="center"
+-        app:layout_constraintTop_toBottomOf="@+id/textViewWitchRole"
++        android:textSize="20sp"
+         app:layout_constraintBottom_toTopOf="@+id/buttonSave"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent">
+-    </TextView>
++        app:layout_constraintTop_toBottomOf="@+id/textViewWitchRole"></TextView>
+ 
+     <Button
+         android:id="@+id/buttonSave"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:fontFamily="@font/allerta"
+         android:text="@string/witch_action_button_potion1"
+         app:layout_constraintBottom_toTopOf="@+id/buttonValidate"
+         app:layout_constraintEnd_toStartOf="@+id/buttonKill"
+@@ -46,20 +66,22 @@
+         android:id="@+id/buttonKill"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:fontFamily="@font/allerta"
+         android:text="@string/witch_action_button_potion2"
+-        app:layout_constraintTop_toBottomOf="@+id/textViewWitchOrder"
+         app:layout_constraintBottom_toTopOf="@id/buttonValidate"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toEndOf="@+id/buttonSave"
+-        app:layout_constraintEnd_toEndOf="parent"/>
++        app:layout_constraintTop_toBottomOf="@+id/textViewWitchOrder" />
+ 
+     <Button
+         android:id="@+id/buttonValidate"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:fontFamily="@font/allerta"
+         android:text="@string/witch_action_button_pass"
+-        app:layout_constraintTop_toBottomOf="@id/buttonSave"
+         app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"/>
++        app:layout_constraintTop_toBottomOf="@id/buttonSave" />
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/drawable/rounded_corner.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/rounded_corner.xml	(date 1609634672201)
++++ app/src/main/res/drawable/rounded_corner.xml	(date 1609634672201)
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <stroke
++        android:width="1dp"
++        android:color="@color/greyed" />
++
++    <solid android:color="@color/ic_launcher_background" />
++
++    <corners
++        android:radius="1dp"
++        android:topRightRadius="20dp"
++        android:bottomLeftRadius="20dp"/>
++</shape>
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(revision c999406929e9e6da186676fe92ece7154b8ebd9b)
++++ .idea/gradle.xml	(date 1609634383415)
+@@ -15,6 +15,7 @@
+           </set>
+         </option>
+         <option name="resolveModulePerSourceSet" value="false" />
++        <option name="useQualifiedModuleNames" value="true" />
+       </GradleProjectSettings>
+     </option>
+   </component>

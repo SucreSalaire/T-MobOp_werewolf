@@ -59,6 +59,10 @@ class Frag_Actions_Werewolf : Fragment() {
                     var n: Int = 1
                     var nVotes: Int = GeneralDataModel.getAnyData(pathSelected) as Int
 
+                    GeneralDataModel.killPlayer("Player$checkedId")
+                    GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
+                    Log.d("MainActivity", "Target kill successful")
+
                     /* Verify that target isn't a werewolf
                     if (selectedRole == "Werewolf") {
                         Toast.makeText(
@@ -67,12 +71,12 @@ class Frag_Actions_Werewolf : Fragment() {
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    else {*/
+                    else {
                     GeneralDataModel.setAnyData(pathSelected, nVotes + 1)
-                    //}
+                    //}*/
 
                     // Check if all werewolves have voted
-                    if(GeneralDataModel.validateVote(roomName, "Werewolf")) {
+                    /*if(GeneralDataModel.validateVote(roomName, "Werewolf")) {
                         // Check if a majority of werewolves have selected a target
                         for (k in votes) {
                             if (k == max) {
@@ -103,7 +107,7 @@ class Frag_Actions_Werewolf : Fragment() {
                         ).show()
                         GeneralDataModel.setAnyData(path, flag.not()) // Actualize any data to activate DataChanged function
                         Log.d("MainActivity", "Target kill successful")
-                    }
+                    }*/
                 }
                 else Toast.makeText(context,"Select a villager to kill and try again",Toast.LENGTH_LONG ).show()
             }
